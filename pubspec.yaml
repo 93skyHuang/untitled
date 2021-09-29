@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  #  https://pub.dev/packages/get
+  #  状态管理框架https://pub.dev/packages/get
   #  import 'package:get/get.dart';
   get:
 
@@ -37,11 +37,17 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-  #云信即时通讯 https://pub.dev/packages/nim_core
-  nim_core: ^1.0.0-rc.3
+#  #云信即时通讯 https://pub.dev/packages/nim_core
+#  nim_core: ^1.0.0-rc.3
 
   #网络请求框架 https://github.com/flutterchina/dio/blob/master/README-ZH.md
   dio: ^4.0.0
+
+  #数据加密库
+  encrypt: ^5.0.1
+
+  #  https://pub.dev/packages/logger/install
+  logger: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -95,3 +101,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  assets:
+    - assets/
+    - assets/rsa/public.pem
+    - assets/rsa/private.pem
