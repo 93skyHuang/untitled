@@ -31,7 +31,6 @@ Future<String> rsaEncrypted(String content) async {
   // enrcypter.encrypt(content).base64;
   List<int> sourceBytes = utf8.encode(content);
   int inputLen = sourceBytes.length;
-  logger.i('inputLen=$inputLen');
   int maxLen = 117;
   List<int> totalBytes = [];
   for (var i = 0; i < inputLen; i += maxLen) {
@@ -44,13 +43,11 @@ Future<String> rsaEncrypted(String content) async {
     }
     totalBytes.addAll(enrcypter.encryptBytes(item).bytes);
   }
-  logger.i('totalBytes=${totalBytes.length}');
   return base64.encode(totalBytes); //加密后内容可以在线解析或者自行解析
 }
 
 //解密
 Future<String> rsaDecrypted(String content) async {
-  logger.i('rsaDecrypted ====>>$content');
   var privateKey = RSAKeyParser().parse(privateStr) as RSAPrivateKey;
   final encrypt = Encrypter(RSA(privateKey: privateKey));
   Uint8List sourceBytes = base64.decode(content);

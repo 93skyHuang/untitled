@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'network/http_manager.dart';
+import 'page/login_page.dart';
+import 'page/splash_page.dart';
 
-import 'network/http_dio_util.dart';
 void main() {
-  runApp(const MyApp());
+  runApp(GetMaterialApp(
+    initialRoute: '/splash',
+    /// 初始化路由
+    getPages: [
+      GetPage(name: '/splash', page: () => SplashPage()),
+      GetPage(name: '/home', page: () => MyApp()),
+      GetPage(name: '/login', page: () => LoginPage()),
+    ],
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -59,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-      test();
+      getUserInfo();
     });
   }
 

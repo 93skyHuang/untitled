@@ -31,6 +31,7 @@ dependencies:
     sdk: flutter
   #  状态管理框架https://pub.dev/packages/get
   #  import 'package:get/get.dart';
+  #  参考链接https://www.jianshu.com/p/bcefa3d2292c
   get:
 
   # The following adds the Cupertino Icons font to your application.
@@ -49,6 +50,9 @@ dependencies:
   #  https://pub.dev/packages/logger/install
   logger: ^1.1.0
 
+  # 搭配 json_serializable 库一起使用
+  json_annotation: ^4.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -59,6 +63,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+
+  #输入命令 flutter pub run build_runner build
+  #生成实体类 https://github.com/debuggerx01/JSONFormat4Flutter/releases
+  build_runner: ^2.1.2
+  json_serializable: ^5.0.2
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

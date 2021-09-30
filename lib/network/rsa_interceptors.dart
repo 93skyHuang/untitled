@@ -31,8 +31,7 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
             "data": dataEn
           },
           logger.i('--- ${options.data.toString()}---'),
-          // handler.next(options)
-          super.onRequest(options, handler)
+          handler.next(options)
         });
   }
 
@@ -40,17 +39,25 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     logger.i(
         '======》RESPONSE[${response.statusCode}] => PATH: ${response.realUri}'
-        '  =》body: ${response.toString()}  ==>data:${response.data}');
+        '  =》body: ${response.toString()}  ==>headers:${response.headers}');
     if (response.statusCode == 200) {
       response.data = json.decode(response.data);
       if (response.data['code'] == success_code) {
         rsaDecrypted(response.data['data'])
-            .then((value) => response.data['data'] = value)
+            .then((value) => {
+                  logger.i(value),
+                  response.data['data'] = json.decode(value),
+                  logger.i(response.data['data']['uid'])
+                })
             .whenComplete(() => {
                   logger.i('======》Decrypted RESPONSE :${response.toString()}'),
-                  super.onResponse(response, handler),
+                  handler.next(response),
                 });
+      } else {
+        handler.next(response);
       }
+    } else {
+      handler.next(response);
     }
   }
 
@@ -58,7 +65,7 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     logger.e(
         'ERROR[${err.response}] => PATH: ${err.requestOptions.baseUrl}${err.requestOptions.path}');
-    super.onError(err, handler);
+    handler.next(err);
   }
 
   String getRandomOf8() {
