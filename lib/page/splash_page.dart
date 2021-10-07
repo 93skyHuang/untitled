@@ -33,7 +33,7 @@ class SplashPage extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: CommonColor.MainColor,
+            color: MyColor.MainColor,
           ),
           // ConstrainedBox(
           //   constraints: const BoxConstraints.expand(),

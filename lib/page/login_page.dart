@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: CommonColor.BottomRed,
+            color: MyColor.Red_fd4343,
           ),
           ConstrainedBox(
             constraints: const BoxConstraints.expand(),

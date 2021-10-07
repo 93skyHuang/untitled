@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:untitled/page/home_page.dart';
 import 'package:untitled/page/login_page.dart';
 import 'package:untitled/page/splash_page.dart';
 
@@ -9,7 +10,7 @@ import 'main.dart';
  */
 var getRouterPage = [
   GetPage(name: splashPName, page: () => const SplashPage()),
-  GetPage(name: homePName, page: () => const MyApp()),
+  GetPage(name: homePName, page: () => const HomePage()),
   GetPage(name: loginPName, page: () => LoginPage()),
 ];
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 //基础配置类
 
 //颜色配置
-class CommonColor {
+class MyColor {
   //通用组件
-  static const Color BottomRed = Color(0xFFd70e41); //白色
+  static const Color Red_fd4343 = Color(0xffFD4343);
   static const Color BottomTitle = Color(0xFF616B72);
   static const Color LineGray = Color(0xffcccccc);
   static const Color BtnDisableColor = Color(0xFFE9EDF0); //按钮禁用时的颜色
@@ -25,6 +25,7 @@ class CommonColor {
   static const Color TopTitleColor = Color(0xff444444); //标题栏title
   static const Color TopTitleDisableColor = Color(0x4D444444); //标题栏禁用title
   static const Color AppBarBackgroundColor = Colors.white; //AppBar背景色
+
 }
 
 class CommonKey{
