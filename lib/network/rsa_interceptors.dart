@@ -42,7 +42,7 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
         '  =》body: ${response.toString()}  ==>headers:${response.headers}');
     if (response.statusCode == 200) {
       response.data = json.decode(response.data);
-      if (response.data['code'] == success_code) {
+      if (response.data['code'] == respCodeSuccess) {
         rsaDecrypted(response.data['data'])
             .then((value) => {
                   logger.i(value),

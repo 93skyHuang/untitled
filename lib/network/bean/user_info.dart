@@ -4,20 +4,6 @@ part 'user_info.g.dart';
 
 @JsonSerializable()
 class UserInfo {
-  UserInfo({required this.code, required this.msg, required this.data});
-
-  final int code;
-
-  final String msg;
-
-  final Data data;
-
-  factory UserInfo.fromJson(Map<String, dynamic> json) =>
-      _$UserInfoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserInfoToJson(this);
-}
-
 //* uid [用户UID]
 //      * headImgUrl [头像]
 //      * cname [昵称]
@@ -38,29 +24,29 @@ class UserInfo {
 //           * expectConstellation [期望对象星座]
 //           * expectType [你在这里寻找什么]
 //          * hobby [我的兴趣爱好]
-class Data {
   int uid = 0;
-  String headImgUrl = '';
-  String cname = '';
-  String height = '';
-  String constellation = '';
+  String? headImgUrl = '';
+  String? cname = '';
+  int? height ;
+  String? constellation = '';
   int? age = 0;
   int? sex = 1;
-  String region = '';
-  String autograph = '';
-  String birthday = '';
-  String backgroundImage = '';
+  String? region = '';
+  String? autograph = '';
+  String? birthday = '';
+  String? backgroundImage = '';
   int? isVideo;
   int? svip;
+  int? vip;
   int? svipEndTime;
-  String expectAge = '';
-  String expectHeight = '';
-  String expectConstellation = '';
-  String expectType = '';
-  String hobby = '';
+  String? expectAge = '';
+  String? expectHeight = '';
+  String? expectConstellation = '';
+  String? expectType = '';
+  List<String?> hobby =[];
 
-  factory Data.fromJson(Map<String, dynamic> json) =>
-      _$DataFromJson(json);
+  UserInfo();
+  factory UserInfo.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String?, dynamic> toJson() => _$DataToJson(this);
 }
