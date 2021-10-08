@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled/route_config.dart';
+import 'basic/include.dart';
 import 'messages.dart';
 import 'network/http_manager.dart';
 import 'network/logger.dart';
-import 'page/login_page.dart';
-import 'page/splash_page.dart';
 
 void main() {
   runApp(GetMaterialApp(
-    translations: Messages(), // 你的翻译
-    locale: Locale('zh', 'CN'), // 将会按照此处指定的语言翻译
-    fallbackLocale: Locale('zh', 'CN'),
-    initialRoute: '/splash',
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      appBarTheme: const AppBarTheme(brightness: Brightness.light),
+      // light为黑色 dark为白色
+      primaryColor: MyColor.mainColor,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    translations: Messages(),
+    // 你的翻译
+    locale: const Locale('zh', 'CN'),
+    // 将会按照此处指定的语言翻译
+    fallbackLocale: const Locale('zh', 'CN'),
+    initialRoute: splashPName,
+
     /// 初始化路由
     getPages: getRouterPage,
   ));
@@ -72,7 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-      getUserInfo().then((value) => {logger.i('终于${value.toString()} ---${value.isOk()}')});
+      getUserInfo().then(
+          (value) => {logger.i('终于${value.toString()} ---${value.isOk()}')});
     });
   }
 

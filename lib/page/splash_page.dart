@@ -21,7 +21,7 @@ class SplashPage extends StatelessWidget {
         designSize: const Size(360, 690),
         orientation: Orientation.portrait);
     Future.delayed(Duration(milliseconds: 1000))
-        .then((value) => Get.toNamed(homePName));
+        .then((value) => Get.offNamed(loginPName));
   }
 
   @override
@@ -33,7 +33,7 @@ class SplashPage extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: MyColor.MainColor,
+            color: MyColor.mainColor,
           ),
           // ConstrainedBox(
           //   constraints: const BoxConstraints.expand(),

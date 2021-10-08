@@ -4,15 +4,26 @@ import 'package:flutter/material.dart';
 //颜色配置
 class MyColor {
   //通用组件
-  static const Color Red_fd4343 = Color(0xffFD4343);
+  static const Color redFd4343 = Color(0xffFD4343);
+  static const Color whiteFFFFFF = Color(0xFFFFFFFF);
+  static const Color whiteE6E6E6 = Color(0xFFE6E6E6);
+  static const Color grey8C8C8C = Color(0xFF8C8C8C);
+  static const Color mainColor = Color(0xffF3CD8E); //主题色
+
+  static const Color BtnNormalColor = Color(0xffF3CD8E); //按钮正常色
+  static const Color BtnDisableTextColor = Color(0x77F3CD8E); //按钮禁用时的文字颜色
+  static const Color BtnHighlightColor = Color(0xfff3ca87); //按钮高亮颜色
+
+  static const Color TextBlackColor = Color(0xff000000); //黑色字体颜色
+
+
   static const Color BottomTitle = Color(0xFF616B72);
   static const Color LineGray = Color(0xffcccccc);
   static const Color BtnDisableColor = Color(0xFFE9EDF0); //按钮禁用时的颜色
-  static const Color BtnDisableTextColor = Color(0xFFA4A9Ac); //按钮禁用时的文字颜色
-  static const Color BtnHighlightColor = Color(0xFFE25927); //按钮高亮颜色
-  static const Color MainColor = Color(0xffff642b); //主题色
+
+
   static const Color BottomBlue = Color(0xff037BFF); //底部选择弹框蓝色
-  static const Color TextBlackColor = Color(0xff222222); //黑色字体颜色
+
   static const Color TextBlack3Color = Color(0xff333333); //黑色字体颜色
   static const Color AppBarTextColor = Color(0xff444444); //AppBar字体颜色
   static const Color TextLightGrey = Color(0xff616B72); //浅灰色字体颜色

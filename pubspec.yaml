@@ -59,6 +59,9 @@ dependencies:
   #轻量级数据缓存
   shared_preferences: ^2.0.8
 
+  #土司
+  fluttertoast: ^8.0.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

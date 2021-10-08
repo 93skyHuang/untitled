@@ -85,7 +85,7 @@ class _HomeState extends State<HomePage> {
         currentIndex: _currentIndex,
         items: _barItem,
         iconSize: ScreenUtil().setWidth(20),
-        fixedColor: MyColor.Red_fd4343,
+        fixedColor: MyColor.redFd4343,
         selectedFontSize: ScreenUtil().setSp(10),
         unselectedFontSize: ScreenUtil().setSp(10),
         type: BottomNavigationBarType.fixed,

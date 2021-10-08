@@ -46,8 +46,10 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
         rsaDecrypted(response.data['data'])
             .then((value) => {
                   logger.i(value),
-                  response.data['data'] = json.decode(value),
-                  logger.i(response.data['data']['uid'])
+                  if (value.isEmpty)
+                    response.data['data'] = null
+                  else
+                    response.data['data'] = json.decode(value)
                 })
             .whenComplete(() => {
                   logger.i('======》Decrypted RESPONSE :${response.toString()}'),

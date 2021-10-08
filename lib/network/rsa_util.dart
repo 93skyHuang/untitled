@@ -47,7 +47,10 @@ Future<String> rsaEncrypted(String content) async {
 }
 
 //解密
-Future<String> rsaDecrypted(String content) async {
+Future<String> rsaDecrypted(String? content) async {
+  if(content==null){
+    return '';
+  }
   var privateKey = RSAKeyParser().parse(privateStr) as RSAPrivateKey;
   final encrypt = Encrypter(RSA(privateKey: privateKey));
   Uint8List sourceBytes = base64.decode(content);

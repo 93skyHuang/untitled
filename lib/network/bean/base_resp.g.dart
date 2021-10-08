@@ -9,7 +9,7 @@ part of 'base_resp.dart';
 BaseResp _$BaseRespFromJson(Map<String, dynamic> json) => BaseResp(
       code: json['code'] as int,
       msg: json['msg'] as String,
-      data: json['data'] as Map<String, dynamic>,
+      data: json['data'] == null ? {'':''} : json['data'] as Map<String, dynamic>,
     );
 
 Map<String, dynamic> _$BaseRespToJson(BaseResp instance) => <String, dynamic>{
