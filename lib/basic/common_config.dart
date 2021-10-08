@@ -37,6 +37,7 @@ class MyColor {
   static const Color TopTitleDisableColor = Color(0x4D444444); //标题栏禁用title
   static const Color AppBarBackgroundColor = Colors.white; //AppBar背景色
 
+
 }
 
 class CommonKey{
