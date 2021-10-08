@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:untitled/page/mine/setting_page.dart';
+import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
@@ -24,7 +28,9 @@ class _MinePageState extends State<MinePage> {
       text: '认证中心',
       img: "assets/images/mine_verify.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(()=>VerifyCenterPage());
+      },
     ),
     ItemMenu(
       text: '我的访客',
@@ -72,7 +78,9 @@ class _MinePageState extends State<MinePage> {
       text: '设置',
       img: "assets/images/mine_setting.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(() =>SettingPage());
+      },
     ),
     ItemMenu(
       text: '我的主页',

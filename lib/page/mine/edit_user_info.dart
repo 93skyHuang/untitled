@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_arrow.dart';
+
+import 'edit_basic_info.dart';
+import 'hobby_page.dart';
 
 
 class EditUser extends StatefulWidget {
@@ -59,7 +64,9 @@ class _EditUserState extends State<EditUser> {
                     style: TextStyle(fontSize: 15, color: Colors.black)),
               ),
               ItemArrow(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(() =>EditBasicInfoPage());
+                },
                 text: '基本资料',
                 showDivider: false,
                 padding: EdgeInsets.only(left: 16,right: 16),
@@ -108,7 +115,9 @@ class _EditUserState extends State<EditUser> {
                 padding: EdgeInsets.only(left: 16,right: 16),
               ),
               ItemArrow(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(()=>HobbyPage());
+                },
                 text: '兴趣爱好',
                 showDivider: false,
                 padding: EdgeInsets.only(left: 16,right: 16),
