@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/sp_util.dart';
 import 'package:untitled/route_config.dart';
 import 'package:untitled/widgets/toast.dart';
 
@@ -27,7 +28,12 @@ class LoginController extends GetxController {
       return;
     }
     phoneLogin(phone, code).then((value) => {
-          if (value.isOk()) Get.offNamed(homePName) else MyToast.show(value.msg)
+          if (value.isOk())
+            {
+              SPUtils.saveUid(value.data?.uid),
+              Get.offNamed(homePName)}
+          else
+            MyToast.show(value.msg)
         });
   }
 

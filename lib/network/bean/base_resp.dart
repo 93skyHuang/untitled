@@ -1,8 +1,10 @@
+import 'package:json_annotation/json_annotation.dart';
+
 part 'base_resp.g.dart';
 
-
-class BaseResp{
-  BaseResp({required this.code, required this.msg,required this.data});
+@JsonSerializable()
+class BaseResp {
+  BaseResp({required this.code, required this.msg, this.data = const {'': ''}});
 
   final int code;
 

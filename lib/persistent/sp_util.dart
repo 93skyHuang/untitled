@@ -17,12 +17,12 @@ class SPUtils {
     (await _getSpf()).setString('account', account);
   }
 
-  static Future<String> getUid() async {
-    return (await _getSpf()).getString('uid') ?? '';
+  static Future<int> getUid() async {
+    return (await _getSpf()).getInt('uid') ?? -1;
   }
 
-  static void saveUid(String uid) async {
-    (await _getSpf()).setString('uid', uid);
+  static void saveUid(int? uid) async {
+    uid ??= -1;
+    (await _getSpf()).setInt('uid', uid);
   }
-
 }

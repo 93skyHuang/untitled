@@ -9,6 +9,6 @@ class LoginResp {
   String? loginToken = '';
 
   factory LoginResp.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseFromJson(json);
+      _$LoginRespFromJson(json);
 
 }
