@@ -1,10 +1,6 @@
-import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/widget/custom_text.dart';
-import 'package:untitled/widgets/click_specitied_string_text.dart';
 
 class VipPage extends StatefulWidget {
   const VipPage();

@@ -26,9 +26,11 @@ class ItemMenuState extends State<ItemMenu> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       child: GestureDetector(
         onTap: this.widget.onPressed,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image(
               image: AssetImage(this.widget.img),

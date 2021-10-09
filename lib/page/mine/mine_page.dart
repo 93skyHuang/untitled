@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:untitled/basic/include.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
@@ -252,10 +253,10 @@ class _MinePageState extends State<MinePage> {
             ),
             Container(
                 height: 84,
+                width: double.infinity,
+                alignment: Alignment.bottomCenter,
                 margin:
                     EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
                 decoration: new BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -289,7 +290,7 @@ class _MinePageState extends State<MinePage> {
               height: 70,
               margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
               padding:
-                  EdgeInsets.only(left: 10, right: 10, bottom: 16, top: 16),
+                  EdgeInsets.only(left: 10, right: 10,),
               decoration: new BoxDecoration(
                 color: Color(0xff3E321E),
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -331,8 +332,7 @@ class _MinePageState extends State<MinePage> {
                             fontSize: 12,
                             color: Colors.black,
                           ),
-                        ))
-                    ,
+                        )),
                   )
                 ],
               ),
@@ -345,8 +345,6 @@ class _MinePageState extends State<MinePage> {
             Container(
               height: 240,
               margin: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
-              padding:
-                  EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
               decoration: new BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),

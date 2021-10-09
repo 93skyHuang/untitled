@@ -5,6 +5,8 @@ import 'package:untitled/page/mine/verified_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
+import 'avatar/avatar_verified_page.dart';
+
 class VerifyCenterPage extends StatefulWidget {
   const VerifyCenterPage();
 
@@ -35,15 +37,15 @@ class _VerifyCenterPageState extends State<VerifyCenterPage> {
           children: <Widget>[
             Container(
                 height: 220,
+                alignment: Alignment.center,
                 margin:
                     EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
                 decoration: new BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('实名认证',
                         style: TextStyle(fontSize: 16, color: Colors.black)),
@@ -76,7 +78,7 @@ class _VerifyCenterPageState extends State<VerifyCenterPage> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Get.to(()=>VerifiedPage());
+                        Get.to(()=>AvatarVerifiedPage());
                       },
                       child:Container(
                           height: 40,
