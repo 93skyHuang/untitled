@@ -3,6 +3,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
+import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
@@ -312,20 +313,27 @@ class _MinePageState extends State<MinePage> {
                       ),
                     ],
                   ),
-                  Container(
-                      padding: EdgeInsets.only(
-                          left: 12, right: 12, bottom: 5, top: 3),
-                      decoration: new BoxDecoration(
-                        color: Color(0xffF3CD8E),
-                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                      ),
-                      child: Text(
-                        "立即开通",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
+                  GestureDetector(
+                    onTap: (){
+                      Get.to(()=>VipPage());
+                    },
+                    child:
+                    Container(
+                        padding: EdgeInsets.only(
+                            left: 12, right: 12, bottom: 5, top: 3),
+                        decoration: new BoxDecoration(
+                          color: Color(0xffF3CD8E),
+                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
                         ),
-                      ))
+                        child: Text(
+                          "立即开通",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ))
+                    ,
+                  )
                 ],
               ),
             ),
