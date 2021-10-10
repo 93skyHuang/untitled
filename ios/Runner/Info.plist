@@ -43,5 +43,13 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
     <string>为了您刚好的体验,App需要访问您的相机权限。</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background.</string>
+
+    <key>io.flutter.embedded_views_preview</key>
+    <string>YES</string>
 </dict>
 </plist>

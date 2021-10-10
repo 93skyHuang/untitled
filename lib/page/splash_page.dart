@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/persistent/sp_util.dart';
 
 import '../route_config.dart';
 
@@ -20,8 +24,21 @@ class SplashPage extends StatelessWidget {
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(360, 690),
         orientation: Orientation.portrait);
-    Future.delayed(Duration(milliseconds: 1000))
-        .then((value) => Get.offNamed(loginPName));
+    pageJump();
+  }
+
+  void pageJump() {
+    SPUtils.getUid().then((value) => {
+          if (value == -1)
+            autoLogin(value).then((value) => {
+                  if (value.isOk())
+                    {Get.offNamed(homePName)}
+                  else
+                    {Get.offNamed(loginPName)}
+                })
+          else
+            Get.offNamed(loginPName)
+        });
   }
 
   @override
@@ -35,39 +52,13 @@ class SplashPage extends StatelessWidget {
             height: double.infinity,
             color: MyColor.mainColor,
           ),
-          // ConstrainedBox(
-          //   constraints: const BoxConstraints.expand(),
-          //   child: Image.asset(
-          //     Platform.isIOS
-          //         ? "assets/images/splash_ios.png"
-          //         : "assets/images/splash.png",
-          //     fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-          //   ),
-          // ),
-          // Align(
-          //   child: Column(
-          //     children: [
-          //       Padding(
-          //         padding: EdgeInsets.only(
-          //             top: ScreenUtil.getInstance().getAdapterSize(50)),
-          //         child: Platform.isIOS
-          //             ? Text('')
-          //             : Image(
-          //           image: AssetImage('assets/images/splash_logo.png'),
-          //         ),
-          //       ),
-          //       Padding(
-          //           padding: EdgeInsets.only(top: Platform.isIOS ? 50 : 15),
-          //           child: Text(
-          //             S.of(context).splash_bg_title,
-          //             style: TextStyle(
-          //                 color: Colors.white,
-          //                 fontSize:
-          //                 ScreenUtil.getInstance().getAdapterSize(14)),
-          //           )),
-          //     ],
-          //   ),
-          // ),
+          ConstrainedBox(
+            constraints: const BoxConstraints.expand(),
+            child: Image.asset(
+              "assets/images/launch_image.png",
+              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+            ),
+          ),
         ],
       ),
     );

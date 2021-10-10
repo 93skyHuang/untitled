@@ -14,7 +14,7 @@ class MyColor {
   static const Color BtnDisableTextColor = Color(0x77F3CD8E); //按钮禁用时的文字颜色
   static const Color BtnHighlightColor = Color(0xfff3ca87); //按钮高亮颜色
 
-  static const Color TextBlackColor = Color(0xff000000); //黑色字体颜色
+  static const Color blackColor = Color(0xff000000); //黑色字体颜色
 
 
   static const Color BottomTitle = Color(0xFF616B72);

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/page/login/login_controller.dart';
+import 'package:untitled/route_config.dart';
 import 'package:untitled/widgets/click_specitied_string_text.dart';
 
 class LoginPage extends StatelessWidget {
@@ -20,6 +21,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           ConstrainedBox(
@@ -73,7 +75,7 @@ class LoginPage extends StatelessWidget {
                     padding: EdgeInsets.only(top: ScreenUtil().setHeight(55)))
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -164,7 +166,7 @@ class LoginPage extends StatelessWidget {
         child: Text(
           '登录',
           style: TextStyle(
-              color: MyColor.TextBlackColor, fontSize: ScreenUtil().setSp(16)),
+              color: MyColor.blackColor, fontSize: ScreenUtil().setSp(16)),
         ),
         style: ButtonStyle(
             enableFeedback: false,
@@ -206,7 +208,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _clickProtocol() {
-    logger.i('o_clickProtocol');
+    Get.toNamed(webViewPName,arguments: {'url':'http://www.sancun.vip/index/Index/ysxy','title':'用户协议'});
   }
 
   void _clickPrivacy() {

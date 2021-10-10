@@ -17,6 +17,15 @@ class SPUtils {
     (await _getSpf()).setString('account', account);
   }
 
+  static Future<String> getRegistionID() async {
+    return (await _getSpf()).getString('registionID') ?? '';
+  }
+
+  ///激光推送id
+  static void saveRegistionID(String registionID) async {
+    (await _getSpf()).setString('registionID', registionID);
+  }
+
   static Future<int> getUid() async {
     return (await _getSpf()).getInt('uid') ?? -1;
   }

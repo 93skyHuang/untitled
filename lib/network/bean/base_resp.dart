@@ -4,13 +4,13 @@ part 'base_resp.g.dart';
 
 @JsonSerializable()
 class BaseResp {
-  BaseResp({required this.code, required this.msg, this.data = const {'': ''}});
+  BaseResp({required this.code, required this.msg, this.data});
 
   final int code;
 
   final String msg;
 
-  Map<String, dynamic> data;
+  dynamic data;
 
   factory BaseResp.fromJson(Map<String, dynamic> json) =>
       _$BaseRespFromJson(json);

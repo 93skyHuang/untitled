@@ -14,12 +14,8 @@ class LoginController extends GetxController {
       MyToast.show('请输入正确的手机号码');
       return;
     }
-    getPhoneSms(phone).then((value) => {
-          if (value.isOk())
-            isSendSmsCode.value = true
-          else
-            MyToast.show(value.msg)
-        });
+    getPhoneSms(phone).then((value) =>
+        {if (value.isOk()) getSmsCodeSuccess() else MyToast.show(value.msg)});
   }
 
   void login(String phone, String code) {
@@ -29,11 +25,17 @@ class LoginController extends GetxController {
     }
     phoneLogin(phone, code).then((value) => {
           if (value.isOk())
-            {
-              SPUtils.saveUid(value.data?.uid),
-              Get.offNamed(homePName)}
+            {SPUtils.saveUid(value.data?.uid), Get.offNamed(homePName)}
           else
             MyToast.show(value.msg)
+        });
+  }
+
+  void getSmsCodeSuccess() {
+    isSendSmsCode.value = true;
+    Future.delayed(const Duration(seconds: 30)).then((value) => {
+          logger.i('delayed message'),
+          if (isSendSmsCode.value) {isSendSmsCode.value = false}
         });
   }
 

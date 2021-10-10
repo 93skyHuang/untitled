@@ -8,6 +8,7 @@ import 'package:untitled/network/bean/holder_data.dart';
 import 'package:untitled/network/bean/login_resp.dart';
 import 'package:untitled/network/bean/visitor_info.dart';
 import 'package:untitled/persistent/sp_util.dart';
+import 'bean/find_tab_info.dart';
 import 'bean/user_info.dart';
 import 'dio_util.dart';
 import 'logger.dart';
@@ -29,15 +30,14 @@ Future<BasePageData> getPhoneSms(String phone) async {
 }
 
 /// 自动登录
-Future<BasePageData<LoginResp?>> autoLogin(
-    String uid, String longitude, String latitude, String registionID) async {
+Future<BasePageData<LoginResp?>> autoLogin(int uid) async {
   BasePageData<LoginResp?> basePageData;
   try {
     Response response = await getDio().post('/index/Login/defaultLogin', data: {
       'uid': uid,
-      'longitude': longitude,
-      'latitude': latitude,
-      'registionID': registionID,
+      'longitude': 0.0,
+      'latitude': 0.0,
+      'registionID': 'registionID',
       'packageName': 'packageName',
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -91,6 +91,7 @@ Future<BasePageData<UserInfo?>> getUserInfo() async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
+    logger.i('$basePageData');
     return basePageData;
   } on DioError catch (error) {
     logger.e(error);
@@ -233,12 +234,12 @@ Future<BasePageData> delFollow(int userid) async {
 
 /// 举报
 /// userid 对方用户id
-Future<BasePageData> addAccusation(int userid,String content) async {
+Future<BasePageData> addAccusation(int userid, String content) async {
   BasePageData basePageData;
   try {
     int uid = await SPUtils.getUid();
-    Response response = await getDio()
-        .post('/index/share/addAccusation', data: {'uid': uid, 'userid': userid, 'content': content});
+    Response response = await getDio().post('/index/share/addAccusation',
+        data: {'uid': uid, 'userid': userid, 'content': content});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -279,8 +280,8 @@ Future<BasePageData> addPullBlack(int userid) async {
   BasePageData basePageData;
   try {
     int uid = await SPUtils.getUid();
-    Response response = await getDio()
-        .post('/index/share/addPullBlack', data: {'uid': uid,'userid': userid});
+    Response response = await getDio().post('/index/share/addPullBlack',
+        data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -300,8 +301,8 @@ Future<BasePageData> delPullBlack(int userid) async {
   BasePageData basePageData;
   try {
     int uid = await SPUtils.getUid();
-    Response response = await getDio()
-        .post('/index/share/delPullBlack', data: {'uid': uid,'userid': userid});
+    Response response = await getDio().post('/index/share/delPullBlack',
+        data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -316,15 +317,14 @@ Future<BasePageData> delPullBlack(int userid) async {
   return basePageData;
 }
 
-
 /// 获取聊天页面对方用户信息
 /// userid 对方用户id
 Future<BasePageData<ChatUserInfo?>> getChatPageUserInfo(int userid) async {
   BasePageData<ChatUserInfo?> basePageData;
   try {
     int uid = await SPUtils.getUid();
-    Response response = await getDio()
-        .post('/index/share/chatPageUserInfo', data: {'uid': uid, 'userid': userid});
+    Response response = await getDio().post('/index/share/chatPageUserInfo',
+        data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
@@ -332,6 +332,29 @@ Future<BasePageData<ChatUserInfo?>> getChatPageUserInfo(int userid) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+///发现页面导航栏
+Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
+  BasePageData<List<FindTabInfo>?> basePageData;
+  try {
+    Response response = await getDio().post('/index/Index/getType');
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      List<FindTabInfo>? data = (baseResp.data as List<dynamic>?)
+          ?.map((e) => FindTabInfo.fromJson(e as Map<String, dynamic>))
+          .toList();
+      basePageData = BasePageData(baseResp.code, baseResp.msg, data);
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    logger.i(basePageData);
     return basePageData;
   } on DioError catch (error) {
     logger.e(error);
