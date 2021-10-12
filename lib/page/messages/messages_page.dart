@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/network/logger.dart';
 
 //消息页面
 class MessagesPage extends StatelessWidget {
@@ -7,6 +8,7 @@ class MessagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.i('MessagesPage');
     return Scaffold(
       body: Center(
         // Center is a layout widget. It takes a single child and positions it

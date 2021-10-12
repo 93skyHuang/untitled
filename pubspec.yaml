@@ -56,17 +56,20 @@ dependencies:
   # 屏幕适配工具 https://github.com/OpenFlutter/flutter_screenutil/blob/master/README_CN.md
   flutter_screenutil: ^5.0.0+2
 
-  #轻量级数据缓存
-  shared_preferences: ^2.0.8
-
   #土司
   fluttertoast: ^8.0.8
 
 #  #定位信息
-#  geolocator: ^7.6.2
+#  geolocator: ^7.6.2#
+
+  #拍照选择图片
+  image_picker: ^0.8.4+2
 
   #
   webview_flutter: ^2.1.1
+
+  #  get 数据存储库
+  get_storage: ^2.0.3
 
 dev_dependencies:
   flutter_test:

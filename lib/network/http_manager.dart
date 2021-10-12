@@ -1,16 +1,18 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:untitled/basic/include.dart';
 import 'package:untitled/constant/error_code.dart';
 import 'package:untitled/network/bean/address.dart';
 import 'package:untitled/network/bean/base_page_data.dart';
 import 'package:untitled/network/bean/base_resp.dart';
 import 'package:untitled/network/bean/chat_user_info.dart';
 import 'package:untitled/network/bean/discover_info.dart';
-import 'package:untitled/network/bean/holder_data.dart';
 import 'package:untitled/network/bean/login_resp.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/bean/visitor_info.dart';
-import 'package:untitled/persistent/sp_util.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'bean/add_comment_resp.dart';
 import 'bean/app_version_info.dart';
 import 'bean/black_info.dart';
@@ -98,11 +100,32 @@ Future<BasePageData<LoginResp?>> phoneLogin(String phone, String code) async {
   return basePageData;
 }
 
+/// 获取兴趣爱好
+Future<BasePageData<List<String>?>> getHobby() async {
+  BasePageData<List<String>?> basePageData;
+  try {
+    Response response = await getDio().post('/index/User/getHobby');
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      List<String> s =
+          (baseResp.data as List<dynamic>).map((e) => e.toString()).toList();
+      basePageData = BasePageData(baseResp.code, baseResp.msg, s);
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
 /// 获取用户信息 接口测试通过
 Future<BasePageData<UserInfo?>> getUserInfo() async {
   BasePageData<UserInfo?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/User/getUserInfo', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -120,13 +143,133 @@ Future<BasePageData<UserInfo?>> getUserInfo() async {
   }
   return basePageData;
 }
+
+/// 保存编辑个人信息
+// * uid [用户uid]
+// * phone [用户手机号码]
+// * 非必要条件字段
+// * headImgUrl [用户头像]
+// * cname [用户昵称]
+// * birthday [生日][格式 1999-09-09]
+// * height [身高]
+// * 地址这里 1、region [区域]（这里需要提示对方开启定位，如果没有开启定位就将原来的值给我或者为空或0）
+// *         2、如果用户已经获取了定位，就传longitude 和 latitude，注意不要传region
+// * autograph [签名]
+Future<BasePageData> updateUserInfo({
+  String? headImgUrl,
+  String? cname,
+  String? birthday,
+  int? height,
+  String? autograph,
+  String? region,
+  double? longitude,
+  double? latitude,
+}) async {
+  BasePageData basePageData;
+  try {
+    int uid = await GetStorageUtils.getUID();
+    Map<String, dynamic> data;
+    if (longitude != null && latitude != null) {
+      data = {
+        'uid': uid,
+        'birthday': birthday,
+        'height': height,
+        'autograph': autograph,
+        'longitude': longitude,
+        'latitude': latitude
+      };
+    } else {
+      data = {
+        'uid': uid,
+        'birthday': birthday,
+        'height': height,
+        'autograph': autograph,
+        'region': region,
+      };
+    }
+    Response response =
+        await getDio().post('/index/User/updateUserInfo', data: data);
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+///保存/择偶要求和兴趣爱好
+///          * uid [用户uid]
+//      * 非必要条件字段
+//      * expectAge [交友年龄]
+//      * expectRegion [期望对象城市]
+//      * expectHeight [期望对象身高]
+//      * expectConstellation [期望对象星座]
+//      * expectType [你在这里寻找什么]
+//      * hobby [我的兴趣爱好](兴趣爱好以数组格式传递)
+Future<BasePageData> updateUserData({
+  String? expectAge,
+  int? expectHeight,
+  String? expectRegion,
+  String? expectConstellation,
+  String? expectType,
+  List<String>? hobby,
+}) async {
+  BasePageData basePageData;
+  try {
+    int uid = await GetStorageUtils.getUID();
+    Response response =
+        await getDio().post('/index/User/updateUserData', data: {
+      'uid': uid,
+      'expectAge': expectAge,
+      'expectHeight': expectHeight,
+      'expectRegion': expectRegion,
+      'expectConstellation': expectConstellation,
+      'expectType': expectType,
+      'hobby': hobby,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+///获取别人个人中心-主页-基本信息
+Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
+  BasePageData<UserBasic?> basePageData;
+  try {
+    int uid = await GetStorageUtils.getUID();
+    Response response = await getDio().post('/index/User/getHomeUserData',
+        data: {'myUid': uid, 'userId': userId});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(
+          baseResp.code, baseResp.msg, UserBasic.fromJson(baseResp.data));
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    logger.i('$basePageData');
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
 /// 获取自己个人中心-主页-基本信息都可以用这个接口
+
 Future<BasePageData<UserBasic?>> getUserBasic() async {
   BasePageData<UserBasic?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
-    Response response =
-    await getDio().post('/index/User/getMyHomeUserData', data: {'myUid': uid});
+    int uid = await GetStorageUtils.getUID();
+    Response response = await getDio()
+        .post('/index/User/getMyHomeUserData', data: {'myUid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
@@ -191,7 +334,7 @@ Future<BasePageData<Address?>> getAddress(
 Future<BasePageData<PayTime?>> getPayTime() async {
   BasePageData<PayTime?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/share/getPayTime', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -213,7 +356,7 @@ Future<BasePageData<PayTime?>> getPayTime() async {
 Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
   BasePageData<List<VisitorInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/getVisitor', data: {'uid': uid, 'page': pageNum});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -239,7 +382,7 @@ Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
 Future<BasePageData> addFollow(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/addFollow', data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -261,7 +404,7 @@ Future<BasePageData> addFollow(int userid) async {
 Future<BasePageData> delFollow(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/delFollow', data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -283,7 +426,7 @@ Future<BasePageData> delFollow(int userid) async {
 Future<BasePageData> addAccusation(int userid, String content) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addAccusation',
         data: {'uid': uid, 'userid': userid, 'content': content});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -304,7 +447,7 @@ Future<BasePageData> addAccusation(int userid, String content) async {
 Future<BasePageData> addDeleteAccountApplication() async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/addDeleteAccountApplication', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -325,7 +468,7 @@ Future<BasePageData> addDeleteAccountApplication() async {
 Future<BasePageData> addPullBlack(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addPullBlack',
         data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -346,7 +489,7 @@ Future<BasePageData> addPullBlack(int userid) async {
 Future<BasePageData> delPullBlack(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/delPullBlack',
         data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -368,7 +511,7 @@ Future<BasePageData> delPullBlack(int userid) async {
 Future<BasePageData<ChatUserInfo?>> getChatPageUserInfo(int userId) async {
   BasePageData<ChatUserInfo?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/chatPageUserInfo',
         data: {'uid': uid, 'userId': userId});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -400,7 +543,6 @@ Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-    logger.i(basePageData);
     return basePageData;
   } on DioError catch (error) {
     logger.e(error);
@@ -413,7 +555,7 @@ Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
 Future<BasePageData<List<FollowInfo>?>> getFollowList(int page) async {
   BasePageData<List<FollowInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/followList', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -439,7 +581,7 @@ Future<BasePageData<List<CoverFollowInfo>?>> getCoverFollowList(
     int page) async {
   BasePageData<List<CoverFollowInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/coverFollowList', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -467,7 +609,7 @@ Future<BasePageData> addFeedback(
 ) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addFeedback',
         data: {'uid': uid, 'content': content, 'img': img});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -489,7 +631,7 @@ Future<BasePageData<List<ReceiveCommentMsg>?>> getReceiveCommentList(
     int page) async {
   BasePageData<List<ReceiveCommentMsg>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/receiveComment', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -515,7 +657,7 @@ Future<BasePageData<List<ReceiveFabulousMsg>?>> getReceiveFabulousList(
     int page) async {
   BasePageData<List<ReceiveFabulousMsg>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/receiveFabulous', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -540,7 +682,7 @@ Future<BasePageData<List<ReceiveFabulousMsg>?>> getReceiveFabulousList(
 Future<BasePageData<List<SendCommentMsg>?>> getSendCommentList(int page) async {
   BasePageData<List<SendCommentMsg>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/sendComment', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -566,7 +708,7 @@ Future<BasePageData<List<SendFabulousMsg>?>> getSendFabulousList(
     int page) async {
   BasePageData<List<SendFabulousMsg>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/sendFabulous', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -593,7 +735,7 @@ Future<BasePageData> addCertification(int type,
     {List<String> files = const []}) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response;
     response = await getDio().post('/index/share/addCertification',
         data: {'uid': uid, 'type': type, 'files': files});
@@ -611,7 +753,7 @@ Future<BasePageData> addCertification(int type,
 Future<BasePageData<List<BlackInfo>?>> getPullBlackList(int page) async {
   BasePageData<List<BlackInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/getPullBlackList',
         data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -637,7 +779,7 @@ Future<BasePageData<List<BlackInfo>?>> getPullBlackList(int page) async {
 Future<BasePageData> chatMessage(int targetUid, String content) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response;
     response = await getDio().post('/index/share/chatMessage',
         data: {'uid': uid, 'targetUid': targetUid, 'content': content});
@@ -651,7 +793,7 @@ Future<BasePageData> chatMessage(int targetUid, String content) async {
   return basePageData;
 }
 
-///发现页面     * page [分页页数] 暂未调通
+///发现页面     * page [分页页数]
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
 //      * type [栏目id]
@@ -659,7 +801,7 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
     int page, int type, int sex) async {
   BasePageData<List<DiscoverInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Index/discover',
         data: {'uid': uid, 'page': page, 'sex': sex, 'type': type});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -686,9 +828,9 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
 Future<BasePageData<List<NearbyInfo>?>> getNearby(int page, int sex) async {
   BasePageData<List<NearbyInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Index/nearby',
-        data: {'uid': uid, 'page': page, 'mgender': sex});
+        data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       List<NearbyInfo>? data = (baseResp.data as List<dynamic>?)
@@ -713,7 +855,7 @@ Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
     int page, int sex) async {
   BasePageData<List<TrendsLikeInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/trendsLike',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -740,7 +882,7 @@ Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(
     int page, int sex) async {
   BasePageData<List<NewTrendsInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/newTrends',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -767,7 +909,7 @@ Future<BasePageData<List<VideoTrendsInfo>?>> getVideoTrends(
     int page, int sex) async {
   BasePageData<List<VideoTrendsInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/videoTrends',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -856,7 +998,7 @@ Future<BasePageData> addTrends(
 }) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/addTrends', data: {
       'uid': uid,
       'content': content,
@@ -882,7 +1024,7 @@ Future<BasePageData> addTrends(
 Future<BasePageData<TrendsDetails?>> trendsDetails(int trendsId) async {
   BasePageData<TrendsDetails?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/trendsDetails', data: {
       'uid': uid,
@@ -908,7 +1050,7 @@ Future<BasePageData<AddCommentResp?>> addComment(
     int trendsId, String content) async {
   BasePageData<AddCommentResp?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/addComment', data: {
       'uid': uid,
       'trendsId': trendsId,
@@ -936,7 +1078,7 @@ Future<BasePageData<List<CommentInfo>?>> getTrendsCommentList(
 ) async {
   BasePageData<List<CommentInfo>?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/getTrendsComment', data: {
       'uid': uid,
@@ -968,7 +1110,7 @@ Future<BasePageData> addTrendsFabulous(
 ) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/addTrendsFabulous', data: {
       'uid': uid,
@@ -992,7 +1134,7 @@ Future<BasePageData> deleteTrendsFabulous(
 ) async {
   BasePageData basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/deleteTrendsFabulous', data: {
       'uid': uid,
@@ -1012,9 +1154,9 @@ Future<BasePageData> deleteTrendsFabulous(
 Future<BasePageData<PayList?>> getPayList() async {
   BasePageData<PayList?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
+    int uid = await GetStorageUtils.getUID();
     Response response =
-    await getDio().post('/index/Pay/payList', data: {'uid': uid});
+        await getDio().post('/index/Pay/payList', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
@@ -1030,13 +1172,14 @@ Future<BasePageData<PayList?>> getPayList() async {
   }
   return basePageData;
 }
+
 /// 生成内购订单号
 Future<BasePageData<Order?>> createOrder(String productID) async {
   BasePageData<Order?> basePageData;
   try {
-    int uid = await SPUtils.getUid();
-    Response response =
-    await getDio().post('/index/Pay/createOrder', data: {'uid': uid,'productID':productID});
+    int uid = await GetStorageUtils.getUID();
+    Response response = await getDio().post('/index/Pay/createOrder',
+        data: {'uid': uid, 'productID': productID});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
@@ -1045,6 +1188,25 @@ Future<BasePageData<Order?>> createOrder(String productID) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i('$basePageData');
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+/// OSS文件上传 视频、图片先使用此接口进行上传
+Future<BasePageData> fileUpload(String filePath) async {
+  BasePageData basePageData;
+  FormData formData = FormData.fromMap({
+    'file': await MultipartFile.fromFile(filePath),
+  });
+  try {
+    Response response = await getNoEncryptionDio()
+        .post('/index/share/ossUpload', data: formData);
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
   } on DioError catch (error) {
     logger.e(error);

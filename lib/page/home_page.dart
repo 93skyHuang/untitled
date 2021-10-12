@@ -73,7 +73,10 @@ class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pageList[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pageList,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (int index) {
           if (_currentIndex != index) {

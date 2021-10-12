@@ -95,3 +95,52 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
     return sign.toUpperCase();
   }
 }
+
+/**
+ * 解密拦截器
+ */
+
+class DecryptionInterceptors extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    logger.i(
+        '《===== REQUEST[${options.method}] => PATH: ${options.baseUrl}${options.path} '
+            '=> body:${options.data}');
+    handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    logger.i(
+        '======》RESPONSE statusCode=[${response.statusCode}] => PATH: ${response.realUri}'
+        '  =》body: ${response.toString()}');
+    if (response.statusCode == 200) {
+      response.data = json.decode(response.data);
+      if (response.data['code'] == respCodeSuccess) {
+        rsaDecrypted(response.data['data'])
+            .then((value) => {
+                  logger.i(value),
+                  if (value.isEmpty)
+                    response.data['data'] = null
+                  else
+                    response.data['data'] = json.decode(value),
+                })
+            .whenComplete(() => {
+                  logger.i('======》Decrypted RESPONSE :${response.toString()}'),
+                  handler.next(response),
+                });
+      } else {
+        handler.next(response);
+      }
+    } else {
+      handler.next(response);
+    }
+  }
+
+  @override
+  void onError(DioError err, ErrorInterceptorHandler handler) {
+    logger.e(
+        'ERROR[${err.response}] => PATH: ${err.requestOptions.baseUrl}${err.requestOptions.path}');
+    handler.next(err);
+  }
+}

@@ -25,7 +25,7 @@ class NearbyInfo {
   String? loginTime;
   int? userLabel;
   int? age = 0;
-  TrendsImg? trendsImg;
+  List<TrendsImg?> trendsImg=[];
 
 
   NearbyInfo();

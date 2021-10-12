@@ -1,10 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+part of 'pay_list.dart';
+
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
-
-part of 'pay_list.dart';
 
 PayList _$PayListFromJson(Map<String, dynamic> json) => PayList()
   ..headImgUrl = json['headImgUrl'] as String?
@@ -17,6 +17,6 @@ PayList _$PayListFromJson(Map<String, dynamic> json) => PayList()
 Map<String, dynamic> _$PayListToJson(PayList instance) => <String, dynamic>{
       'headImgUrl': instance.headImgUrl,
       'cname': instance.cname,
-      'monthlyCardList': instance.monthlyCardList,
       'svip': instance.svip,
+      'monthlyCardList': instance.monthlyCardList,
     };

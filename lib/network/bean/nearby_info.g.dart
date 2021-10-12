@@ -15,9 +15,10 @@ NearbyInfo _$NearbyInfoFromJson(Map<String, dynamic> json) => NearbyInfo()
   ..loginTime = json['loginTime'] as String?
   ..userLabel = json['userLabel'] as int?
   ..age = json['age'] as int?
-  ..trendsImg = json['trendsImg'] == null
-      ? null
-      : TrendsImg.fromJson(json['trendsImg'] as Map<String, dynamic>);
+  ..trendsImg = (json['trendsImg'] as List<dynamic>)
+      .map((e) =>
+          e == null ? null : TrendsImg.fromJson(e as Map<String, dynamic>))
+      .toList();
 
 Map<String, dynamic> _$NearbyInfoToJson(NearbyInfo instance) =>
     <String, dynamic>{

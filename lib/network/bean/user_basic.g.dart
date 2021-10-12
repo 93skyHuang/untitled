@@ -17,7 +17,6 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) => UserBasic()
   ..age = json['age'] as int?
   ..followSum = json['followSum'] as int?
   ..trendsSum = json['trendsSum'] as int?
-  // ..trendsSum = json['trendsSum'] as int?
   ..userdata = json['userdata'] as String?
   ..hobby = (json['hobby'] as List<dynamic>).map((e) => e as String?).toList()
   ..isVideo = json['isVideo'] as int?
@@ -40,7 +39,6 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'age': instance.age,
       'followSum': instance.followSum,
       'trendsSum': instance.trendsSum,
-      // 'followSum': instance.followSum,
       'userdata': instance.userdata,
       'hobby': instance.hobby,
       'isVideo': instance.isVideo,

@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/http_manager.dart';
-import 'package:untitled/persistent/sp_util.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 
 import '../route_config.dart';
 
@@ -28,7 +28,7 @@ class SplashPage extends StatelessWidget {
   }
 
   void pageJump() {
-    SPUtils.getUid().then((value) => {
+    GetStorageUtils.getUID().then((value) => {
           if (value != -1)
             autoLogin(value).then((value) => {
                   if (value.isOk())
@@ -50,7 +50,7 @@ class SplashPage extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: MyColor.mainColor,
+            color: MyColor.blackColor,
           ),
           ConstrainedBox(
             constraints: const BoxConstraints.expand(),
