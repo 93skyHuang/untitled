@@ -1,15 +1,21 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:untitled/page/mine/vip/vip_controller.dart';
 import 'package:untitled/widget/custom_text.dart';
 
+
 class VipPage extends StatefulWidget {
-  const VipPage();
+  VipPage();
+
 
   @override
   State<VipPage> createState() => _VipPageState();
 }
 
 class _VipPageState extends State<VipPage> {
+  final VipController _vipController = Get.put(VipController());
   TapGestureRecognizer _registProtocolRecognizer = TapGestureRecognizer();
   TapGestureRecognizer _privacyProtocolRecognizer = TapGestureRecognizer();
 
@@ -299,7 +305,9 @@ class _VipPageState extends State<VipPage> {
                         margin: EdgeInsets.only(left: 16, bottom: 30, top: 30),
                         decoration: new BoxDecoration(
                           color: Color(0xff212121),
-                          borderRadius: BorderRadius.only(topLeft:Radius.circular(30.0),bottomLeft: Radius.circular(30.0)),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              bottomLeft: Radius.circular(30.0)),
                         ),
                         child: Text(
                           "30",
@@ -309,21 +317,28 @@ class _VipPageState extends State<VipPage> {
                           ),
                         ))),
                 Expanded(
-                    child: Container(
-                        height: 60,
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(right: 16, bottom: 30, top: 30),
-                        decoration: new BoxDecoration(
-                          color: Color(0xffF3CD8E),
-                          borderRadius: BorderRadius.only(topRight:Radius.circular(30.0),bottomRight: Radius.circular(30.0)),
+                    child: GestureDetector(
+                      onTap: (){
+                        this._vipController.getPaylist();
+                      },
+                  child: Container(
+                      height: 60,
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(right: 16, bottom: 30, top: 30),
+                      decoration: new BoxDecoration(
+                        color: Color(0xffF3CD8E),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(30.0),
+                            bottomRight: Radius.circular(30.0)),
+                      ),
+                      child: Text(
+                        "立即开通",
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black,
                         ),
-                        child: Text(
-                          "立即开通",
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.black,
-                          ),
-                        )))
+                      )),
+                ))
               ],
             )
           ],

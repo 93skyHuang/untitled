@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
@@ -9,9 +11,12 @@ import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
 import 'edit_user_info.dart';
+import 'mine_controller.dart';
 
 class MinePage extends StatefulWidget {
-  const MinePage();
+  MinePage();
+
+  final MineController _loginController = Get.put(MineController());
 
   @override
   State<MinePage> createState() => _MinePageState();
@@ -19,19 +24,23 @@ class MinePage extends StatefulWidget {
 
 class _MinePageState extends State<MinePage> {
   final List<Widget> _menuItem = [
-
-  ItemMenu(
-  text: '我的动态',
-  img: "assets/images/mine_move.png",
-  textStyle: TextStyle(fontSize: 12, color: Colors.black),
-  onPressed: () {},
-  ),
+    ItemMenu(
+      text: '我的动态',
+      img: "assets/images/mine_move.png",
+      textStyle: TextStyle(fontSize: 12, color: Colors.black),
+      onPressed: () {},
+    ),
     ItemMenu(
       text: '认证中心',
       img: "assets/images/mine_verify.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(()=>VerifyCenterPage());
+        // Get.to(() => VerifyCenterPage());
+        print('getMyHomeUserData');
+        getUserInfo().then((value) => {
+              logger.i(
+                  '终1111于${value.toString()} ---${value.isOk()}')
+            });
       },
     ),
     ItemMenu(
@@ -81,7 +90,7 @@ class _MinePageState extends State<MinePage> {
       img: "assets/images/mine_setting.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(() =>SettingPage());
+        Get.to(() => SettingPage());
       },
     ),
     ItemMenu(
@@ -147,10 +156,6 @@ class _MinePageState extends State<MinePage> {
                   Container(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => EditUser()),
-                          );
                         },
                         child: Row(
                           children: [
@@ -289,8 +294,10 @@ class _MinePageState extends State<MinePage> {
             Container(
               height: 70,
               margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              padding:
-                  EdgeInsets.only(left: 10, right: 10,),
+              padding: EdgeInsets.only(
+                left: 10,
+                right: 10,
+              ),
               decoration: new BoxDecoration(
                 color: Color(0xff3E321E),
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -315,11 +322,10 @@ class _MinePageState extends State<MinePage> {
                     ],
                   ),
                   GestureDetector(
-                    onTap: (){
-                      Get.to(()=>VipPage());
+                    onTap: () {
+                      Get.to(() => VipPage());
                     },
-                    child:
-                    Container(
+                    child: Container(
                         padding: EdgeInsets.only(
                             left: 12, right: 12, bottom: 5, top: 3),
                         decoration: new BoxDecoration(

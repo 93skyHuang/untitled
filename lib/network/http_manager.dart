@@ -9,6 +9,9 @@ import 'package:untitled/network/bean/login_resp.dart';
 import 'package:untitled/network/bean/visitor_info.dart';
 import 'package:untitled/persistent/sp_util.dart';
 import 'bean/find_tab_info.dart';
+import 'bean/order.dart';
+import 'bean/pay_list.dart';
+import 'bean/user_basic.dart';
 import 'bean/user_info.dart';
 import 'dio_util.dart';
 import 'logger.dart';
@@ -88,6 +91,28 @@ Future<BasePageData<UserInfo?>> getUserInfo() async {
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
           baseResp.code, baseResp.msg, UserInfo.fromJson(baseResp.data));
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    logger.i('$basePageData');
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+/// 获取自己个人中心-主页-基本信息都可以用这个接口
+Future<BasePageData<UserBasic?>> getUserBasic() async {
+  BasePageData<UserBasic?> basePageData;
+  try {
+    int uid = await SPUtils.getUid();
+    Response response =
+    await getDio().post('/index/User/getMyHomeUserData', data: {'myUid': uid});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(
+          baseResp.code, baseResp.msg, UserBasic.fromJson(baseResp.data));
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
@@ -355,6 +380,50 @@ Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+/// 获取月卡充值列表以及状态显示状态信息
+Future<BasePageData<PayList?>> getPayList() async {
+  BasePageData<PayList?> basePageData;
+  try {
+    int uid = await SPUtils.getUid();
+    Response response =
+    await getDio().post('/index/Pay/payList', data: {'uid': uid});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(
+          baseResp.code, baseResp.msg, PayList.fromJson(baseResp.data));
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    logger.i('$basePageData');
+    return basePageData;
+  } on DioError catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+/// 生成内购订单号
+Future<BasePageData<Order?>> createOrder(String productID) async {
+  BasePageData<Order?> basePageData;
+  try {
+    int uid = await SPUtils.getUid();
+    Response response =
+    await getDio().post('/index/Pay/createOrder', data: {'uid': uid,'productID':productID});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(
+          baseResp.code, baseResp.msg, Order.fromJson(baseResp.data));
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    logger.i('$basePageData');
     return basePageData;
   } on DioError catch (error) {
     logger.e(error);
