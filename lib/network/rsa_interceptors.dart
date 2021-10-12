@@ -38,7 +38,7 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     logger.i(
-        '======》RESPONSE[${response.statusCode}] => PATH: ${response.realUri}'
+        '======》RESPONSE statusCode=[${response.statusCode}] => PATH: ${response.realUri}'
         '  =》body: ${response.toString()}');
     if (response.statusCode == 200) {
       response.data = json.decode(response.data);
@@ -46,12 +46,10 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
         rsaDecrypted(response.data['data'])
             .then((value) => {
                   logger.i(value),
-                  // value='[{"id":1,"title":"u7cbeu9009"},{"id":2,"title":"u5b9eu540du4e13u533a"},{"id":3,"title":"vipu4e13u533a"},{"id":4,"title":"u6d3bu8dc3u4e13u533a"}]',
                   if (value.isEmpty)
                     response.data['data'] = null
                   else
                     response.data['data'] = json.decode(value),
-                  logger.i('${response.data['data']}'),
                 })
             .whenComplete(() => {
                   logger.i('======》Decrypted RESPONSE :${response.toString()}'),

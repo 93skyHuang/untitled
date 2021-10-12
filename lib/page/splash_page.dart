@@ -29,7 +29,7 @@ class SplashPage extends StatelessWidget {
 
   void pageJump() {
     SPUtils.getUid().then((value) => {
-          if (value == -1)
+          if (value != -1)
             autoLogin(value).then((value) => {
                   if (value.isOk())
                     {Get.offNamed(homePName)}

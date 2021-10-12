@@ -34,7 +34,7 @@ class ChatUserInfo {
   int? isPhone;
   int? isCard;
   int? isHead;
-  List<Trends>? trendsList;
+  List<Trends>? trendsList;///对方动态列表
 
   ChatUserInfo();
 

@@ -11,9 +11,9 @@ class VisitorInfo {
 //     time [访问时间]
 
   int id = 0;
-  int uid = 0;
-  String? headImgUrl = '';
-  String? cname = '';
+  int? uid;
+  String? headImgUrl;
+  String? cname;
   int? height ;
   String? time ;
 

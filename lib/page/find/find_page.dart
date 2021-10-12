@@ -11,7 +11,8 @@ import 'find_controller.dart';
 //发现页面
 class FindPage extends StatefulWidget {
   final FindController _findController = Get.put(FindController());
-   FindPage({Key? key}) : super(key: key);
+
+  FindPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,26 +21,30 @@ class FindPage extends StatefulWidget {
 }
 
 class _FindPageState extends State<FindPage> {
-
   @override
   Widget build(BuildContext context) {
-    getFindTab();
+    // 105324
+    // getDiscoverList(1,1,1).then((value) => {logger.i('---成功$value')});
+    // getNearby(1,1).then((value) => {logger.i('---成功$value')});
+    getTrendsLike(1,1).then((value) => {logger.i('---成功$value')});
     return DefaultTabController(
       length: 8,
       child: Scaffold(
         appBar: AppBar(
-            elevation: 0,
+          elevation: 0,
           title: Row(
-            children:  [
+            children: [
               Expanded(
                 child: TabBar(
-                    labelColor:MyColor.blackColor,
+                    labelColor: MyColor.blackColor,
                     labelStyle: TextStyle(fontSize: ScreenUtil().setSp(20)),
-                    unselectedLabelColor:MyColor.grey8C8C8C,
-                    unselectedLabelStyle: TextStyle(fontSize: ScreenUtil().setSp(15)),
-                    indicatorWeight:4,
+                    unselectedLabelColor: MyColor.grey8C8C8C,
+                    unselectedLabelStyle:
+                        TextStyle(fontSize: ScreenUtil().setSp(15)),
+                    indicatorWeight: 4,
                     indicatorColor: MyColor.redFd4343,
-                    isScrollable: true,//多个按钮可以滑动
+                    isScrollable: true,
+                    //多个按钮可以滑动
                     tabs: <Widget>[
                       Tab(text: "热门1"),
                       Tab(text: "推荐2"),
@@ -116,7 +121,8 @@ class _FindPageState extends State<FindPage> {
                   title: Text("第二个tab"),
                 ),
               ],
-            ), ListView(
+            ),
+            ListView(
               children: [
                 ListTile(
                   title: Text("第7个tab"),
