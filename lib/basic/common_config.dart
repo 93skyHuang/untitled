@@ -9,6 +9,8 @@ class MyColor {
   static const Color whiteE6E6E6 = Color(0xFFE6E6E6);
   static const Color grey8C8C8C = Color(0xFF8C8C8C);
   static const Color mainColor = Color(0xffF3CD8E); //主题色
+  static const Color pageBgColor = Color(0xffF5F5F5); //页面背景色
+  static const Color dividerColor = Color(0xffE2E2E2 ); //分割线颜色
 
   static const Color BtnNormalColor = Color(0xffF3CD8E); //按钮正常色
   static const Color BtnDisableTextColor = Color(0x77F3CD8E); //按钮禁用时的文字颜色

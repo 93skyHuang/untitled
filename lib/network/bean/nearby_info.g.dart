@@ -8,6 +8,8 @@ part of 'nearby_info.dart';
 
 NearbyInfo _$NearbyInfoFromJson(Map<String, dynamic> json) => NearbyInfo()
   ..cname = json['cname'] as String?
+  ..headImgUrl = json['headImgUrl'] as String?
+  ..distance = json['distance'] as String?
   ..height = json['height'] as int?
   ..region = json['region'] as String?
   ..autograph = json['autograph'] as String?

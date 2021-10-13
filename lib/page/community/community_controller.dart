@@ -5,7 +5,8 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
-class FindController extends GetxController {
+
+class CommunityController extends GetxController {
   RxList<FindTabInfo> findTabList = [FindTabInfo(id: 0, title: '精选')].obs;
 
   void _getTabTitle() {

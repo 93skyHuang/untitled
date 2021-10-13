@@ -32,6 +32,7 @@ class _FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin{
     return Obx(() => DefaultTabController(
           length: _findController.findTabList.length,
           child: Scaffold(
+            backgroundColor: MyColor.pageBgColor,
             appBar: AppBar(
               elevation: 0,
               title: Row(
@@ -41,7 +42,7 @@ class _FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin{
                   ),
                 ],
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: MyColor.pageBgColor,
             ),
             body: MyTabBarView(),
           ),

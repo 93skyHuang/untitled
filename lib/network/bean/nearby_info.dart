@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'nearby_info.g.dart';
 
-///发现页信息
+///附近信息
 @JsonSerializable()
 class NearbyInfo {
   // * height [身高]
@@ -18,6 +18,8 @@ class NearbyInfo {
 
 
   String? cname;
+  String? headImgUrl;
+  String? distance;
   int? height ;
   String? region;
   String? autograph;

@@ -814,7 +814,6 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-    logger.i(basePageData);
     return basePageData;
   } on DioError catch (error) {
     logger.e(error);
@@ -826,10 +825,11 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
 ///附近
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
-Future<BasePageData<List<NearbyInfo>?>> getNearby(int page, int sex) async {
+Future<BasePageData<List<NearbyInfo>?>> getNearbyList(int page) async {
   BasePageData<List<NearbyInfo>?> basePageData;
   try {
     int uid = await GetStorageUtils.getUID();
+    int sex = await GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Index/nearby',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -876,14 +876,15 @@ Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
   return basePageData;
 }
 
-///动态-最新
+///动态-最新推荐
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
 Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(
-    int page, int sex) async {
+    int page) async {
   BasePageData<List<NewTrendsInfo>?> basePageData;
   try {
     int uid = await GetStorageUtils.getUID();
+    int sex = await GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Trends/newTrends',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -907,10 +908,11 @@ Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
 Future<BasePageData<List<VideoTrendsInfo>?>> getVideoTrends(
-    int page, int sex) async {
+    int page) async {
   BasePageData<List<VideoTrendsInfo>?> basePageData;
   try {
     int uid = await GetStorageUtils.getUID();
+    int sex = await GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Trends/videoTrends',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);

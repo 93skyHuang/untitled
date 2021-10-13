@@ -1,41 +1,274 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/nearby_info.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/widgets/divider.dart';
+import 'package:untitled/widgets/my_classic.dart';
+import 'package:untitled/widgets/null_list_widget.dart';
 
 //附近页面主体
-class NearbyPage extends StatelessWidget {
+class NearbyPage extends StatefulWidget {
   const NearbyPage({Key? key}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return _NearbyPageState();
+  }
+}
+
+class _NearbyPageState extends State<NearbyPage>
+    with AutomaticKeepAliveClientMixin {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  int pageNo = 1;
+  List<NearbyInfo> _list = [];
+
+  @override
+  void initState() {
+    logger.i('initState');
+    _onRefresh();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    logger.i('NearbyPage');
+    logger.i('CommunityPage');
+    super.build(context);
     return Scaffold(
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'NearbyPage',
-            ),
-          ],
+        backgroundColor: MyColor.pageBgColor,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: MyColor.pageBgColor,
+          elevation: 0,
+          title: Text(
+            '附近',
+            style: TextStyle(
+                color: MyColor.blackColor, fontSize: ScreenUtil().setSp(18)),
+          ),
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        body: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          header: const MyClassicHeader(),
+          footer: const MyClassicFooter(),
+          // 配置默认底部指示器
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: _getListView(),
+        ));
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  void _onRefresh() async {
+    logger.i("_onRefresh");
+    pageNo = 1;
+    getData();
+  }
+
+  // 上拉加载更多
+  void _onLoading() async {
+    logger.i("_onLoading");
+    pageNo++;
+    getData(isLoad: true);
+  }
+
+  void getData({bool isLoad = false}) {
+    getNearbyList(pageNo).then((value) => {
+          logger.i(value),
+          if (value.isOk())
+            if (isLoad)
+              {
+                _refreshController.loadComplete(),
+                _list.addAll(value.data ?? []),
+                updatePage(),
+              }
+            else
+              {
+                _refreshController.refreshCompleted(),
+                _list = value.data ?? [],
+                updatePage(),
+              }
+          else
+            {
+              isLoad
+                  ? _refreshController.loadFailed()
+                  : _refreshController.refreshFailed()
+            }
+        });
+  }
+
+  void updatePage() {
+    logger.i('updatePage');
+    setState(() {});
+  }
+
+  Widget _getListView() {
+    int length = _list.length;
+    if (length == 0) {
+      return NullListWidget();
+    } else {
+      List<Widget> listView = [];
+      for (int i = 0; i < length; i++) {
+        listView.add(_itemView(_list[i]));
+      }
+      return ListView(
+        children: listView,
+      );
+    }
+  }
+
+  Widget _itemView(NearbyInfo info) {
+    return Container(
+      width: double.infinity,
+      height: ScreenUtil().setWidth(130),
+      child: Padding(
+          padding: EdgeInsets.only(
+            left: ScreenUtil().setWidth(4),
+            right: ScreenUtil().setWidth(10),
+            bottom: ScreenUtil().setWidth(16),
+          ),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            headImg(info.headImgUrl ?? ''),
+            Padding(
+              padding: EdgeInsets.only(left: ScreenUtil().setWidth(10)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _info1(info),
+                  _info2(info),
+                  Text(
+                    '${info.autograph}',
+                    style: TextStyle(
+                        color: MyColor.grey8C8C8C,
+                        fontSize: ScreenUtil().setSp(12)),
+                  ),
+                  _info3(info),
+                ],
+              ),
+            ),
+            const Flexible(child: Align()),
+            _chat(info),
+          ])),
     );
+  }
+
+  Widget headImg(String imaUrl) {
+    return Card(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusDirectional.circular(4)),
+      clipBehavior: Clip.antiAlias,
+      color: Colors.white,
+      child: SizedBox(
+          width: ScreenUtil().setWidth(100),
+          height: ScreenUtil().setWidth(114),
+          child: CachedNetworkImage(
+            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+            imageUrl: imaUrl,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Image.asset(
+              'assets/images/image_load_failed.png',
+              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+            ),
+          )),
+    );
+  }
+
+  Widget _info1(NearbyInfo info) {
+    return Row(
+      children: [
+        Text(
+          '${info.cname}',
+          style: TextStyle(
+              color: MyColor.blackColor, fontSize: ScreenUtil().setSp(14)),
+        ),
+        Text(
+          '${info.loginTime}',
+          style: TextStyle(
+              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
+        ),
+      ],
+    );
+  }
+
+  Widget _info2(NearbyInfo info) {
+    return Row(
+      children: [
+        Text(
+          '${info.distance}',
+          style: TextStyle(
+              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
+        ),
+        VDivider(),
+        Text(
+          '${info.age}',
+          style: TextStyle(
+              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
+        ),
+        VDivider(),
+        Text(
+          '${info.height}cm',
+          style: TextStyle(
+              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
+        ),
+        VDivider(),
+        Text(
+          '销售',
+          style: TextStyle(
+              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
+        ),
+      ],
+    );
+  }
+
+  ///动态图
+  Widget _info3(NearbyInfo info) {
+    List<TrendsImg?> list = info.trendsImg;
+    List<Widget> listWidget = [];
+    int length = list.length;
+    if (length > 0) {}
+    return Row(
+      children: listWidget,
+    );
+  }
+
+  ///搭讪
+  Widget _chat(NearbyInfo info) {
+    return Flexible(
+        fit: FlexFit.loose,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Column(
+            children: [
+              const Flexible(child: Align()),
+              TextButton(
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                    visualDensity: VisualDensity.compact,
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  ),
+                onPressed: () {
+                  logger.i(info.cname);
+                },
+                child: Image.asset('assets/images/nearby_chat.png'),
+              ),
+              Text(
+                '搭讪',
+                style: TextStyle(
+                    color: MyColor.blackColor,
+                    fontSize: ScreenUtil().setSp(10)),
+              ),
+              const Flexible(child: Align()),
+            ],
+          ),
+        ));
   }
 }

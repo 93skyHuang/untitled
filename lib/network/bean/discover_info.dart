@@ -18,6 +18,7 @@ class DiscoverInfo {
 
   String? constellation;
   String? headImgUrl;
+  String loginTime='刚刚在线';
 
   int? userLabel;
 

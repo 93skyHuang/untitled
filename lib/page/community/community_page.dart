@@ -1,39 +1,88 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/logger.dart';
+import 'community_tab_bar.dart';
+import 'community_tab_bar_view.dart';
 
-//社区页面 附近
-class CommunityPage extends StatelessWidget {
+//社区页面
+class CommunityPage extends StatefulWidget {
   const CommunityPage({Key? key}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return _CommunityPageState();
+  }
+}
+
+class _CommunityPageState extends State<CommunityPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'CommunityPage',
-            ),
-          ],
+    logger.i('CommunityPage');
+    super.build(context);
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: MyColor.pageBgColor,
+        appBar: AppBar(
+          backgroundColor: MyColor.pageBgColor,
+          elevation: 0,
+          title: Row(
+            children: [
+              Expanded(
+                child: CommunityTabBar(),
+              ),
+              Container(
+                width: ScreenUtil().setWidth(70),
+                height: ScreenUtil().setWidth(26),
+                // 边框设置
+                decoration: const BoxDecoration(
+                  //背景
+                  color: Colors.white,
+                  //设置四周圆角 角度
+                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                  //设置四周边框
+                  border: Border(),
+                ),
+                // 设置 child 居中
+                alignment: const Alignment(0, 0),
+                child: addBtn(),
+              )
+            ],
+          ),
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        body: CommunityTabBarView(),
+      ),
     );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  Widget addBtn() {
+    return InkWell(
+        onTap: pullDymaic,
+        child: Row(children: [
+          Padding(
+            padding: EdgeInsets.only(
+                left: ScreenUtil().setWidth(10),
+                right: ScreenUtil().setWidth(5)),
+            child: Image(
+                width: ScreenUtil().setWidth(12),
+                height: ScreenUtil().setWidth(12),
+                image: const AssetImage("assets/images/add.png"),
+                fit: BoxFit.fill),
+          ),
+          Text(
+            '发布',
+            style: TextStyle(
+                fontSize: ScreenUtil().setSp(15), color: Colors.black),
+          ),
+        ]));
+  }
+
+  void pullDymaic() {
+    logger.i('发布动态');
   }
 }
