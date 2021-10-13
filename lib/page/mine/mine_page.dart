@@ -11,6 +11,7 @@ import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
 import 'edit_user_info.dart';
+import 'follow/follow_page.dart';
 import 'mine_controller.dart';
 
 class MinePage extends StatefulWidget {
@@ -36,11 +37,10 @@ class _MinePageState extends State<MinePage> {
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
         // Get.to(() => VerifyCenterPage());
-        print('getMyHomeUserData');
-        getUserInfo().then((value) => {
-              logger.i(
-                  '终1111于${value.toString()} ---${value.isOk()}')
-            });
+        getUserBasic().then((value) => {
+          logger.i(
+              '终1111于${value.toString()} ---${value.isOk()}')
+        });
       },
     ),
     ItemMenu(
@@ -65,7 +65,9 @@ class _MinePageState extends State<MinePage> {
       text: '我的关注',
       img: "assets/images/mine_focus.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(() => FollowPage());
+      },
     ),
     ItemMenu(
       text: '我的足迹',

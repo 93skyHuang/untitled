@@ -5,14 +5,12 @@ import 'package:untitled/page/mine/verified_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
-class VisitorPage extends StatefulWidget {
-  const VisitorPage();
+import 'fans_controller.dart';
 
-  @override
-  State<VisitorPage> createState() => _VisitorPageState();
-}
+class FansPage extends StatelessWidget {
+  FansPage();
+  FansController _followController = new FansController();
 
-class _VisitorPageState extends State<VisitorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
