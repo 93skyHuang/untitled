@@ -17,6 +17,7 @@ class DiscoverInfo {
   int? height;
 
   String? constellation;
+  String? headImgUrl;
 
   int? userLabel;
 
