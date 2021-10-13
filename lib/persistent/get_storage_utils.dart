@@ -30,4 +30,14 @@ class GetStorageUtils {
   static void saveFindTab(List<FindTabInfo>? f) async {
     return _box.write('find_tab', f);
   }
+
+  static Future<int> getSex() async {
+    return _box.read('sex') ?? 1;
+  }
+
+  ///
+  static void saveSex(int? sex) async {
+    return _box.write('sex', sex);
+  }
+
 }

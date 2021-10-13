@@ -22,10 +22,12 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) => UserBasic()
   ..isVideo = json['isVideo'] as int?
   ..isHead = json['isHead'] as int?
   ..isCard = json['isCard'] as int?
-  ..trendsList =
-      (json['trendsList'] as List<dynamic>).map((e) => e as String?).toList()
+  ..trendsList = (json['trendsList'] as List<dynamic>?)
+      ?.map(
+          (e) => e == null ? null : Trends.fromJson(e as Map<String, dynamic>))
+      .toList()
   ..commentList =
-      (json['commentList'] as List<dynamic>).map((e) => e as String?).toList()
+      (json['commentList'] as List<dynamic>?)?.map((e) => e as String?).toList()
   ..time = json['time'] as String?;
 
 Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
@@ -47,4 +49,27 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'trendsList': instance.trendsList,
       'commentList': instance.commentList,
       'time': instance.time,
+    };
+
+Trends _$TrendsFromJson(Map<String, dynamic> json) => Trends(
+      json['id'] as int,
+      json['type'] as int,
+    )
+      ..fabulousSum = json['fabulousSum'] as int
+      ..beClickedSum = json['beClickedSum'] as int
+      ..commentSum = json['commentSum'] as int
+      ..video = json['video'] as String?
+      ..content = json['content'] as String?
+      ..imgArr =
+          (json['imgArr'] as List<dynamic>?)?.map((e) => e as String).toList();
+
+Map<String, dynamic> _$TrendsToJson(Trends instance) => <String, dynamic>{
+      'id': instance.id,
+      'fabulousSum': instance.fabulousSum,
+      'beClickedSum': instance.beClickedSum,
+      'commentSum': instance.commentSum,
+      'type': instance.type,
+      'video': instance.video,
+      'content': instance.content,
+      'imgArr': instance.imgArr,
     };

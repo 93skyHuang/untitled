@@ -798,10 +798,11 @@ Future<BasePageData> chatMessage(int targetUid, String content) async {
 //      * sex [请求者自己的性别]
 //      * type [栏目id]
 Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
-    int page, int type, int sex) async {
+    int page, int type) async {
   BasePageData<List<DiscoverInfo>?> basePageData;
   try {
     int uid = await GetStorageUtils.getUID();
+    int sex = await GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Index/discover',
         data: {'uid': uid, 'page': page, 'sex': sex, 'type': type});
     BaseResp baseResp = BaseResp.fromJson(response.data);

@@ -38,8 +38,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-#  #云信即时通讯 https://pub.dev/packages/nim_core
-#  nim_core: ^1.0.0-rc.3
+  #  #云信即时通讯 https://pub.dev/packages/nim_core
+  #  nim_core: ^1.0.0-rc.3
 
   #网络请求框架 https://github.com/flutterchina/dio/blob/master/README-ZH.md
   dio: ^4.0.0
@@ -59,8 +59,8 @@ dependencies:
   #土司
   fluttertoast: ^8.0.8
 
-#  #定位信息
-#  geolocator: ^7.6.2#
+  #  #定位信息
+  #  geolocator: ^7.6.2#
 
   #拍照选择图片
   image_picker: ^0.8.4+2
@@ -70,6 +70,12 @@ dependencies:
 
   #  get 数据存储库
   get_storage: ^2.0.3
+
+  #  刷新库
+  pull_to_refresh: ^2.0.0
+
+  #  图片加载库
+  cached_network_image: ^3.0.0
 
 dev_dependencies:
   flutter_test:

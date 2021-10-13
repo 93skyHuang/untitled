@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/route_config.dart';
 import 'basic/include.dart';
 import 'messages.dart';
@@ -8,6 +9,10 @@ import 'messages.dart';
 void main() async {
   await GetStorage.init();
   runApp(GetMaterialApp(
+    localizationsDelegates: const [
+      // 下拉刷新控件
+      RefreshLocalizations.delegate,
+    ],
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       appBarTheme: const AppBarTheme(brightness: Brightness.dark),

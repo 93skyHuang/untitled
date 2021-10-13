@@ -28,7 +28,6 @@ class _FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     // 105324
-    // getNearby(1,1).then((value) => {logger.i('---成功$value')});
     logger.i('FindPage');
     return Obx(() => DefaultTabController(
           length: _findController.findTabList.length,
