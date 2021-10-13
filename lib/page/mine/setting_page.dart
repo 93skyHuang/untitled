@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:untitled/widget/item_arrow.dart';
+
+import '../../route_config.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage();
@@ -41,7 +45,8 @@ class _SettingPageState extends State<SettingPage> {
               padding: EdgeInsets.only(left: 16,right: 16),
             ),
             ItemArrow(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(webViewPName,arguments: {'url':'http://www.sancun.vip/index/Index/ysxy','title':'用户协议'});},
               text: '用户协议',
               padding: EdgeInsets.only(left: 16,right: 16),
             ),

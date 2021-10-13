@@ -319,7 +319,7 @@ class _VipPageState extends State<VipPage> {
                 Expanded(
                     child: GestureDetector(
                       onTap: (){
-                        this._vipController.getPaylist();
+                        // this._vipController.getPaylist();
                       },
                   child: Container(
                       height: 60,
