@@ -27,3 +27,29 @@ class VDivider extends StatelessWidget {
     );
   }
 }
+
+
+///垂直分割线
+class HDivider extends StatelessWidget {
+  EdgeInsetsGeometry? padding;
+  double? width;
+  double? height;
+
+  HDivider({Key? key, this.padding, this.width, this.height})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: padding ??
+          const EdgeInsets.only(left: 0),
+      child: SizedBox(
+        width: width ?? double.infinity,
+        height: height ?? ScreenUtil().setHeight(1),
+        child: const DecoratedBox(
+          decoration: BoxDecoration(color: MyColor.dividerColor2),
+        ),
+      ),
+    );
+  }
+}
