@@ -30,6 +30,7 @@ NewTrendsInfo _$NewTrendsInfoFromJson(Map<String, dynamic> json) =>
       ..fabulousSum = json['fabulousSum'] as int?
       ..commentSum = json['commentSum'] as int?
       ..beClickedSum = json['beClickedSum'] as int?
+      ..isFollow = json['isFollow'] as int?
       ..time = json['time'] as String?
       ..area = json['area'] as String?
       ..type = json['type'] as int?

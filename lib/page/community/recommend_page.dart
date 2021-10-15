@@ -1,14 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
+
+import 'item_widget.dart';
 
 ///推荐页面
 class RecommendWidget extends StatefulWidget {
@@ -132,7 +136,7 @@ class _RecommendWidgetState extends State<RecommendWidget>
                       ScreenUtil().setWidth(10),
                       ScreenUtil().setWidth(0),
                       ScreenUtil().setWidth(0),
-                      ScreenUtil().setWidth(12)),
+                      ScreenUtil().setWidth(0)),
                   child: Container(
                       constraints: BoxConstraints(
                         maxWidth: _textContextWidth,
@@ -146,14 +150,40 @@ class _RecommendWidgetState extends State<RecommendWidget>
                             children: [
                               _itemName(info),
                               const Flexible(child: Align()),
-                              _widgetFocusOn(info),
+                              FocusOnBtn(info),
                             ],
                           )),
                           _richText(
                             "${info.content}",
                           ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                            bottom: ScreenUtil().setWidth(10),
+                          )),
                           _itemContentImage(info),
-                          // _itemContentImage(info),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: ScreenUtil().setWidth(10),
+                              bottom: ScreenUtil().setWidth(10),
+                            ),
+                            // child: _itemLable(info),
+                          ),
+                          Text(
+                            '精选评论',
+                            style: TextStyle(
+                              fontSize: ScreenUtil().setSp(12),
+                              color: MyColor.grey8C8C8C,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: ScreenUtil().setWidth(10),
+                              bottom: ScreenUtil().setWidth(10),
+                            ),
+                            child: _getComment(info),
+                          ),
+                          LikeAndCommentWidget(info),
                         ],
                       )),
                 )
@@ -163,6 +193,11 @@ class _RecommendWidgetState extends State<RecommendWidget>
       ],
     );
   }
+
+  /**
+   * 点赞按钮
+      //  */
+  // Widget _likeAndComment(NewTrendsInfo i) {}
 
   Widget _itemName(NewTrendsInfo info) {
     return Column(
@@ -182,59 +217,80 @@ class _RecommendWidgetState extends State<RecommendWidget>
     );
   }
 
-  Widget _widgetFocusOn(NewTrendsInfo info) {
-    return Container(
-      // 边框设置
-      decoration: const BoxDecoration(
-        //背景
-        color: Colors.white,
-        //设置四周圆角 角度
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        //设置四周边框
-        border: Border(),
-      ),
-      // 设置 child 居中
-      alignment: const Alignment(0, 0),
-      child: InkWell(
-          onTap: () {},
-          child: Row(children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: ScreenUtil().setWidth(6),
-                  top: ScreenUtil().setWidth(6),
-                  bottom: ScreenUtil().setWidth(6),
-                  right: ScreenUtil().setWidth(4)),
-              child: Image(
-                  color: MyColor.redFd4343,
-                  width: ScreenUtil().setWidth(12),
-                  height: ScreenUtil().setWidth(12),
-                  image: const AssetImage("assets/images/add.png"),
-                  fit: BoxFit.fill),
-            ),
-            Text(
-              '关注',
-              style: TextStyle(
-                fontSize: ScreenUtil().setSp(12),
-                color: MyColor.redFd4343,
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
-          ])),
-    );
-  }
-
   Widget _itemContentImage(NewTrendsInfo info) {
-    return Container(
-      height: ScreenUtil().setWidth(183),
-      width: double.infinity,
-      child: cardNetworkImage(info.headImgUrl ?? '', ScreenUtil().setWidth(44),
-          ScreenUtil().setWidth(44)),
+    var imgArr = info.imgArr;
+    Widget widget = const Text('');
+    if (imgArr.isNotEmpty) {
+      int length = imgArr.length;
+      if (length == 1) {
+        widget = normalNetWorkImage(info.headImgUrl ?? '');
+      } else if (length == 2) {}
+    }
+    return widget;
+  }
+
+  Widget _getComment(NewTrendsInfo info) {
+    return Column(
+      children: [
+        Row(
+          children: [_getSingleComment('yonghu', 'jjjjjjjjjjjjjjjj')],
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            top: ScreenUtil().setWidth(5),
+          ),
+        ),
+        Row(
+          children: [
+            _getSingleComment(
+                'yonghujjjjjjjjjjjjjjj555555555555555555555555555555555555555555555j',
+                'jjjjjjjjjjjjjjj555555555555555555555555555555555555555555555j')
+          ],
+        ),
+      ],
     );
   }
 
-// Widget _itemLable(NewTrendsInfo info){
-//
-// }
+  Widget _getSingleComment(String user, String content) {
+    return SizedBox(
+        width: _textContextWidth,
+        child: Row(
+          children: [
+            ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: _textContextWidth / 3),
+                child: Text(
+                  user,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: MyColor.blackColor,
+                      fontSize: ScreenUtil().setSp(12)),
+                )),
+            Text(
+              ':\t',
+              maxLines: 1,
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: MyColor.blackColor, fontSize: ScreenUtil().setSp(12)),
+            ),
+            ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxWidth: _textContextWidth * 2 / 3 - 15),
+              child: Text(
+                content,
+                maxLines: 1,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: MyColor.grey8C8C8C,
+                    fontSize: ScreenUtil().setSp(12)),
+              ),
+            )
+          ],
+        ));
+  }
 
 // 当前是否已是 "全文" 状态
   bool mIsExpansion = false;

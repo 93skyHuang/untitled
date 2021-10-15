@@ -35,7 +35,7 @@ class _CommunityPageState extends State<CommunityPage>
               ),
               Container(
                 width: ScreenUtil().setWidth(70),
-                height: ScreenUtil().setWidth(26),
+                height: ScreenUtil().setWidth(30),
                 // 边框设置
                 decoration: const BoxDecoration(
                   //背景
@@ -48,7 +48,11 @@ class _CommunityPageState extends State<CommunityPage>
                 // 设置 child 居中
                 alignment: const Alignment(0, 0),
                 child: addBtn(),
-              )
+              ),
+              Padding(
+                  padding: EdgeInsets.only(
+                left: ScreenUtil().setWidth(6),
+              )),
             ],
           ),
         ),

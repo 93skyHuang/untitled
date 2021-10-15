@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/basic/include.dart';
-import 'package:untitled/page/community/recommend_widget.dart';
-import 'package:untitled/page/community/video_widget.dart';
+import 'package:untitled/page/community/recommend_page.dart';
+import 'package:untitled/page/community/video_page.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
 
 import 'focus_on_widget.dart';
@@ -17,7 +17,7 @@ class CommunityTabBarView extends StatelessWidget {
   }
 
   List<Widget> _list() {
-    List<Widget> list = [RecommendWidget(),VideoWidget(),FocusOnWidget()];
+    List<Widget> list = [RecommendWidget(),VideoWidget(),FocusOnPage()];
     return list;
   }
 }

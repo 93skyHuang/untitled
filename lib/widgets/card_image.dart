@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:untitled/basic/include.dart';
 
 //带圆角的网络图片
-Widget cardNetworkImage(String url,double widget,double height, {ShapeBorder? shape}) {
+Widget cardNetworkImage(String url, double widget, double height,
+    {ShapeBorder? shape}) {
   return Card(
     shape: shape ??
         RoundedRectangleBorder(
@@ -25,5 +26,15 @@ Widget cardNetworkImage(String url,double widget,double height, {ShapeBorder? sh
             fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
           ),
         )),
+  );
+}
+
+Widget normalNetWorkImage(String url) {
+  return CachedNetworkImage(
+    imageUrl: url,
+    placeholder: (context, url) => const CircularProgressIndicator(),
+    errorWidget: (context, url, error) => Image.asset(
+      'assets/images/image_load_failed.png',
+    ),
   );
 }

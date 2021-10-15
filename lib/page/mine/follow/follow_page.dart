@@ -94,29 +94,30 @@ class FollowPage extends StatelessWidget {
                             height: 1,
                             color: Color(0xffE6E6E6),
                           ),
-                          GestureDetector(
-                            child: CustomText(
-                                text: "取消关注",
-                                textAlign: Alignment.center,
-                                padding: EdgeInsets.only(top: 16, bottom: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 17, color: Colors.black)),
-                          ),
+                          TextButton(
+                              onPressed: () {
+                                // Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "取消关注",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Colors.black))),
                           Divider(
                             height: 1,
                             color: Color(0xffE6E6E6),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: CustomText(
-                                text: "取消",
-                                textAlign: Alignment.center,
-                                padding: EdgeInsets.only(top: 16, bottom: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 17, color: Color(0xffFD4343))),
-                          ),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "取消",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Color(0xffFD4343)))),
                         ]))
                   ]));
         });

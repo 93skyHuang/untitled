@@ -7,25 +7,13 @@ import 'package:untitled/persistent/get_storage_utils.dart';
 
 
 class CommunityController extends GetxController {
-  RxList<FindTabInfo> findTabList = [FindTabInfo(id: 0, title: '精选')].obs;
 
-  void _getTabTitle() {
-    GetStorageUtils.getFindTab().then((value) => {
-           findTabList.value = value??findTabList.value
-        });
-    getFindTab().then((value) => {
-          if (value.isOk())
-            {
-              GetStorageUtils.saveFindTab(value.data),
-              findTabList.value = value.data!,
-            }
-        });
-  }
+
 
   @override
   void onInit() {
     logger.i("onInit");
-    _getTabTitle();
+
   }
 
   @override

@@ -43,6 +43,7 @@ class NewTrendsInfo {
   int? fabulousSum;
   int? commentSum;
   int? beClickedSum;
+  int? isFollow;
   String? time;
   String? area;
   int? type;

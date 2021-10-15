@@ -34,17 +34,14 @@ class _WebViewPage extends State<WebViewPage> {
   _buildAppbar() {
     return AppBar(
         elevation: 0,
-        backgroundColor: Color(0xccd0d7),
+        backgroundColor: Color(0xFFF5F5F5),
         title: Text(
           title,
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
         leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Color(0xFF23ADE5),
-            ),
+            icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
             onPressed: () {
               Get.back();
             }));

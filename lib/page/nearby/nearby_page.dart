@@ -10,7 +10,9 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
+import 'package:untitled/widgets/my_text_widget.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
+import 'package:untitled/widgets/card_image.dart';
 
 //附近页面主体
 class NearbyPage extends StatefulWidget {
@@ -28,6 +30,10 @@ class _NearbyPageState extends State<NearbyPage>
       RefreshController(initialRefresh: false);
   int pageNo = 1;
   List<NearbyInfo> _list = [];
+
+  //中间text 占的宽度
+  final double _textContextWidth =
+      ScreenUtil().screenWidth - ScreenUtil().setWidth(100 + 32 + 80);
 
   @override
   void initState() {
@@ -145,12 +151,12 @@ class _NearbyPageState extends State<NearbyPage>
                 children: [
                   _info1(info),
                   _info2(info),
-                  Text(
-                    '${info.autograph}',
-                    style: TextStyle(
-                        color: MyColor.grey8C8C8C,
-                        fontSize: ScreenUtil().setSp(12)),
-                  ),
+                  singeLineText(
+                      '${info.autograph}',
+                      ScreenUtil().setWidth(150),
+                      TextStyle(
+                          color: MyColor.grey8C8C8C,
+                          fontSize: ScreenUtil().setSp(12))),
                   _info3(info),
                 ],
               ),
@@ -185,16 +191,16 @@ class _NearbyPageState extends State<NearbyPage>
   Widget _info1(NearbyInfo info) {
     return Row(
       children: [
-        Text(
-          '${info.cname}',
-          style: TextStyle(
-              color: MyColor.blackColor, fontSize: ScreenUtil().setSp(14)),
-        ),
-        Text(
-          '${info.loginTime}',
-          style: TextStyle(
-              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
-        ),
+        singeLineText(
+            '${info.cname}',
+            ScreenUtil().setWidth(90),
+            TextStyle(
+                color: MyColor.blackColor, fontSize: ScreenUtil().setSp(14))),
+        singeLineText(
+            '${info.loginTime}',
+            ScreenUtil().setWidth(60),
+            TextStyle(
+                color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10))),
       ],
     );
   }
@@ -221,7 +227,7 @@ class _NearbyPageState extends State<NearbyPage>
         ),
         VDivider(),
         Text(
-          '销售',
+          '${info.education}',
           style: TextStyle(
               color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
         ),
@@ -235,6 +241,14 @@ class _NearbyPageState extends State<NearbyPage>
     List<Widget> listWidget = [];
     int length = list.length;
     if (length > 0) {}
+
+    ///测试
+    for (int i = 0; i < 3; i++) {
+      listWidget.add(cardNetworkImage(info.headImgUrl ?? '',
+          ScreenUtil().setWidth(45), ScreenUtil().setWidth(45),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusDirectional.circular(8))));
+    }
     return Row(
       children: listWidget,
     );
@@ -250,11 +264,11 @@ class _NearbyPageState extends State<NearbyPage>
             children: [
               const Flexible(child: Align()),
               TextButton(
-                  style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                    visualDensity: VisualDensity.compact,
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
-                  ),
+                style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                  visualDensity: VisualDensity.compact,
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                ),
                 onPressed: () {
                   logger.i(info.cname);
                 },

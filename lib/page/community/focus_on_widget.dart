@@ -2,14 +2,14 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
 
 ///关注页面
-class FocusOnWidget extends StatefulWidget {
+class FocusOnPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _FocusOnWidgetState();
+    return _FocusOnPageState();
   }
 }
 
-class _FocusOnWidgetState extends State<FocusOnWidget>
+class _FocusOnPageState extends State<FocusOnPage>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {

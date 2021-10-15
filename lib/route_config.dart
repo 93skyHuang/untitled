@@ -3,6 +3,7 @@ import 'package:untitled/page/home_page.dart';
 import 'package:untitled/page/login/login_page.dart';
 import 'package:untitled/page/mine/mine_page.dart';
 import 'package:untitled/page/splash_page.dart';
+import 'package:untitled/widgets/photo_view_widget.dart';
 import 'package:untitled/widgets/webview_page.dart';
 
 
@@ -15,6 +16,8 @@ var getRouterPage = [
   GetPage(name: loginPName, page: () => LoginPage()),
   GetPage(name: webViewPName, page: () => WebViewPage()),
   GetPage(name: MinePName, page: () => MinePage()),
+  GetPage(name: photoViewPName, page: () => PhotoViewPage()),
+  GetPage(name: photoViewScalePName, page: () => PhotoViewScalePage()),
 ];
 
 //导航个页面name 调用Get.toName('/login') 即可进行页面跳转
@@ -23,3 +26,5 @@ const homePName = '/home';
 const loginPName = '/login';
 const webViewPName = '/webView';
 const MinePName = '/mine';
+const photoViewPName = '/photoViewP';
+const photoViewScalePName = '/photoViewScaleP';

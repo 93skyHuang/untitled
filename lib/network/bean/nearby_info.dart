@@ -18,6 +18,7 @@ class NearbyInfo {
 
 
   String? cname;
+  String? education;//学历
   String? headImgUrl;
   String? distance;
   int? height ;
