@@ -43,6 +43,7 @@ class UserBasic {
   List<Trends?>? trendsList;
   List<String?>? commentList;
   String? time ;
+  int? svip;
 
   UserBasic();
   factory UserBasic.fromJson(Map<String, dynamic> json) => _$UserBasicFromJson(json);

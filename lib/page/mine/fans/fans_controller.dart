@@ -4,7 +4,7 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 
 class FansController extends GetxController {
-  RxList follows = [].obs;
+  RxList fans = [].obs;
 
   @override
   void onInit() {
@@ -12,7 +12,7 @@ class FansController extends GetxController {
   }
 
   void getList() {
-    getFollowList(1).then((value) => {follows.value = value.data!});
+    getCoverFollowList(1).then((value) => {fans.value = value.data!});
   }
 
   @override

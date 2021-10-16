@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_follow.dart';
-import 'history_controller.dart';
 
-class HistoryPage extends StatelessWidget {
-  HistoryPage();
+import 'like_controller.dart';
 
-  HistoryController _followController = new HistoryController();
+class LikePage extends StatelessWidget {
+  LikePage();
+
+  LikeController _likeController = new LikeController();
 
   @override
   Widget build(BuildContext context) {
-    _followController.getList();
+    _likeController.getList();
     return Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         appBar: AppBar(
@@ -22,7 +23,7 @@ class HistoryPage extends StatelessWidget {
                 Navigator.maybePop(context);
               }),
           title:
-              Text("我的足迹", style: TextStyle(fontSize: 17, color: Colors.black)),
+              Text("我喜欢的", style: TextStyle(fontSize: 17, color: Colors.black)),
           backgroundColor: Color(0xFFF5F5F5),
           centerTitle: true,
         ),
@@ -32,26 +33,25 @@ class HistoryPage extends StatelessWidget {
             () => ListView.builder(
               itemBuilder: (context, index) {
                 return new ItemFollow(
-                  name: '${_followController.follows[index].cname}',
-                  img: _followController.follows[index].headImgUrl == null
+                  name: '${_likeController.likes[index].cname}',
+                  img: _likeController.likes[index].headImgUrl == null
                       ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
-                      : _followController.follows[index].headImgUrl,
-                  info: _followController.follows[index].constellation == null
-                      ? ''
-                      : _followController.follows[index].constellation,
+                      : _likeController.likes[index].headImgUrl,
+                  info:
+                      '${_likeController.likes[index].distance}，${_likeController.likes[index].age}，${_likeController.likes[index].constellation}',
                   onPressed: () {},
                   onMorePressed: () {
-                    showBottomOpen(context);
+                    showBottomOpen(context,_likeController.likes[index].uid);
                   },
                 );
               },
-              itemCount: _followController.follows.length,
+              itemCount: _likeController.likes.length,
             ),
           ),
         ));
   }
 
-  void showBottomOpen(BuildContext context) {
+  void showBottomOpen(BuildContext context,int uid) {
     showModalBottomSheet(
         enableDrag: false,
         elevation: 0,
@@ -92,29 +92,31 @@ class HistoryPage extends StatelessWidget {
                             height: 1,
                             color: Color(0xffE6E6E6),
                           ),
-                          GestureDetector(
-                            child: CustomText(
-                                text: "取消关注",
-                                textAlign: Alignment.center,
-                                padding: EdgeInsets.only(top: 16, bottom: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 17, color: Colors.black)),
-                          ),
+                          TextButton(
+                              onPressed: () {
+                                _likeController.del(uid);
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "不喜欢",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Colors.black))),
                           Divider(
                             height: 1,
                             color: Color(0xffE6E6E6),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: CustomText(
-                                text: "取消",
-                                textAlign: Alignment.center,
-                                padding: EdgeInsets.only(top: 16, bottom: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 17, color: Color(0xffFD4343))),
-                          ),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "取消",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Color(0xffFD4343)))),
                         ]))
                   ]));
         });

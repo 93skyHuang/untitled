@@ -32,18 +32,15 @@ class FollowPage extends StatelessWidget {
             () => ListView.builder(
               itemBuilder: (context, index) {
                 return new ItemFollow(
-                  name: _followController.follows[index].cname == null
-                      ? ''
-                      : _followController.follows[index].cname,
+                  name:'${_followController.follows[index].cname}',
                   img: _followController.follows[index].headImgUrl == null
                       ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
                       : _followController.follows[index].headImgUrl,
-                  info: _followController.follows[index].constellation == null
-                      ? ''
-                      : _followController.follows[index].constellation,
+                  info:
+                      '${_followController.follows[index].distance}，${_followController.follows[index].age}，${_followController.follows[index].constellation}',
                   onPressed: () {},
                   onMorePressed: () {
-                    showBottomOpen(context);
+                    showBottomOpen(context,_followController.follows[index].uid);
                   },
                 );
               },
@@ -53,7 +50,7 @@ class FollowPage extends StatelessWidget {
         ));
   }
 
-  void showBottomOpen(BuildContext context) {
+  void showBottomOpen(BuildContext context,int uid) {
     showModalBottomSheet(
         enableDrag: false,
         elevation: 0,
@@ -96,7 +93,8 @@ class FollowPage extends StatelessWidget {
                           ),
                           TextButton(
                               onPressed: () {
-                                // Navigator.pop(context);
+                                _followController.del(uid);
+                                Navigator.pop(context);
                               },
                               child: CustomText(
                                   text: "取消关注",

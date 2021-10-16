@@ -24,4 +24,10 @@ class FollowController extends GetxController {
   void onReady() {
     logger.i("onReady");
   }
+
+  void del(int uid) {
+    delFollow(uid).then((value) => {
+          if (value.isOk()) {getList()}
+        });
+  }
 }

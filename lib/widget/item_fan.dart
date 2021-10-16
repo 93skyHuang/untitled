@@ -21,7 +21,7 @@ class ItemFan extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: 54,
+        height: 64,
         padding: EdgeInsets.only(left: 16, right: 20),
         child: Row(
           children: [
@@ -34,14 +34,20 @@ class ItemFan extends StatelessWidget {
               ),
             ),
             Expanded(
-                child: Column(
-              children: [
-                Text(name,
-                    style: TextStyle(fontSize: 14, color: Colors.black)),
-                Text(info,
-                    style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C))),
-              ],
-            )),
+                child: Container(
+                    margin: EdgeInsets.only(left: 10, right: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name,
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.black)),
+                        Text(info,
+                            style: TextStyle(
+                                fontSize: 12, color: Color(0xFF8C8C8C))),
+                      ],
+                    ))),
             Text(time,
                 style: TextStyle(fontSize: 10, color: Color(0xFF8C8C8C))),
           ],

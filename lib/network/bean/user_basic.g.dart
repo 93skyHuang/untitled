@@ -30,7 +30,8 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) {
     ..commentList = (json['commentList'] as List<dynamic>?)
         ?.map((e) => e as String?)
         .toList()
-    ..time = json['time'] as String?;
+    ..time = json['time'] as String?
+    ..svip = json['svip'] as int?;
 }
 
 Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
@@ -52,6 +53,7 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'trendsList': instance.trendsList,
       'commentList': instance.commentList,
       'time': instance.time,
+      'svip': instance.svip,
     };
 
 Trends _$TrendsFromJson(Map<String, dynamic> json) {
