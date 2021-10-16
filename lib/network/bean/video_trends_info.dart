@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'new_trends_info.dart';
+
 part 'video_trends_info.g.dart';
 
 ///动态-视频
@@ -37,14 +39,14 @@ class VideoTrendsInfo {
   int? trendsId;
   String? video;
   String? content;
-  List<String?> imgArr = [];
+  String? imgArr;//视屏预览图
   int? fabulousSum;
   int? commentSum;
   int? beClickedSum;
   String? time;
   int? type;
   String? area;
-  List<String?>? commentList;
+  List<CommentBean?>? commentList;
   int? isTrendsFabulous;
   List<String?>? trendsFabulousList;
   int? userLabel;

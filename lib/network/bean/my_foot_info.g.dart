@@ -1,26 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'black_info.dart';
+part of 'my_foot_info.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-BlackInfo _$BlackInfoFromJson(Map<String, dynamic> json) {
-  return BlackInfo()
-    ..id = json['id'] as int
+MyFootInfo _$MyFootInfoFromJson(Map<String, dynamic> json) {
+  return MyFootInfo()
     ..uid = json['uid'] as int?
+    ..height = json['height'] as int?
     ..headImgUrl = json['headImgUrl'] as String?
     ..cname = json['cname'] as String?
-    ..autograph = json['autograph'] as String?
-    ..date = json['date'] as String?;
+    ..time = json['time'] as String?;
 }
 
-Map<String, dynamic> _$BlackInfoToJson(BlackInfo instance) => <String, dynamic>{
-      'id': instance.id,
+Map<String, dynamic> _$MyFootInfoToJson(MyFootInfo instance) =>
+    <String, dynamic>{
       'uid': instance.uid,
+      'height': instance.height,
       'headImgUrl': instance.headImgUrl,
       'cname': instance.cname,
-      'autograph': instance.autograph,
-      'date': instance.date,
+      'time': instance.time,
     };

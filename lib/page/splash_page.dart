@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/network/logger.dart';
+import 'package:untitled/nim/nim_sdk_options.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
 import '../route_config.dart';
@@ -24,21 +26,23 @@ class SplashPage extends StatelessWidget {
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(360, 690),
         orientation: Orientation.portrait);
+    //云信sdk初始化
+    nimSdkInit();
     pageJump();
   }
 
   void pageJump() {
-    GetStorageUtils.getUID().then((value) => {
-          if (value != -1)
-            autoLogin(value).then((value) => {
-                  if (value.isOk())
-                    {Get.offNamed(homePName)}
-                  else
-                    {Get.offNamed(loginPName)}
-                })
-          else
-            Get.offNamed(loginPName)
-        });
+    int uid = GetStorageUtils.getUID();
+    if (uid != -1) {
+      autoLogin(uid).then((value) => {
+            if (value.isOk())
+              {Get.offNamed(homePName)}
+            else
+              {Get.offNamed(loginPName)}
+          });
+    } else {
+      Get.offNamed(loginPName);
+    }
   }
 
   @override

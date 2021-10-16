@@ -9,9 +9,11 @@ import 'package:untitled/network/bean/base_resp.dart';
 import 'package:untitled/network/bean/chat_user_info.dart';
 import 'package:untitled/network/bean/discover_info.dart';
 import 'package:untitled/network/bean/login_resp.dart';
+import 'package:untitled/network/bean/my_foot_info.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/bean/visitor_info.dart';
+import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'bean/add_comment_resp.dart';
 import 'bean/app_version_info.dart';
@@ -45,7 +47,7 @@ Future<BasePageData> getPhoneSms(String phone) async {
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -67,11 +69,15 @@ Future<BasePageData<LoginResp?>> autoLogin(int uid) async {
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
           baseResp.code, baseResp.msg, LoginResp.fromJson(baseResp.data));
+      //执行云信登录
+      String token = basePageData.data?.loginToken ?? "";
+      GetStorageUtils.saveNimToken(token);
+      GetStorageUtils.saveSex(basePageData.data?.sex ?? 1);
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -89,11 +95,17 @@ Future<BasePageData<LoginResp?>> phoneLogin(String phone, String code) async {
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
           baseResp.code, baseResp.msg, LoginResp.fromJson(baseResp.data));
+      //保存相关信息
+      String token = basePageData.data?.loginToken ?? "";
+      int uid = basePageData.data?.uid ?? -1;
+      GetStorageUtils.saveUid(uid);
+      GetStorageUtils.saveNimToken(token);
+      GetStorageUtils.saveSex(basePageData.data?.sex ?? 1);
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -114,7 +126,7 @@ Future<BasePageData<List<String>?>> getHobby() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -125,7 +137,7 @@ Future<BasePageData<List<String>?>> getHobby() async {
 Future<BasePageData<UserInfo?>> getUserInfo() async {
   BasePageData<UserInfo?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/User/getUserInfo', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -137,7 +149,7 @@ Future<BasePageData<UserInfo?>> getUserInfo() async {
     }
     logger.i('$basePageData');
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -167,7 +179,7 @@ Future<BasePageData> updateUserInfo({
 }) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Map<String, dynamic> data;
     if (longitude != null && latitude != null) {
       data = {
@@ -192,7 +204,7 @@ Future<BasePageData> updateUserInfo({
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -218,7 +230,7 @@ Future<BasePageData> updateUserData({
 }) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/User/updateUserData', data: {
       'uid': uid,
@@ -232,7 +244,7 @@ Future<BasePageData> updateUserData({
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -243,7 +255,7 @@ Future<BasePageData> updateUserData({
 Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
   BasePageData<UserBasic?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/User/getHomeUserData',
         data: {'myUid': uid, 'userId': userId});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -255,7 +267,7 @@ Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
     }
     logger.i('$basePageData');
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -267,7 +279,7 @@ Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
 Future<BasePageData<UserBasic?>> getUserBasic() async {
   BasePageData<UserBasic?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/User/getMyHomeUserData', data: {'myUid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -279,7 +291,7 @@ Future<BasePageData<UserBasic?>> getUserBasic() async {
     }
     logger.i('$basePageData');
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -301,7 +313,7 @@ Future<BasePageData<AppVersionInfo?>> checkAppVersion(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -323,7 +335,7 @@ Future<BasePageData<Address?>> getAddress(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -334,7 +346,7 @@ Future<BasePageData<Address?>> getAddress(
 Future<BasePageData<PayTime?>> getPayTime() async {
   BasePageData<PayTime?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/share/getPayTime', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -345,7 +357,7 @@ Future<BasePageData<PayTime?>> getPayTime() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -356,7 +368,7 @@ Future<BasePageData<PayTime?>> getPayTime() async {
 Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
   BasePageData<List<VisitorInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/getVisitor', data: {'uid': uid, 'page': pageNum});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -370,7 +382,7 @@ Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -382,7 +394,7 @@ Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
 Future<BasePageData> addFollow(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/addFollow', data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -392,7 +404,7 @@ Future<BasePageData> addFollow(int userid) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -404,7 +416,7 @@ Future<BasePageData> addFollow(int userid) async {
 Future<BasePageData> delFollow(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/delFollow', data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -414,7 +426,7 @@ Future<BasePageData> delFollow(int userid) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -426,7 +438,7 @@ Future<BasePageData> delFollow(int userid) async {
 Future<BasePageData> addAccusation(int userid, String content) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addAccusation',
         data: {'uid': uid, 'userid': userid, 'content': content});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -436,7 +448,7 @@ Future<BasePageData> addAccusation(int userid, String content) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -447,7 +459,7 @@ Future<BasePageData> addAccusation(int userid, String content) async {
 Future<BasePageData> addDeleteAccountApplication() async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/addDeleteAccountApplication', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -457,7 +469,7 @@ Future<BasePageData> addDeleteAccountApplication() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -468,7 +480,7 @@ Future<BasePageData> addDeleteAccountApplication() async {
 Future<BasePageData> addPullBlack(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addPullBlack',
         data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -478,7 +490,7 @@ Future<BasePageData> addPullBlack(int userid) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -489,7 +501,7 @@ Future<BasePageData> addPullBlack(int userid) async {
 Future<BasePageData> delPullBlack(int userid) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/delPullBlack',
         data: {'uid': uid, 'userid': userid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -499,7 +511,7 @@ Future<BasePageData> delPullBlack(int userid) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -511,7 +523,7 @@ Future<BasePageData> delPullBlack(int userid) async {
 Future<BasePageData<ChatUserInfo?>> getChatPageUserInfo(int userId) async {
   BasePageData<ChatUserInfo?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/chatPageUserInfo',
         data: {'uid': uid, 'userId': userId});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -522,7 +534,7 @@ Future<BasePageData<ChatUserInfo?>> getChatPageUserInfo(int userId) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -544,7 +556,7 @@ Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -555,7 +567,7 @@ Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
 Future<BasePageData<List<FollowInfo>?>> getFollowList(int page) async {
   BasePageData<List<FollowInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/followList', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -569,7 +581,7 @@ Future<BasePageData<List<FollowInfo>?>> getFollowList(int page) async {
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -581,7 +593,7 @@ Future<BasePageData<List<CoverFollowInfo>?>> getCoverFollowList(
     int page) async {
   BasePageData<List<CoverFollowInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/coverFollowList', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -595,7 +607,7 @@ Future<BasePageData<List<CoverFollowInfo>?>> getCoverFollowList(
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -609,7 +621,7 @@ Future<BasePageData> addFeedback(
 ) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addFeedback',
         data: {'uid': uid, 'content': content, 'img': img});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -619,7 +631,7 @@ Future<BasePageData> addFeedback(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -631,7 +643,7 @@ Future<BasePageData<List<ReceiveCommentMsg>?>> getReceiveCommentList(
     int page) async {
   BasePageData<List<ReceiveCommentMsg>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/receiveComment', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -645,7 +657,7 @@ Future<BasePageData<List<ReceiveCommentMsg>?>> getReceiveCommentList(
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -657,7 +669,7 @@ Future<BasePageData<List<ReceiveFabulousMsg>?>> getReceiveFabulousList(
     int page) async {
   BasePageData<List<ReceiveFabulousMsg>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/receiveFabulous', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -671,7 +683,7 @@ Future<BasePageData<List<ReceiveFabulousMsg>?>> getReceiveFabulousList(
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -682,7 +694,7 @@ Future<BasePageData<List<ReceiveFabulousMsg>?>> getReceiveFabulousList(
 Future<BasePageData<List<SendCommentMsg>?>> getSendCommentList(int page) async {
   BasePageData<List<SendCommentMsg>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/sendComment', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -696,7 +708,7 @@ Future<BasePageData<List<SendCommentMsg>?>> getSendCommentList(int page) async {
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -708,7 +720,7 @@ Future<BasePageData<List<SendFabulousMsg>?>> getSendFabulousList(
     int page) async {
   BasePageData<List<SendFabulousMsg>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio()
         .post('/index/share/sendFabulous', data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -722,7 +734,7 @@ Future<BasePageData<List<SendFabulousMsg>?>> getSendFabulousList(
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -735,14 +747,14 @@ Future<BasePageData> addCertification(int type,
     {List<String> files = const []}) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response;
     response = await getDio().post('/index/share/addCertification',
         data: {'uid': uid, 'type': type, 'files': files});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -753,7 +765,7 @@ Future<BasePageData> addCertification(int type,
 Future<BasePageData<List<BlackInfo>?>> getPullBlackList(int page) async {
   BasePageData<List<BlackInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/getPullBlackList',
         data: {'uid': uid, 'page': page});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -767,7 +779,7 @@ Future<BasePageData<List<BlackInfo>?>> getPullBlackList(int page) async {
     }
     logger.i(basePageData);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -779,14 +791,14 @@ Future<BasePageData<List<BlackInfo>?>> getPullBlackList(int page) async {
 Future<BasePageData> chatMessage(int targetUid, String content) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response;
     response = await getDio().post('/index/share/chatMessage',
         data: {'uid': uid, 'targetUid': targetUid, 'content': content});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -801,8 +813,8 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
     int page, int type) async {
   BasePageData<List<DiscoverInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
-    int sex = await GetStorageUtils.getSex();
+    int uid = GetStorageUtils.getUID();
+    int sex = GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Index/discover',
         data: {'uid': uid, 'page': page, 'sex': sex, 'type': type});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -815,7 +827,33 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+/**
+ * 我的足迹
+ */
+Future<BasePageData<List<MyFootInfo>?>> getMyFootList(int page) async {
+  BasePageData<List<MyFootInfo>?> basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response = await getDio()
+        .post('/index/share/myFootprint', data: {'uid': uid, 'page': page});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      List<MyFootInfo>? data = (baseResp.data as List<dynamic>?)
+          ?.map((e) => MyFootInfo.fromJson(e as Map<String, dynamic>))
+          .toList();
+      basePageData = BasePageData(baseResp.code, baseResp.msg, data);
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    return basePageData;
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -828,8 +866,8 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
 Future<BasePageData<List<NearbyInfo>?>> getNearbyList(int page) async {
   BasePageData<List<NearbyInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
-    int sex = await GetStorageUtils.getSex();
+    int uid = GetStorageUtils.getUID();
+    int sex = GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Index/nearby',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -842,7 +880,7 @@ Future<BasePageData<List<NearbyInfo>?>> getNearbyList(int page) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -856,7 +894,7 @@ Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
     int page, int sex) async {
   BasePageData<List<TrendsLikeInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/trendsLike',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -869,7 +907,7 @@ Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -879,12 +917,11 @@ Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
 ///动态-最新推荐
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
-Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(
-    int page) async {
+Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(int page) async {
   BasePageData<List<NewTrendsInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
-    int sex = await GetStorageUtils.getSex();
+    int uid = GetStorageUtils.getUID();
+    int sex = GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Trends/newTrends',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -897,7 +934,7 @@ Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -907,12 +944,11 @@ Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(
 ///动态-视频
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
-Future<BasePageData<List<VideoTrendsInfo>?>> getVideoTrends(
-    int page) async {
+Future<BasePageData<List<VideoTrendsInfo>?>> getVideoTrends(int page) async {
   BasePageData<List<VideoTrendsInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
-    int sex = await GetStorageUtils.getSex();
+    int uid = GetStorageUtils.getUID();
+    int sex = GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Trends/videoTrends',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -925,7 +961,7 @@ Future<BasePageData<List<VideoTrendsInfo>?>> getVideoTrends(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+  } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -950,7 +986,7 @@ Future<BasePageData<List<TrendsTopicTypeInfo>?>>
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -971,7 +1007,7 @@ Future<BasePageData<TrendsTopicTypeInfo?>> getTrendsTopicType(int id) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1001,7 +1037,7 @@ Future<BasePageData> addTrends(
 }) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/addTrends', data: {
       'uid': uid,
       'content': content,
@@ -1016,7 +1052,7 @@ Future<BasePageData> addTrends(
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1027,7 +1063,7 @@ Future<BasePageData> addTrends(
 Future<BasePageData<TrendsDetails?>> trendsDetails(int trendsId) async {
   BasePageData<TrendsDetails?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/trendsDetails', data: {
       'uid': uid,
@@ -1041,7 +1077,7 @@ Future<BasePageData<TrendsDetails?>> trendsDetails(int trendsId) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1053,7 +1089,7 @@ Future<BasePageData<AddCommentResp?>> addComment(
     int trendsId, String content) async {
   BasePageData<AddCommentResp?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/addComment', data: {
       'uid': uid,
       'trendsId': trendsId,
@@ -1067,7 +1103,7 @@ Future<BasePageData<AddCommentResp?>> addComment(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1081,7 +1117,7 @@ Future<BasePageData<List<CommentInfo>?>> getTrendsCommentList(
 ) async {
   BasePageData<List<CommentInfo>?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/getTrendsComment', data: {
       'uid': uid,
@@ -1098,7 +1134,7 @@ Future<BasePageData<List<CommentInfo>?>> getTrendsCommentList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1113,7 +1149,7 @@ Future<BasePageData> addTrendsFabulous(
 ) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/addTrendsFabulous', data: {
       'uid': uid,
@@ -1122,7 +1158,7 @@ Future<BasePageData> addTrendsFabulous(
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1137,7 +1173,7 @@ Future<BasePageData> deleteTrendsFabulous(
 ) async {
   BasePageData basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/deleteTrendsFabulous', data: {
       'uid': uid,
@@ -1146,7 +1182,7 @@ Future<BasePageData> deleteTrendsFabulous(
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1157,7 +1193,7 @@ Future<BasePageData> deleteTrendsFabulous(
 Future<BasePageData<PayList?>> getPayList() async {
   BasePageData<PayList?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Pay/payList', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -1169,7 +1205,7 @@ Future<BasePageData<PayList?>> getPayList() async {
     }
     logger.i('$basePageData');
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1180,7 +1216,7 @@ Future<BasePageData<PayList?>> getPayList() async {
 Future<BasePageData<Order?>> createOrder(String productID) async {
   BasePageData<Order?> basePageData;
   try {
-    int uid = await GetStorageUtils.getUID();
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Pay/createOrder',
         data: {'uid': uid, 'productID': productID});
     BaseResp baseResp = BaseResp.fromJson(response.data);
@@ -1192,7 +1228,7 @@ Future<BasePageData<Order?>> createOrder(String productID) async {
     }
     logger.i('$basePageData');
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1211,7 +1247,7 @@ Future<BasePageData> fileUpload(String filePath) async {
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     return basePageData;
-  } on DioError catch (error) {
+ } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }

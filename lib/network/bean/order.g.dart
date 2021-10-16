@@ -6,8 +6,9 @@ part of 'order.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Order _$OrderFromJson(Map<String, dynamic> json) =>
-    Order()..orderId = json['orderId'] as String?;
+Order _$OrderFromJson(Map<String, dynamic> json) {
+  return Order()..orderId = json['orderId'] as String?;
+}
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'orderId': instance.orderId,

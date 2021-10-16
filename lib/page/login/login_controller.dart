@@ -25,7 +25,9 @@ class LoginController extends GetxController {
     }
     phoneLogin(phone, code).then((value) => {
           if (value.isOk())
-            {GetStorageUtils.saveUid(value.data?.uid), Get.offNamed(homePName)}
+            {
+              Get.offNamed(homePName)
+            }
           else
             MyToast.show(value.msg)
         });

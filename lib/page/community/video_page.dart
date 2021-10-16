@@ -64,6 +64,7 @@ class _VideoWidgetState extends State<VideoWidget>
   }
 
   void getData({bool isLoad = false}) {
+    getMyFootList(pageNo);
     getVideoTrends(pageNo).then((value) => {
           logger.i(value),
           if (value.isOk())

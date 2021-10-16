@@ -6,10 +6,12 @@ part of 'find_tab_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FindTabInfo _$FindTabInfoFromJson(Map<String, dynamic> json) => FindTabInfo(
-      id: json['id'] as int,
-      title: json['title'] as String,
-    );
+FindTabInfo _$FindTabInfoFromJson(Map<String, dynamic> json) {
+  return FindTabInfo(
+    id: json['id'] as int,
+    title: json['title'] as String,
+  );
+}
 
 Map<String, dynamic> _$FindTabInfoToJson(FindTabInfo instance) =>
     <String, dynamic>{

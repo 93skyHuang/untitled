@@ -5,24 +5,18 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
-class FindController extends GetxController {
-  RxList<FindTabInfo> findTabList = [FindTabInfo(id: 0, title: '精选')].obs;
-
-  void _getTabTitle() {
-    findTabList.value = GetStorageUtils.getFindTab() ?? findTabList.value;
-    getFindTab().then((value) => {
-          if (value.isOk())
-            {
-              GetStorageUtils.saveFindTab(value.data),
-              findTabList.value = value.data!,
-            }
-        });
-  }
+/**
+ * 消息控制
+ */
+class MessagesController extends GetxController {
+  RxString newSystemMsg = ''.obs;
+  RxString newSystemMsgTime = '11111'.obs;
+  RxBool isCanChat = false.obs;
 
   @override
   void onInit() {
     logger.i("onInit");
-    _getTabTitle();
+
   }
 
   @override

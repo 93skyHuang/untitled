@@ -6,7 +6,9 @@ part of 'holder_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-HolderData _$HolderDataFromJson(Map<String, dynamic> json) => HolderData();
+HolderData _$HolderDataFromJson(Map<String, dynamic> json) {
+  return HolderData();
+}
 
 Map<String, dynamic> _$HolderDataToJson(HolderData instance) =>
     <String, dynamic>{};

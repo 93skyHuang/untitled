@@ -6,27 +6,30 @@ part of 'user_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => UserInfo()
-  ..uid = json['uid'] as int
-  ..headImgUrl = json['headImgUrl'] as String?
-  ..cname = json['cname'] as String?
-  ..height = json['height'] as int?
-  ..constellation = json['constellation'] as String?
-  ..age = json['age'] as int?
-  ..sex = json['sex'] as int?
-  ..region = json['region'] as String?
-  ..autograph = json['autograph'] as String?
-  ..birthday = json['birthday'] as String?
-  ..backgroundImage = json['backgroundImage'] as String?
-  ..isVideo = json['isVideo'] as int?
-  ..svip = json['svip'] as int?
-  ..vip = json['vip'] as int?
-  ..svipEndTime = json['svipEndTime'] as int?
-  ..expectAge = json['expectAge'] as String?
-  ..expectHeight = json['expectHeight'] as String?
-  ..expectConstellation = json['expectConstellation'] as String?
-  ..expectType = json['expectType'] as String?
-  ..hobby = (json['hobby'] as List<dynamic>).map((e) => e as String?).toList();
+UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
+  return UserInfo()
+    ..uid = json['uid'] as int
+    ..headImgUrl = json['headImgUrl'] as String?
+    ..cname = json['cname'] as String?
+    ..height = json['height'] as int?
+    ..constellation = json['constellation'] as String?
+    ..age = json['age'] as int?
+    ..sex = json['sex'] as int?
+    ..region = json['region'] as String?
+    ..autograph = json['autograph'] as String?
+    ..birthday = json['birthday'] as String?
+    ..backgroundImage = json['backgroundImage'] as String?
+    ..isVideo = json['isVideo'] as int?
+    ..svip = json['svip'] as int?
+    ..vip = json['vip'] as int?
+    ..svipEndTime = json['svipEndTime'] as int?
+    ..expectAge = json['expectAge'] as String?
+    ..expectHeight = json['expectHeight'] as String?
+    ..expectConstellation = json['expectConstellation'] as String?
+    ..expectType = json['expectType'] as String?
+    ..hobby =
+        (json['hobby'] as List<dynamic>).map((e) => e as String?).toList();
+}
 
 Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
       'uid': instance.uid,

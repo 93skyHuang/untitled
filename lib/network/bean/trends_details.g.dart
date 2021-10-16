@@ -6,23 +6,24 @@ part of 'trends_details.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TrendsDetails _$TrendsDetailsFromJson(Map<String, dynamic> json) =>
-    TrendsDetails()
-      ..uid = json['uid'] as int
-      ..id = json['id'] as int
-      ..video = json['video'] as String?
-      ..content = json['content'] as String?
-      ..imgArr =
-          (json['imgArr'] as List<dynamic>).map((e) => e as String?).toList()
-      ..type = json['type'] as int?
-      ..time = json['time'] as String?
-      ..area = json['area'] as String?
-      ..isfabulous = json['isfabulous'] as int?
-      ..isfollow = json['isfollow'] as int?
-      ..fabulousSum = json['fabulousSum'] as int?
-      ..fabulousList = (json['fabulousList'] as List<dynamic>?)
-          ?.map((e) => e as String?)
-          .toList();
+TrendsDetails _$TrendsDetailsFromJson(Map<String, dynamic> json) {
+  return TrendsDetails()
+    ..uid = json['uid'] as int
+    ..id = json['id'] as int
+    ..video = json['video'] as String?
+    ..content = json['content'] as String?
+    ..imgArr =
+        (json['imgArr'] as List<dynamic>).map((e) => e as String?).toList()
+    ..type = json['type'] as int?
+    ..time = json['time'] as String?
+    ..area = json['area'] as String?
+    ..isfabulous = json['isfabulous'] as int?
+    ..isfollow = json['isfollow'] as int?
+    ..fabulousSum = json['fabulousSum'] as int?
+    ..fabulousList = (json['fabulousList'] as List<dynamic>?)
+        ?.map((e) => e as String?)
+        .toList();
+}
 
 Map<String, dynamic> _$TrendsDetailsToJson(TrendsDetails instance) =>
     <String, dynamic>{

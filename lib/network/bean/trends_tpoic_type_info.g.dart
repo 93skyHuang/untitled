@@ -6,14 +6,15 @@ part of 'trends_tpoic_type_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TrendsTopicTypeInfo _$TrendsTopicTypeInfoFromJson(Map<String, dynamic> json) =>
-    TrendsTopicTypeInfo()
-      ..id = json['id'] as int?
-      ..sex = json['sex'] as int?
-      ..title = json['title'] as String?
-      ..image = json['image'] as String?
-      ..description = json['description'] as String?
-      ..trendsSum = json['trendsSum'] as int?;
+TrendsTopicTypeInfo _$TrendsTopicTypeInfoFromJson(Map<String, dynamic> json) {
+  return TrendsTopicTypeInfo()
+    ..id = json['id'] as int?
+    ..sex = json['sex'] as int?
+    ..title = json['title'] as String?
+    ..image = json['image'] as String?
+    ..description = json['description'] as String?
+    ..trendsSum = json['trendsSum'] as int?;
+}
 
 Map<String, dynamic> _$TrendsTopicTypeInfoToJson(
         TrendsTopicTypeInfo instance) =>

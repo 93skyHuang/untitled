@@ -15,7 +15,10 @@ class VisitorInfo {
   String? headImgUrl;
   String? cname;
   int? height ;
+  int? age ;
   String? time ;
+  String? region ;
+  String? constellation ;
 
   VisitorInfo();
   factory VisitorInfo.fromJson(Map<String, dynamic> json) => _$VisitorInfoFromJson(json);

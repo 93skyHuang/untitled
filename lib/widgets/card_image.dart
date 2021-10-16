@@ -7,8 +7,9 @@ import 'package:untitled/basic/include.dart';
 
 //带圆角的网络图片
 Widget cardNetworkImage(String url, double widget, double height,
-    {ShapeBorder? shape}) {
+    {ShapeBorder? shape, EdgeInsetsGeometry? margin}) {
   return Card(
+    margin: margin ?? EdgeInsets.all(4),
     shape: shape ??
         RoundedRectangleBorder(
             borderRadius: BorderRadiusDirectional.circular(4)),
@@ -35,6 +36,19 @@ Widget normalNetWorkImage(String url) {
     placeholder: (context, url) => const CircularProgressIndicator(),
     errorWidget: (context, url, error) => Image.asset(
       'assets/images/image_load_failed.png',
+    ),
+  );
+}
+
+Widget clipImage(String imagePath,
+    {double circular = 4, double? width, double? height,BoxFit? fit}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(circular),
+    child: Image.asset(
+      imagePath,
+      fit: fit,
+      width: width,
+      height: height,
     ),
   );
 }

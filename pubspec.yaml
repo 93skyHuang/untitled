@@ -39,9 +39,9 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   #  #云信即时通讯 https://pub.dev/packages/nim_core
-  #  nim_core: ^1.0.0-rc.5
-  nim_core:
-    path: plugins/NIM-Flutter-SDK-main/nim_core_platform_interface
+  nim_core: ^1.0.0-rc.5
+#  nim_core:
+#    path: plugins/NIM-Flutter-SDK-main/nim_core_platform_interface
 
   #网络请求框架 https://github.com/flutterchina/dio/blob/master/README-ZH.md
   dio: ^4.0.0
@@ -53,7 +53,7 @@ dependencies:
   logger: ^1.1.0
 
   # 搭配 json_serializable 库一起使用
-  json_annotation: ^4.1.0
+  json_annotation: ^4.0.0
 
   # 屏幕适配工具 https://github.com/OpenFlutter/flutter_screenutil/blob/master/README_CN.md
   flutter_screenutil: ^5.0.0+2
@@ -98,7 +98,7 @@ dev_dependencies:
   #输入命令 flutter pub run build_runner build
   #生成实体类 https://github.com/debuggerx01/JSONFormat4Flutter/releases
   build_runner: ^2.1.2
-  json_serializable: ^5.0.2
+  json_serializable: ^4.1.4
 
 
 # For information on the generic Dart part of this file, see the

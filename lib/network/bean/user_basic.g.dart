@@ -6,29 +6,32 @@ part of 'user_basic.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserBasic _$UserBasicFromJson(Map<String, dynamic> json) => UserBasic()
-  ..headImgUrl = json['headImgUrl'] as String?
-  ..cname = json['cname'] as String?
-  ..sex = json['sex'] as int?
-  ..birthday = json['birthday'] as String?
-  ..height = json['height'] as int?
-  ..constellation = json['constellation'] as String?
-  ..uid = json['uid'] as int
-  ..age = json['age'] as int?
-  ..followSum = json['followSum'] as int?
-  ..trendsSum = json['trendsSum'] as int?
-  ..userdata = json['userdata'] as String?
-  ..hobby = (json['hobby'] as List<dynamic>).map((e) => e as String?).toList()
-  ..isVideo = json['isVideo'] as int?
-  ..isHead = json['isHead'] as int?
-  ..isCard = json['isCard'] as int?
-  ..trendsList = (json['trendsList'] as List<dynamic>?)
-      ?.map(
-          (e) => e == null ? null : Trends.fromJson(e as Map<String, dynamic>))
-      .toList()
-  ..commentList =
-      (json['commentList'] as List<dynamic>?)?.map((e) => e as String?).toList()
-  ..time = json['time'] as String?;
+UserBasic _$UserBasicFromJson(Map<String, dynamic> json) {
+  return UserBasic()
+    ..headImgUrl = json['headImgUrl'] as String?
+    ..cname = json['cname'] as String?
+    ..sex = json['sex'] as int?
+    ..birthday = json['birthday'] as String?
+    ..height = json['height'] as int?
+    ..constellation = json['constellation'] as String?
+    ..uid = json['uid'] as int
+    ..age = json['age'] as int?
+    ..followSum = json['followSum'] as int?
+    ..trendsSum = json['trendsSum'] as int?
+    ..userdata = json['userdata'] as String?
+    ..hobby = (json['hobby'] as List<dynamic>).map((e) => e as String?).toList()
+    ..isVideo = json['isVideo'] as int?
+    ..isHead = json['isHead'] as int?
+    ..isCard = json['isCard'] as int?
+    ..trendsList = (json['trendsList'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : Trends.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..commentList = (json['commentList'] as List<dynamic>?)
+        ?.map((e) => e as String?)
+        .toList()
+    ..time = json['time'] as String?;
+}
 
 Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'headImgUrl': instance.headImgUrl,
@@ -51,17 +54,19 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'time': instance.time,
     };
 
-Trends _$TrendsFromJson(Map<String, dynamic> json) => Trends(
-      json['id'] as int,
-      json['type'] as int,
-    )
-      ..fabulousSum = json['fabulousSum'] as int
-      ..beClickedSum = json['beClickedSum'] as int
-      ..commentSum = json['commentSum'] as int
-      ..video = json['video'] as String?
-      ..content = json['content'] as String?
-      ..imgArr =
-          (json['imgArr'] as List<dynamic>?)?.map((e) => e as String).toList();
+Trends _$TrendsFromJson(Map<String, dynamic> json) {
+  return Trends(
+    json['id'] as int,
+    json['type'] as int,
+  )
+    ..fabulousSum = json['fabulousSum'] as int
+    ..beClickedSum = json['beClickedSum'] as int
+    ..commentSum = json['commentSum'] as int
+    ..video = json['video'] as String?
+    ..content = json['content'] as String?
+    ..imgArr =
+        (json['imgArr'] as List<dynamic>?)?.map((e) => e as String).toList();
+}
 
 Map<String, dynamic> _$TrendsToJson(Trends instance) => <String, dynamic>{
       'id': instance.id,

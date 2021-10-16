@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'new_trends_info.g.dart';
 
-///动态-最新
+///动态-推荐
 @JsonSerializable()
 class NewTrendsInfo {
   // * uid [对方UID]
@@ -39,7 +39,7 @@ class NewTrendsInfo {
   String? content;
   List<String?> imgArr = [];
   List<String?>? trendsFabulousList;
-  List<String?>? commentList;
+  List<CommentBean?>? commentList;
   int? fabulousSum;
   int? commentSum;
   int? beClickedSum;
@@ -56,4 +56,24 @@ class NewTrendsInfo {
       _$NewTrendsInfoFromJson(json);
 
   Map<String?, dynamic> toJson() => _$NewTrendsInfoToJson(this);
+}
+
+@JsonSerializable()
+class CommentBean{
+//  {"id":3923,"uid":559094,"trendsId":21635,"content":"卡","cname":null
+//  ,"headImgUrl":null,"fabulousSum":0,"replySum":0,"time":"一月以前"}
+  int id;
+  int uid;
+  int trendsId;
+  int? fabulousSum;
+  int? replySum;
+  CommentBean(this.id,this.uid,this.trendsId);
+  String? content;
+  String? cname;
+  String? headImgUrl;
+  String? time;
+  factory CommentBean.fromJson(Map<String, dynamic> json) =>
+      _$CommentBeanFromJson(json);
+
+  Map<String?, dynamic> toJson() => _$CommentBeanToJson(this);
 }
