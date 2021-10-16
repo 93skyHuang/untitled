@@ -39,7 +39,9 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   #  #云信即时通讯 https://pub.dev/packages/nim_core
-  #  nim_core: ^1.0.0-rc.3
+  #  nim_core: ^1.0.0-rc.5
+  nim_core:
+    path: plugins/NIM-Flutter-SDK-main/nim_core_platform_interface
 
   #网络请求框架 https://github.com/flutterchina/dio/blob/master/README-ZH.md
   dio: ^4.0.0
