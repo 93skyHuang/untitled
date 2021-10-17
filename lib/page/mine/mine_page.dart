@@ -16,6 +16,7 @@ import 'edit_user_info.dart';
 import 'fans/fan_page.dart';
 import 'follow/follow_page.dart';
 import 'mine_controller.dart';
+import 'myhome/my_home_page.dart';
 
 class MinePage extends StatefulWidget {
   MinePage();
@@ -102,7 +103,9 @@ class _MinePageState extends State<MinePage> {
       text: '我的主页',
       img: "assets/images/mine_page.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(() => MyHomePage());
+      },
     ),
   ];
 
