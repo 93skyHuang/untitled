@@ -11,7 +11,7 @@ class CustomTextRadius extends StatelessWidget {
       {required this.text,
       this.textStyle = const TextStyle(fontSize: 12.0, color: Colors.black),
       this.textAlign = Alignment.topLeft,
-      this.margin = const EdgeInsets.only(left: 16)});
+      this.margin = const EdgeInsets.only(right: 16,top: 10)});
 
   @override
   Widget build(BuildContext context) {

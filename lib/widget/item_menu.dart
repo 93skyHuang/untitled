@@ -8,12 +8,14 @@ class ItemMenu extends StatefulWidget {
   String img;
   VoidCallback onPressed;
   TextStyle textStyle;
+  EdgeInsets margin;
 
   ItemMenu({
     required this.text,
     required this.onPressed,
     required this.img,
     this.textStyle = const TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+    this.margin = const EdgeInsets.all(0),
   });
 
   @override
@@ -27,6 +29,7 @@ class ItemMenuState extends State<ItemMenu> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
+      margin: this.widget.margin,
       child: GestureDetector(
         onTap: this.widget.onPressed,
         child: Column(
