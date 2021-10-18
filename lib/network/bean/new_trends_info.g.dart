@@ -7,15 +7,17 @@ part of 'new_trends_info.dart';
 // **************************************************************************
 
 NewTrendsInfo _$NewTrendsInfoFromJson(Map<String, dynamic> json) {
-  return NewTrendsInfo()
+  return NewTrendsInfo(
+    json['trendsId'] as int,
+  )
     ..uid = json['uid'] as int
     ..sex = json['sex'] as int?
     ..headImgUrl = json['headImgUrl'] as String?
     ..cname = json['cname'] as String?
+    ..topicName = json['topicName'] as String?
     ..height = json['height'] as int?
     ..constellation = json['constellation'] as String?
     ..age = json['age'] as int?
-    ..trendsId = json['trendsId'] as int?
     ..region = json['region'] as String?
     ..video = json['video'] as String?
     ..content = json['content'] as String?
@@ -24,8 +26,8 @@ NewTrendsInfo _$NewTrendsInfoFromJson(Map<String, dynamic> json) {
     ..trendsFabulousList = (json['trendsFabulousList'] as List<dynamic>?)
         ?.map((e) => e as String?)
         .toList()
-    ..commentList = (json['commentList'] as List<dynamic>?)
-        ?.map((e) =>
+    ..commentList = (json['commentList'] as List<dynamic>)
+        .map((e) =>
             e == null ? null : CommentBean.fromJson(e as Map<String, dynamic>))
         .toList()
     ..fabulousSum = json['fabulousSum'] as int?
@@ -45,6 +47,7 @@ Map<String, dynamic> _$NewTrendsInfoToJson(NewTrendsInfo instance) =>
       'sex': instance.sex,
       'headImgUrl': instance.headImgUrl,
       'cname': instance.cname,
+      'topicName': instance.topicName,
       'height': instance.height,
       'constellation': instance.constellation,
       'age': instance.age,

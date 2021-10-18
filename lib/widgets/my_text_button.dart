@@ -4,6 +4,8 @@ import 'package:untitled/basic/include.dart';
 Widget getTextButton(String s, VoidCallback? onPressed) {
   return TextButton(
     style: ButtonStyle(
+      //去除点击效果
+        // overlayColor: MaterialStateProperty.all(Colors.transparent),
         minimumSize: MaterialStateProperty.all(const Size(0, 0)),
         visualDensity: VisualDensity.compact,
         padding: MaterialStateProperty.all(EdgeInsets.zero),

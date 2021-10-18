@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/discover_info.dart';
@@ -29,6 +30,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   int pageNo = 1;
   double itemWidth = ScreenUtil().setWidth(182);
   double itemHeight = ScreenUtil().setWidth(237);
+  bool isCanRefreshPage = false;
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -37,7 +39,11 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   void initState() {
     logger.i('initState');
     super.initState();
-    getData();
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      logger.i('addPostFrameCallback');
+      isCanRefreshPage = true;
+      getData();
+    });
   }
 
   @override
@@ -64,8 +70,16 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   @override
   bool get wantKeepAlive => true;
 
+  @override
+  void dispose() {
+    super.dispose();
+    logger.i('dispose');
+    isCanRefreshPage = false;
+  }
+
   void _onRefresh() async {
     logger.i("_onRefresh");
+    isCanRefreshPage = true;
     pageNo = 1;
     getData();
   }
@@ -73,6 +87,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   // 上拉加载更多
   void _onLoading() async {
     logger.i("_onLoading");
+    isCanRefreshPage = true;
     pageNo++;
     getData(isLoad: true);
   }
@@ -104,7 +119,9 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
 
   void updatePage() {
     logger.i('updatePage');
-    setState(() {});
+    if (isCanRefreshPage) {
+      setState(() {});
+    }
   }
 
   Widget _gridView() {

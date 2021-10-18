@@ -15,8 +15,7 @@ class NimNetworkManager {
         .login(NIMLoginInfo(
       account: "ll$uid",
       token: token,
-    ))
-        .then(
+    )).then(
       (result) {
         if (result.isSuccess) {
           logger.i('云信登录成功uid=$uid token=$token');
