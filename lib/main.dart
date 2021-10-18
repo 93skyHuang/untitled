@@ -25,7 +25,6 @@ void main() async {
     locale: const Locale('zh', 'CN'),
     // 将会按照此处指定的语言翻译
     fallbackLocale: const Locale('zh', 'CN'),
-    initialRoute: splashPName,
 
     /// 初始化路由
     getPages: getRouterPage,

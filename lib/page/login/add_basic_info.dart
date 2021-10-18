@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -43,151 +42,163 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0.5,
-          title:
-              Text("编辑资料", style: TextStyle(fontSize: 17, color: Colors.black)),
+    return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // 触摸收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Scaffold(
+          appBar: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0.5,
+              title: Text("编辑资料",
+                  style: TextStyle(fontSize: 17, color: Colors.black)),
+              backgroundColor: Color(0xFFF5F5F5),
+              centerTitle: true,
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      _commitInfo();
+                    },
+                    child: Text("下一步",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 17, color: MyColor.grey8C8C8C))),
+              ]),
           backgroundColor: Color(0xFFF5F5F5),
-          centerTitle: true,
-          actions: <Widget>[
-            TextButton(
-                onPressed: () {
-                  _commitInfo();
-                },
-                child: Text("下一步",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17, color: MyColor.grey8C8C8C))),
-          ]),
-      backgroundColor: Color(0xFFF5F5F5),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                  onPressed: () {
-                    _showBottomOpen(context);
-                  },
-                  style: ButtonStyle(
-                      overlayColor:
-                          MaterialStateProperty.all(Colors.transparent),
-                      minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                      visualDensity: VisualDensity.compact,
-                      padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 30, bottom: 20),
-                    child: ClipOval(
-                      child: Container(
-                        width: 110,
-                        height: 110,
-                        child: headerImgUrlLocal == null
-                            ? Image.asset(
-                                'assets/images/user_icon.png',
-                              )
-                            : Image.file(
-                                File('$headerImgUrlLocal'),
-                                fit:
-                                    Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                              ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        _showBottomOpen(context);
+                      },
+                      style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                          minimumSize:
+                              MaterialStateProperty.all(const Size(0, 0)),
+                          visualDensity: VisualDensity.compact,
+                          padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: ClipOval(
+                          child: Container(
+                            width: 110,
+                            height: 110,
+                            child: headerImgUrlLocal == null
+                                ? Image.asset(
+                                    'assets/images/user_icon.png',
+                                  )
+                                : Image.file(
+                                    File('$headerImgUrlLocal'),
+                                    fit: Platform.isIOS
+                                        ? BoxFit.cover
+                                        : BoxFit.fill,
+                                  ),
+                          ),
+                        ),
+                      )),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text("个人头像",
+                        style: TextStyle(fontSize: 15, color: Colors.black)),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.to(() => NicknamePage());
+                    },
+                    style: ButtonStyle(
+                        minimumSize:
+                            MaterialStateProperty.all(const Size(0, 0)),
+                        visualDensity: VisualDensity.compact,
+                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                    child: Container(
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Text('昵称',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black)),
+                          Expanded(
+                              child: Text(nickName,
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: MyColor.grey8C8C8C))),
+                          Icon(
+                            Icons.chevron_right,
+                            color: Color(0xFF8C8C8C),
+                          ),
+                        ],
                       ),
                     ),
-                  )),
-              Container(
-                alignment: Alignment.center,
-                child: Text("个人头像",
-                    style: TextStyle(fontSize: 15, color: Colors.black)),
-              ),
-              TextButton(
-                onPressed: () {
-                  Get.to(() => NicknamePage());
-                },
-                style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                    visualDensity: VisualDensity.compact,
-                    padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                child: Container(
-                  height: 50,
-                  child: Row(
-                    children: [
-                      Text('昵称',
-                          style: TextStyle(fontSize: 15, color: Colors.black)),
-                      Expanded(
-                          child: Text(nickName,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                  fontSize: 15, color: MyColor.grey8C8C8C))),
-                      Icon(
-                        Icons.chevron_right,
-                        color: Color(0xFF8C8C8C),
-                      ),
-                    ],
                   ),
-                ),
+                  Divider(
+                    height: 2.0,
+                    color: Color(0xffE6E6E6),
+                  ),
+                  CustomText(
+                    text: '介绍',
+                    margin: EdgeInsets.only(top: 12, bottom: 10),
+                  ),
+                  textFieldInfo(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _itemArrow(
+                    '城市',
+                    '$province $city',
+                    () {
+                      _choiceCity();
+                    },
+                  ),
+                  _itemArrow(
+                    '生日',
+                    birthday,
+                    () {
+                      _choiceBirthday();
+                    },
+                  ),
+                  _itemArrow(
+                    '身高',
+                    height == null ? '' : '${height}cm',
+                    () {
+                      _choiceHeight();
+                    },
+                  ),
+                  _itemArrow(
+                    '月收入',
+                    monthlyIncome,
+                    () {
+                      _choiceMonthlyIncome();
+                    },
+                  ),
+                  _itemArrow(
+                    '学历',
+                    education,
+                    () {
+                      _choiceEducation();
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('完善的基本信息可提升交友成功率哦~',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12, color: Colors.red)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                ],
               ),
-              Divider(
-                height: 2.0,
-                color: Color(0xffE6E6E6),
-              ),
-              CustomText(
-                text: '介绍',
-                margin: EdgeInsets.only(top: 12, bottom: 10),
-              ),
-              textFieldInfo(),
-              SizedBox(
-                height: 10,
-              ),
-              _itemArrow(
-                '城市',
-                '$province $city',
-                () {
-                  _choiceCity();
-                },
-              ),
-              _itemArrow(
-                '生日',
-                birthday,
-                () {
-                  _choiceBirthday();
-                },
-              ),
-              _itemArrow(
-                '身高',
-                height == null ? '' : '${height}cm',
-                () {
-                  _choiceHeight();
-                },
-              ),
-              _itemArrow(
-                '月收入',
-                monthlyIncome,
-                () {
-                  _choiceMonthlyIncome();
-                },
-              ),
-              _itemArrow(
-                '学历',
-                education,
-                () {
-                  _choiceEducation();
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text('完善的基本信息可提升交友成功率哦~',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Colors.red)),
-              SizedBox(
-                height: 10,
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   final TextEditingController _controllerInfo = TextEditingController();

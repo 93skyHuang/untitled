@@ -33,7 +33,7 @@ class _NearbyPageState extends State<NearbyPage>
 
   //中间text 占的宽度
   final double _textContextWidth =
-      ScreenUtil().screenWidth - ScreenUtil().setWidth(100 + 32 + 80);
+      ScreenUtil().screenWidth - ScreenUtil().setWidth(100 + 50);
 
   @override
   void initState() {
@@ -139,21 +139,27 @@ class _NearbyPageState extends State<NearbyPage>
       child: Padding(
           padding: EdgeInsets.only(
             left: ScreenUtil().setWidth(4),
-            right: ScreenUtil().setWidth(10),
+            right: ScreenUtil().setWidth(6),
             bottom: ScreenUtil().setWidth(16),
           ),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            headImg(info.headImgUrl ?? ''),
+            GestureDetector(
+              child: headImg(info.headImgUrl ?? ''),
+              onTap: () {
+                logger.i('点击大头像');
+              },
+            ),
             Padding(
-              padding: EdgeInsets.only(left: ScreenUtil().setWidth(10)),
+              padding: EdgeInsets.only(left: ScreenUtil().setWidth(6)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _info1(info),
                   _info2(info),
                   singeLineText(
                       '${info.autograph}',
-                      ScreenUtil().setWidth(150),
+                      ScreenUtil().setWidth(130),
                       TextStyle(
                           color: MyColor.grey8C8C8C,
                           fontSize: ScreenUtil().setSp(12))),
@@ -225,12 +231,15 @@ class _NearbyPageState extends State<NearbyPage>
           style: TextStyle(
               color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
         ),
-        VDivider(),
-        Text(
-          '${info.education}',
-          style: TextStyle(
-              color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
-        ),
+        info.education == null ? Text('') : VDivider(),
+        info.education == null
+            ? Text('')
+            : Text(
+                '${info.education}',
+                style: TextStyle(
+                    color: MyColor.grey8C8C8C,
+                    fontSize: ScreenUtil().setSp(10)),
+              ),
       ],
     );
   }
@@ -240,49 +249,51 @@ class _NearbyPageState extends State<NearbyPage>
     List<TrendsImg?> list = info.trendsImg;
     List<Widget> listWidget = [];
     int length = list.length;
-    if (length > 0) {}
-
-    ///测试
-    for (int i = 0; i < 3; i++) {
-      listWidget.add(cardNetworkImage(info.headImgUrl ?? '',
-          ScreenUtil().setWidth(45), ScreenUtil().setWidth(45),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadiusDirectional.circular(8))));
+    if (length > 0) {
+      for (int i = 0; i < length && i < 3; i++) {
+        listWidget.add(_infoTrends(list[i] ?? TrendsImg(-1, -1)));
+      }
     }
     return Row(
       children: listWidget,
     );
   }
 
+  //动态
+  Widget _infoTrends(TrendsImg trendsImg) {
+    return GestureDetector(
+      child: cardNetworkImage(trendsImg.imgArr, ScreenUtil().setWidth(45),
+          ScreenUtil().setWidth(45),
+          radius: 8),
+      onTap: () {
+        logger.i(trendsImg);
+      },
+    );
+  }
+
   ///搭讪
   Widget _chat(NearbyInfo info) {
-    return Flexible(
-        fit: FlexFit.loose,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Column(
-            children: [
-              const Flexible(child: Align()),
-              TextButton(
-                style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                  visualDensity: VisualDensity.compact,
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                ),
-                onPressed: () {
-                  logger.i(info.cname);
-                },
-                child: Image.asset('assets/images/nearby_chat.png'),
-              ),
-              Text(
-                '搭讪',
-                style: TextStyle(
-                    color: MyColor.blackColor,
-                    fontSize: ScreenUtil().setSp(10)),
-              ),
-              const Flexible(child: Align()),
-            ],
+    return Column(
+      children: [
+        const Flexible(child: Align()),
+        TextButton(
+          style: ButtonStyle(
+            minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+            visualDensity: VisualDensity.compact,
+            padding: MaterialStateProperty.all(EdgeInsets.zero),
           ),
-        ));
+          onPressed: () {
+            logger.i(info.cname);
+          },
+          child: Image.asset('assets/images/nearby_chat.png'),
+        ),
+        Text(
+          '搭讪',
+          style: TextStyle(
+              color: MyColor.blackColor, fontSize: ScreenUtil().setSp(10)),
+        ),
+        const Flexible(child: Align()),
+      ],
+    );
   }
 }

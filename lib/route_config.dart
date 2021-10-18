@@ -21,7 +21,7 @@ var getRouterPage = [
 ];
 
 //导航个页面name 调用Get.toName('/login') 即可进行页面跳转
-const splashPName = '/splash';
+const splashPName = '/';
 const homePName = '/home';
 const loginPName = '/login';
 const webViewPName = '/webView';

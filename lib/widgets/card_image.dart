@@ -7,12 +7,12 @@ import 'package:untitled/basic/include.dart';
 
 //带圆角的网络图片
 Widget cardNetworkImage(String url, double widget, double height,
-    {ShapeBorder? shape, EdgeInsetsGeometry? margin}) {
+    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4}) {
   return Card(
     margin: margin ?? EdgeInsets.all(4),
     shape: shape ??
         RoundedRectangleBorder(
-            borderRadius: BorderRadiusDirectional.circular(4)),
+            borderRadius: BorderRadiusDirectional.circular(radius)),
     clipBehavior: Clip.antiAlias,
     color: Colors.white,
     child: SizedBox(
