@@ -188,7 +188,6 @@ class _MinePageState extends State<MinePage> {
                           decoration: new BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15.0)),
-                            //设置四周边框
                             border: new Border.all(
                                 width: 1, color: Color(0xff8C8C8C)),
                           ))
