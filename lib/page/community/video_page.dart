@@ -69,18 +69,22 @@ class _VideoWidgetState extends State<VideoWidget>
     getVideoTrends(pageNo).then((value) => {
           logger.i(value),
           if (value.isOk())
-            if (isLoad)
-              {
-                _refreshController.loadComplete(),
-                _videoList.addAll(value.data ?? []),
-                updatePage(),
-              }
-            else
-              {
-                _refreshController.refreshCompleted(),
-                _videoList = value.data ?? [],
-                updatePage(),
-              }
+            {
+              if (isLoad)
+                {
+                  value.data == null
+                      ? _refreshController.loadNoData()
+                      : _refreshController.loadComplete(),
+                  _videoList.addAll(value.data ?? []),
+                  updatePage(),
+                }
+              else
+                {
+                  _refreshController.refreshCompleted(),
+                  _videoList = value.data ?? [],
+                  updatePage(),
+                }
+            }
           else
             {
               isLoad
@@ -138,7 +142,8 @@ class _VideoWidgetState extends State<VideoWidget>
           alignment: Alignment.bottomLeft,
           children: [
             cardNetworkImage(
-                '', ScreenUtil().setWidth(367), ScreenUtil().setHeight(220), radius: 8),
+                '', ScreenUtil().setWidth(367), ScreenUtil().setHeight(220),
+                radius: 8),
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: ScreenUtil().setWidth(340)),
               child: Padding(
@@ -164,8 +169,9 @@ class _VideoWidgetState extends State<VideoWidget>
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            cardNetworkImage(
-                '${newTrendsInfo.imgArr}', ScreenUtil().setWidth(182), ScreenUtil().setHeight(242), radius: 8),
+            cardNetworkImage('${newTrendsInfo.imgArr}',
+                ScreenUtil().setWidth(182), ScreenUtil().setHeight(242),
+                radius: 8),
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: ScreenUtil().setWidth(160)),
               child: Padding(
@@ -181,6 +187,7 @@ class _VideoWidgetState extends State<VideoWidget>
           ],
         ),
       ),
-    );;
+    );
+    ;
   }
 }

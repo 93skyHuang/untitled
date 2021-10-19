@@ -113,30 +113,36 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget textFieldCode() {
-    return TextField(
-      keyboardType: TextInputType.number,
-      style: TextStyle(
-        fontSize: ScreenUtil().setSp(15),
-        color: MyColor.whiteFFFFFF,
-      ),
-      inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-      decoration: InputDecoration(
-        filled: false,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
-        counterText: '',
-        //此处控制最大字符是否显示
-        alignLabelWithHint: true,
-        hintText: '请输入验证码',
-        hintStyle: TextStyle(
-          fontSize: ScreenUtil().setSp(15),
-          color: MyColor.grey8C8C8C,
+    return Stack(
+      children: [
+        TextField(
+          keyboardType: TextInputType.number,
+          style: TextStyle(
+            fontSize: ScreenUtil().setSp(15),
+            color: MyColor.whiteFFFFFF,
+          ),
+          inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+          decoration: InputDecoration(
+            filled: false,
+            contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
+            counterText: '',
+            //此处控制最大字符是否显示
+            alignLabelWithHint: true,
+            hintText: '请输入验证码',
+            hintStyle: TextStyle(
+              fontSize: ScreenUtil().setSp(15),
+              color: MyColor.grey8C8C8C,
+            ),
+            enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
+            focusedBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
+          ),
+          onChanged: (value) {},
+          controller: _controllerCode,
         ),
-        enabledBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
-        focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
-        suffix: Obx(
-          () => TextButton(
+        Align(alignment: Alignment.centerRight,child:  Obx(
+              () => TextButton(
             onPressed: () {
               if (_loginController.isSendSmsCode.isFalse) {
                 String phone = _controllerPhone.value.text;
@@ -151,10 +157,8 @@ class LoginPage extends StatelessWidget {
                   color: MyColor.whiteFFFFFF, fontSize: ScreenUtil().setSp(14)),
             ),
           ),
-        ),
-      ),
-      onChanged: (value) {},
-      controller: _controllerCode,
+        ),)
+      ],
     );
   }
 
@@ -208,7 +212,10 @@ class LoginPage extends StatelessWidget {
   }
 
   void _clickProtocol() {
-    Get.toNamed(webViewPName,arguments: {'url':'http://www.sancun.vip/index/Index/ysxy','title':'用户协议'});
+    Get.toNamed(webViewPName, arguments: {
+      'url': 'http://www.sancun.vip/index/Index/ysxy',
+      'title': '用户协议'
+    });
   }
 
   void _clickPrivacy() {

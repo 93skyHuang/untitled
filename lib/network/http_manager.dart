@@ -174,6 +174,7 @@ Future<BasePageData> updateUserInfo({
   String? cname,
   String? birthday,
   int? height,
+  int? sex,
   String? autograph,
   String? region,
   String? province,
@@ -189,8 +190,10 @@ Future<BasePageData> updateUserInfo({
     if (longitude != null && latitude != null) {
       data = {
         'uid': uid,
+        'sex': sex,
         'birthday': birthday,
         'height': height,
+        'headImgUrl': headImgUrl,
         'autograph': autograph,
         'monthlyIncome': monthlyIncome,
         'education': education,
@@ -200,10 +203,13 @@ Future<BasePageData> updateUserInfo({
     } else {
       data = {
         'uid': uid,
+        'sex': sex,
         'birthday': birthday,
         'height': height,
+        'headImgUrl': headImgUrl,
         'autograph': autograph,
         'region': region,
+        'province': province,
         'monthlyIncome': monthlyIncome,
         'education': education,
       };
@@ -968,7 +974,7 @@ Future<BasePageData<List<VideoTrendsInfo>?>> getVideoTrends(int page) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
+    logger.i(basePageData);
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);

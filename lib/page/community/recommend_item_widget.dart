@@ -3,6 +3,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/login/add_basic_info.dart';
+import 'package:untitled/page/login/login_page.dart';
 import 'package:untitled/page/mine/edit_user_info.dart';
 import 'package:untitled/widget/custom_text.dart';
 

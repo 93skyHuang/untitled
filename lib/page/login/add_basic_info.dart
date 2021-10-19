@@ -26,6 +26,7 @@ class AddBasicInfoPage extends StatefulWidget {
 class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   String birthday = '';
   int? height;
+  int sex = -1;
 
   //上传至oss返回的路径
   String? headerImgUrl;
@@ -146,14 +147,19 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     text: '介绍',
                     margin: EdgeInsets.only(top: 12, bottom: 10),
                   ),
-                  textFieldInfo(),
+                  _textFieldInfo(),
                   SizedBox(
-                    height: 10,
+                    height: 30,
+                  ),
+                  _sexChoice(),
+                  SizedBox(
+                    height: 30,
                   ),
                   _itemArrow(
                     '城市',
                     '$province $city',
                     () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       _choiceCity();
                     },
                   ),
@@ -161,6 +167,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     '生日',
                     birthday,
                     () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       _choiceBirthday();
                     },
                   ),
@@ -168,6 +175,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     '身高',
                     height == null ? '' : '${height}cm',
                     () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       _choiceHeight();
                     },
                   ),
@@ -175,6 +183,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     '月收入',
                     monthlyIncome,
                     () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       _choiceMonthlyIncome();
                     },
                   ),
@@ -182,6 +191,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     '学历',
                     education,
                     () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       _choiceEducation();
                     },
                   ),
@@ -203,7 +213,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
 
   final TextEditingController _controllerInfo = TextEditingController();
 
-  Widget textFieldInfo() {
+  Widget _textFieldInfo() {
     return TextField(
       maxLines: 3,
       //最多多少行
@@ -229,6 +239,41 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         ),
       ),
       controller: _controllerInfo,
+    );
+  }
+
+  Widget _sexChoice() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          child: Image.asset(sex == 1
+              ? 'assets/images/male_select.png'
+              : 'assets/images/male_unselect.png'),
+          onTap: () {
+            logger.i('message$sex');
+            if (sex != 1) {
+              sex = 1;
+              setState(() {});
+            }
+          },
+        ),
+        SizedBox(
+          width: 50,
+        ),
+        GestureDetector(
+          child: Image.asset(sex == 2
+              ? 'assets/images/female_select.png'
+              : 'assets/images/female_unselect.png'),
+          onTap: () {
+            logger.i('message$sex');
+            if (sex != 2) {
+              sex = 2;
+              setState(() {});
+            }
+          },
+        ),
+      ],
     );
   }
 
@@ -428,9 +473,11 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         autograph: autograph,
         province: province,
         region: city,
+        sex: sex,
         monthlyIncome: monthlyIncome,
         education: education,
         height: height);
+    //
     if (basePageData.isOk()) {}
   }
 }
