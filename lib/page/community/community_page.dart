@@ -67,7 +67,7 @@ class _CommunityPageState extends State<CommunityPage>
   bool get wantKeepAlive => true;
 
   Widget addBtn() {
-    return InkWell(
+    return GestureDetector(
         onTap: _pullDynamic,
         child: Row(children: [
           Padding(

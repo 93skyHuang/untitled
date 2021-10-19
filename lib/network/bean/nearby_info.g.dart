@@ -42,7 +42,10 @@ Map<String, dynamic> _$NearbyInfoToJson(NearbyInfo instance) =>
     };
 
 TrendsImg _$TrendsImgFromJson(Map<String, dynamic> json) {
-  return TrendsImg(json['id'] as int, json['type'] as int)
+  return TrendsImg(
+    json['id'] as int,
+    json['type'] as int,
+  )
     ..video = json['video'] as String?
     ..imgArr = json['imgArr'] as String;
 }

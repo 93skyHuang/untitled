@@ -47,7 +47,6 @@ Future<BasePageData> getPhoneSms(String phone) async {
         .post('/index/Login/sendLoginSms', data: {'phone': phone});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -77,7 +76,6 @@ Future<BasePageData<LoginResp?>> autoLogin(int uid) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -105,7 +103,6 @@ Future<BasePageData<LoginResp?>> phoneLogin(String phone, String code) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -126,7 +123,6 @@ Future<BasePageData<List<String>?>> getHobby() async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -149,7 +145,6 @@ Future<BasePageData<UserInfo?>> getUserInfo() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i('$basePageData');
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -218,11 +213,11 @@ Future<BasePageData> updateUserInfo({
         await getDio().post('/index/User/updateUserInfo', data: data);
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
+  MyToast.show(basePageData.msg);
   return basePageData;
 }
 
@@ -258,7 +253,6 @@ Future<BasePageData> updateUserData({
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -281,7 +275,6 @@ Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i('$basePageData');
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -305,7 +298,6 @@ Future<BasePageData<UserBasic?>> getUserBasic() async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i('$basePageData');
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -327,7 +319,6 @@ Future<BasePageData<AppVersionInfo?>> checkAppVersion(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -349,7 +340,6 @@ Future<BasePageData<Address?>> getAddress(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -371,7 +361,6 @@ Future<BasePageData<PayTime?>> getPayTime() async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -396,7 +385,6 @@ Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -418,7 +406,6 @@ Future<BasePageData> addFollow(int userid) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -440,7 +427,6 @@ Future<BasePageData> delFollow(int userid) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -462,7 +448,6 @@ Future<BasePageData> addAccusation(int userid, String content) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -483,7 +468,6 @@ Future<BasePageData> addDeleteAccountApplication() async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -504,7 +488,6 @@ Future<BasePageData> addPullBlack(int userid) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -525,7 +508,6 @@ Future<BasePageData> delPullBlack(int userid) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -548,7 +530,6 @@ Future<BasePageData<ChatUserInfo?>> getChatPageUserInfo(int userId) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -570,7 +551,6 @@ Future<BasePageData<List<FindTabInfo>?>> getFindTab() async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -595,7 +575,6 @@ Future<BasePageData<List<FollowInfo>?>> getFollowList(int page) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -621,7 +600,6 @@ Future<BasePageData<List<CoverFollowInfo>?>> getCoverFollowList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -670,7 +648,6 @@ Future<BasePageData<List<ReceiveCommentMsg>?>> getReceiveCommentList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -696,7 +673,6 @@ Future<BasePageData<List<ReceiveFabulousMsg>?>> getReceiveFabulousList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -721,7 +697,6 @@ Future<BasePageData<List<SendCommentMsg>?>> getSendCommentList(int page) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -747,7 +722,6 @@ Future<BasePageData<List<SendFabulousMsg>?>> getSendFabulousList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -767,7 +741,6 @@ Future<BasePageData> addCertification(int type,
         data: {'uid': uid, 'type': type, 'files': files});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -792,7 +765,6 @@ Future<BasePageData<List<BlackInfo>?>> getPullBlackList(int page) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -811,7 +783,6 @@ Future<BasePageData> chatMessage(int targetUid, String content) async {
         data: {'uid': uid, 'targetUid': targetUid, 'content': content});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -840,7 +811,6 @@ Future<BasePageData<List<DiscoverInfo>?>> getDiscoverList(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -866,7 +836,6 @@ Future<BasePageData<List<MyFootInfo>?>> getMyFootList(int page) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -893,7 +862,6 @@ Future<BasePageData<List<NearbyInfo>?>> getNearbyList(int page) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -920,7 +888,6 @@ Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -947,7 +914,6 @@ Future<BasePageData<List<NewTrendsInfo>?>> getNewTrends(int page) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -999,7 +965,6 @@ Future<BasePageData<List<TrendsTopicTypeInfo>?>>
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1020,7 +985,6 @@ Future<BasePageData<TrendsTopicTypeInfo?>> getTrendsTopicType(int id) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1065,7 +1029,6 @@ Future<BasePageData> addTrends(
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1090,7 +1053,6 @@ Future<BasePageData<TrendsDetails?>> trendsDetails(int trendsId) async {
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1116,7 +1078,6 @@ Future<BasePageData<AddCommentResp?>> addComment(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1147,7 +1108,6 @@ Future<BasePageData<List<CommentInfo>?>> getTrendsCommentList(
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1255,13 +1215,12 @@ Future<BasePageData<String?>> fileUpload(String filePath) async {
     Response response = await getNoEncryptionDio()
         .post('/index/share/ossUpload', data: formData);
     BaseResp baseResp = BaseResp.fromJson(response.data);
-    if(baseResp.code==respCodeSuccess) {
-      String url=baseResp.data['url'];
+    if (baseResp.code == respCodeSuccess) {
+      String url = baseResp.data['url'];
       basePageData = BasePageData(baseResp.code, baseResp.msg, url);
-    }else{
+    } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
-
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);

@@ -116,6 +116,7 @@ class LoginPage extends StatelessWidget {
     return Stack(
       children: [
         TextField(
+          maxLength: 4,
           keyboardType: TextInputType.number,
           style: TextStyle(
             fontSize: ScreenUtil().setSp(15),

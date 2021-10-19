@@ -110,7 +110,7 @@ class _VideoWidgetState extends State<VideoWidget>
       }
       return ListView(
         children: [
-          _item1(),
+          // _item1(),
           GridView.count(
             shrinkWrap: true,
             //为true可以解决子控件必须设置高度的问题

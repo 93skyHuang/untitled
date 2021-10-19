@@ -7,8 +7,18 @@ typedef _SingleClickCallBack = void Function(
 typedef _DateClickCallBack = void Function(
     String selectDateStr, DateTime selectDataTime);
 
+void showSexPicker(BuildContext context,
+    {required _SingleClickCallBack clickCallBack,int choice=1}) {
+  List<String> sex = [
+    '女',
+    '男',
+  ];
+  showStringPicker<String>(context,
+      data: sex, choice: sex[--choice], clickCallBack: clickCallBack);
+}
+
 void showEducationPicker(BuildContext context,
-    {required _SingleClickCallBack clickCallBack}) {
+    {required _SingleClickCallBack clickCallBack,String choice='本科'}) {
   List<String> education = [
     '博士',
     '硕士',
@@ -17,7 +27,7 @@ void showEducationPicker(BuildContext context,
     '其它',
   ];
   showStringPicker<String>(context,
-      data: education, choice: '本科', clickCallBack: clickCallBack);
+      data: education, choice: choice.isEmpty?'本科':choice, clickCallBack: clickCallBack);
 }
 
 void showMonthlyIncomePicker(BuildContext context,

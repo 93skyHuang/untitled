@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -14,6 +15,10 @@ import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:untitled/utils/picker_utils.dart';
+import 'package:untitled/widgets/bottom_pupop.dart';
+import 'package:untitled/widgets/toast.dart';
+
+import '../../route_config.dart';
 
 ///添加个人基本信息
 class AddBasicInfoPage extends StatefulWidget {
@@ -35,19 +40,24 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   String? headerImgUrlLocal;
 
   String monthlyIncome = '';
-  String nickName = '';
   String education = '';
   String province = '';
   String city = '';
   String autograph = '';
-
+  DateTime? _lastPressedAt; //上 次点击时间
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          // 触摸收起键盘
-          FocusScope.of(context).requestFocus(FocusNode());
+    return WillPopScope(
+        onWillPop: () async {
+          if (_lastPressedAt == null ||
+              DateTime.now().difference(_lastPressedAt ?? DateTime.now()) >
+                  Duration(seconds: 2)) {
+            //两次点击间隔超过1秒则重新计时
+            _lastPressedAt = DateTime.now();
+            MyToast.show('请先保持您的基本信息');
+            return false;
+          }
+          return false;
         },
         child: Scaffold(
           appBar: AppBar(
@@ -76,7 +86,8 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                 children: <Widget>[
                   TextButton(
                       onPressed: () {
-                        _showBottomOpen(context);
+                        showBottomImageSource(
+                            context, _choicePicture, _tokePhoto);
                       },
                       style: ButtonStyle(
                           overlayColor:
@@ -109,36 +120,37 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     child: Text("个人头像",
                         style: TextStyle(fontSize: 15, color: Colors.black)),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Get.to(() => NicknamePage());
-                    },
-                    style: ButtonStyle(
-                        minimumSize:
-                            MaterialStateProperty.all(const Size(0, 0)),
-                        visualDensity: VisualDensity.compact,
-                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                    child: Container(
-                      height: 50,
-                      child: Row(
-                        children: [
-                          Text('昵称',
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.black)),
-                          Expanded(
-                              child: Text(nickName,
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: MyColor.grey8C8C8C))),
-                          Icon(
-                            Icons.chevron_right,
-                            color: Color(0xFF8C8C8C),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _inputNickName(),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Get.to(() => NicknamePage());
+                  //   },
+                  //   style: ButtonStyle(
+                  //       minimumSize:
+                  //       MaterialStateProperty.all(const Size(0, 0)),
+                  //       visualDensity: VisualDensity.compact,
+                  //       padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                  //   child: Container(
+                  //     height: 50,
+                  //     child: Row(
+                  //       children: [
+                  //         Text('昵称',
+                  //             style:
+                  //             TextStyle(fontSize: 15, color: Colors.black)),
+                  //         Expanded(
+                  //             child: Text(nickName,
+                  //                 textAlign: TextAlign.right,
+                  //                 style: TextStyle(
+                  //                     fontSize: 15,
+                  //                     color: MyColor.grey8C8C8C))),
+                  //         Icon(
+                  //           Icons.chevron_right,
+                  //           color: Color(0xFF8C8C8C),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Divider(
                     height: 2.0,
                     color: Color(0xffE6E6E6),
@@ -312,90 +324,44 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     );
   }
 
-  void _showBottomOpen(BuildContext context) {
-    showModalBottomSheet(
-        enableDrag: false,
-        elevation: 0,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return Container(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      )),
-                    ),
-                    Container(
-                        padding: EdgeInsets.only(bottom: 20.0, top: 16),
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        decoration: new BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30.0),
-                              topRight: Radius.circular(30.0)),
-                        ),
-                        child: Column(children: <Widget>[
-                          CustomText(
-                              text: "选择照片来源",
-                              textAlign: Alignment.center,
-                              padding: EdgeInsets.only(bottom: 16),
-                              textStyle:
-                                  TextStyle(fontSize: 17, color: Colors.black)),
-                          Divider(
-                            height: 1,
-                            color: Color(0xffE6E6E6),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _tokePhoto();
-                              },
-                              child: CustomText(
-                                  text: "拍照",
-                                  textAlign: Alignment.center,
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
-                                  textStyle: TextStyle(
-                                      fontSize: 17, color: Colors.black))),
-                          Divider(
-                            height: 1,
-                            color: Color(0xffE6E6E6),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _choicePicture();
-                              },
-                              child: CustomText(
-                                  text: "从相册中选择",
-                                  textAlign: Alignment.center,
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
-                                  textStyle: TextStyle(
-                                      fontSize: 17, color: Colors.black))),
-                          Divider(
-                            height: 1,
-                            color: Color(0xffE6E6E6),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: CustomText(
-                                  text: "取消",
-                                  textAlign: Alignment.center,
-                                  padding: EdgeInsets.only(top: 16, bottom: 16),
-                                  textStyle: TextStyle(
-                                      fontSize: 17, color: Color(0xffFD4343)))),
-                        ]))
-                  ]));
-        });
+  final TextEditingController _controllerNickName = TextEditingController();
+
+  Widget _inputNickName() {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        TextField(
+          textAlign: TextAlign.right,
+          maxLength: 10,
+          keyboardType: TextInputType.text,
+          style: TextStyle(
+            fontSize: ScreenUtil().setSp(15),
+            color: MyColor.blackColor,
+          ),
+          decoration: InputDecoration(
+            filled: false,
+            contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
+            counterText: '',
+            //此处控制最大字符是否显示
+            alignLabelWithHint: true,
+            hintText: '请输入昵称',
+            hintStyle: TextStyle(
+              fontSize: ScreenUtil().setSp(15),
+              color: MyColor.grey8C8C8C,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white, width: 0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white, width: 0),
+            ),
+          ),
+          onChanged: (value) {},
+          controller: _controllerNickName,
+        ),
+        Text('昵称', style: TextStyle(fontSize: 15, color: Colors.black)),
+      ],
+    );
   }
 
   void _choicePicture() async {
@@ -452,7 +418,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   }
 
   void _choiceEducation() async {
-    showEducationPicker(context, clickCallBack: (int index, dynamic d) {
+    showEducationPicker(context,choice: education, clickCallBack: (int index, dynamic d) {
       education = d;
       setState(() {});
     });
@@ -468,7 +434,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     }
     BasePageData basePageData = await updateUserInfo(
         headImgUrl: headerImgUrl,
-        cname: nickName,
+        cname: _controllerNickName.text,
         birthday: birthday,
         autograph: autograph,
         province: province,
@@ -478,6 +444,8 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         education: education,
         height: height);
     //
-    if (basePageData.isOk()) {}
+    if (basePageData.isOk()) {
+      Get.offNamed(homePName);
+    }
   }
 }
