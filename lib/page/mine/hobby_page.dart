@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_arrow.dart';
@@ -26,7 +27,12 @@ class _HobbyPageState extends State<HobbyPage> {
   List<String> movies = ['国产电影', '欧美大片', '日韩剧', '网剧', '国产剧', '好莱坞'];
   List<String> foods = ['中国菜', '日本菜', '西餐', '烘培', '小吃', '零食'];
   List<String> arts = ['唱歌', '跳舞', '表演', '摄影', '绘画', '建筑'];
-  List<String> choose = [];
+  List<String> hobby = [];
+
+  @override
+  void initState() {
+    getList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +52,9 @@ class _HobbyPageState extends State<HobbyPage> {
             Container(
               padding: const EdgeInsets.all(16.0),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  setHobby();
+                },
                 child: Text("保存",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 17, color: Color(0xFFFD4343))),
@@ -73,16 +81,16 @@ class _HobbyPageState extends State<HobbyPage> {
                 itemCount: musics.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  bool isChoose = choose.contains(musics[index]);
+                  bool isChoose = hobby.contains(musics[index]);
                   return ListView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
                           onTap: () {
                             if (isChoose) {
-                              choose.remove(musics[index]);
+                              hobby.remove(musics[index]);
                             } else {
-                              choose.add(musics[index]);
+                              hobby.add(musics[index]);
                             }
                             setState(() {});
                           },
@@ -124,25 +132,25 @@ class _HobbyPageState extends State<HobbyPage> {
                 itemCount: sports.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  bool isChoose = choose.contains(sports[index]);
+                  bool isChoose = hobby.contains(sports[index]);
                   return ListView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
                           onTap: () {
                             if (isChoose) {
-                              choose.remove(sports[index]);
+                              hobby.remove(sports[index]);
                             } else {
-                              choose.add(sports[index]);
+                              hobby.add(sports[index]);
                             }
                             setState(() {});
                           },
                           child: Container(
                             decoration: new BoxDecoration(
                               color:
-                              isChoose ? Colors.black : Color(0xFFE2E2E2),
+                                  isChoose ? Colors.black : Color(0xFFE2E2E2),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)),
+                                  BorderRadius.all(Radius.circular(15.0)),
                             ),
                             alignment: Alignment.center,
                             height: 30,
@@ -152,7 +160,7 @@ class _HobbyPageState extends State<HobbyPage> {
                               style: TextStyle(
                                   fontSize: 12.0,
                                   color:
-                                  isChoose ? Colors.white : Colors.black),
+                                      isChoose ? Colors.white : Colors.black),
                             ),
                           )),
                     ],
@@ -175,25 +183,25 @@ class _HobbyPageState extends State<HobbyPage> {
                 itemCount: movies.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  bool isChoose = choose.contains(movies[index]);
+                  bool isChoose = hobby.contains(movies[index]);
                   return ListView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
                           onTap: () {
                             if (isChoose) {
-                              choose.remove(movies[index]);
+                              hobby.remove(movies[index]);
                             } else {
-                              choose.add(movies[index]);
+                              hobby.add(movies[index]);
                             }
                             setState(() {});
                           },
                           child: Container(
                             decoration: new BoxDecoration(
                               color:
-                              isChoose ? Colors.black : Color(0xFFE2E2E2),
+                                  isChoose ? Colors.black : Color(0xFFE2E2E2),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)),
+                                  BorderRadius.all(Radius.circular(15.0)),
                             ),
                             alignment: Alignment.center,
                             height: 30,
@@ -203,7 +211,7 @@ class _HobbyPageState extends State<HobbyPage> {
                               style: TextStyle(
                                   fontSize: 12.0,
                                   color:
-                                  isChoose ? Colors.white : Colors.black),
+                                      isChoose ? Colors.white : Colors.black),
                             ),
                           )),
                     ],
@@ -226,25 +234,25 @@ class _HobbyPageState extends State<HobbyPage> {
                 itemCount: foods.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  bool isChoose = choose.contains(foods[index]);
+                  bool isChoose = hobby.contains(foods[index]);
                   return ListView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
                           onTap: () {
                             if (isChoose) {
-                              choose.remove(foods[index]);
+                              hobby.remove(foods[index]);
                             } else {
-                              choose.add(foods[index]);
+                              hobby.add(foods[index]);
                             }
                             setState(() {});
                           },
                           child: Container(
                             decoration: new BoxDecoration(
                               color:
-                              isChoose ? Colors.black : Color(0xFFE2E2E2),
+                                  isChoose ? Colors.black : Color(0xFFE2E2E2),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)),
+                                  BorderRadius.all(Radius.circular(15.0)),
                             ),
                             alignment: Alignment.center,
                             height: 30,
@@ -254,7 +262,7 @@ class _HobbyPageState extends State<HobbyPage> {
                               style: TextStyle(
                                   fontSize: 12.0,
                                   color:
-                                  isChoose ? Colors.white : Colors.black),
+                                      isChoose ? Colors.white : Colors.black),
                             ),
                           )),
                     ],
@@ -277,25 +285,25 @@ class _HobbyPageState extends State<HobbyPage> {
                 itemCount: arts.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  bool isChoose = choose.contains(arts[index]);
+                  bool isChoose = hobby.contains(arts[index]);
                   return ListView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
                           onTap: () {
                             if (isChoose) {
-                              choose.remove(arts[index]);
+                              hobby.remove(arts[index]);
                             } else {
-                              choose.add(arts[index]);
+                              hobby.add(arts[index]);
                             }
                             setState(() {});
                           },
                           child: Container(
                             decoration: new BoxDecoration(
                               color:
-                              isChoose ? Colors.black : Color(0xFFE2E2E2),
+                                  isChoose ? Colors.black : Color(0xFFE2E2E2),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)),
+                                  BorderRadius.all(Radius.circular(15.0)),
                             ),
                             alignment: Alignment.center,
                             height: 30,
@@ -305,7 +313,7 @@ class _HobbyPageState extends State<HobbyPage> {
                               style: TextStyle(
                                   fontSize: 12.0,
                                   color:
-                                  isChoose ? Colors.white : Colors.black),
+                                      isChoose ? Colors.white : Colors.black),
                             ),
                           )),
                     ],
@@ -316,7 +324,18 @@ class _HobbyPageState extends State<HobbyPage> {
           ],
         ),
       ),
-// This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void getList() {
+    getHobby().then((value) => {
+          setState(() {
+            hobby = value.data!;
+          })
+        });
+  }
+
+  void setHobby() {
+    updateUserData(hobby:hobby).then((value) => {getList()});
   }
 }

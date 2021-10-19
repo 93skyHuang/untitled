@@ -5,8 +5,8 @@ import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_arrow.dart';
 
-import 'edit_basic_info.dart';
-import 'hobby_page.dart';
+import '../edit_basic_info.dart';
+import '../hobby_page.dart';
 
 
 class EditUser extends StatefulWidget {

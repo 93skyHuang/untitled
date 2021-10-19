@@ -11,10 +11,9 @@ import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/page/mine/visitor/visitor_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
-
-import 'edit_user_info.dart';
 import 'fans/fan_page.dart';
 import 'follow/follow_page.dart';
+import 'info/edit_user_info.dart';
 import 'mine_controller.dart';
 import 'myhome/my_home_page.dart';
 
@@ -167,7 +166,8 @@ class _MinePageState extends State<MinePage> {
                       ),
                       Container(
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => EditUser());},
                             child: Row(
                               children: [
                                 Image(
@@ -203,7 +203,7 @@ class _MinePageState extends State<MinePage> {
                       margin: EdgeInsets.only(left: 16),
                     ),
                     CustomText(
-                      text: '${_mineController.userBasic.value.trendsList!.length}',
+                      text: '0',
                       textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     CustomText(
