@@ -55,9 +55,10 @@ Future<BasePageData> getPhoneSms(String phone) async {
 }
 
 /// 自动登录  接口测试通过
-Future<BasePageData<LoginResp?>> autoLogin(int uid) async {
+Future<BasePageData<LoginResp?>> autoLogin() async {
   BasePageData<LoginResp?> basePageData;
   try {
+    int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Login/defaultLogin', data: {
       'uid': uid,
       'longitude': 0.0,
@@ -963,6 +964,7 @@ Future<BasePageData<List<TrendsTopicTypeInfo>?>>
           .toList();
       basePageData = BasePageData(baseResp.code, baseResp.msg, data);
     } else {
+      MyToast.show(baseResp.msg);
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
   } catch (error) {
@@ -997,7 +999,7 @@ Future<BasePageData<TrendsTopicTypeInfo?>> getTrendsTopicType(int id) async {
 //      * content [动态内容]
 //      * imgArr [图片集] {1.jpg,2.jpg,3.jpg}
 //      * video [视频地址]如果是视频一个动态只能传一个视频
-//      * type [1-动态，2-视频](必填)
+//      * type 动态类型0-心情（只有一段文字），1-动态（有文字和图片），2-视频]
 //      * area [区域]（非必填）
 //      * latitude [纬度]（非必填）
 //      * longitude [经度]（非必填）
@@ -1006,7 +1008,7 @@ Future<BasePageData<TrendsTopicTypeInfo?>> getTrendsTopicType(int id) async {
 Future<BasePageData> addTrends(
   int type, {
   String content = '',
-  List<String> imgArr = const [''],
+  List<String> localUrls = const [''],
   String? area,
   double? latitude,
   double? longitude,
@@ -1015,11 +1017,25 @@ Future<BasePageData> addTrends(
 }) async {
   BasePageData basePageData;
   try {
+    List<String> urlOSS = [];
+    if (localUrls.isNotEmpty) {
+      //选中需要上传的文件
+      int length = localUrls.length;
+      for (int i = 0; i < length; i++) {
+        BasePageData<String?> data = await fileUpload(localUrls[i]);
+        if (data.isOk()) {
+          if (data.data != null) {
+            urlOSS.add(data.data ?? "");
+          }
+        }
+      }
+    }
+
     int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/Trends/addTrends', data: {
       'uid': uid,
       'content': content,
-      'imgArr': imgArr,
+      'imgArr': urlOSS,
       'type': type,
       'area': area,
       'latitude': latitude,
@@ -1033,6 +1049,7 @@ Future<BasePageData> addTrends(
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
+  MyToast.show(basePageData.msg);
   return basePageData;
 }
 

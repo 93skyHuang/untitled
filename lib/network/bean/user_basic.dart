@@ -34,7 +34,6 @@ class UserBasic {
   int? age = 0;
   int? followSum = 0;
   int? trendsSum = 0;
-  // int? followSum = 0;
   UserData? userdata ;
   List<String?> hobby =[];
   int? isVideo;
@@ -86,7 +85,7 @@ class UserData {
   String? expectRegion;
   String? expectConstellation;
   String? expectType;
-  int? expectHeight;
+  String? expectHeight;
   int? isPhone;
   List<String?> hobby=[];
 

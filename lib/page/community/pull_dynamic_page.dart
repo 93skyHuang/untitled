@@ -2,16 +2,24 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/address.dart';
+import 'package:untitled/network/bean/base_page_data.dart';
+import 'package:untitled/network/bean/trends_tpoic_type_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/utils/image_picker_util.dart';
+import 'package:untitled/utils/location_util.dart';
+import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/card_image.dart';
+import 'package:untitled/widgets/my_text_button.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
 import 'package:untitled/widgets/toast.dart';
+import 'package:video_player/video_player.dart';
 import 'community_tab_bar.dart';
 import 'community_tab_bar_view.dart';
 
@@ -31,8 +39,8 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
 
   List<String> imageUrls = [];
   String? videoUrls;
-  bool icCanPull = false;
-  int _type = 1; //type=1 picture type=2 video
+  String videoImage = '';
+  int _type = 0; //type=0 ; type=1 picture type=2 video
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +54,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       child: Scaffold(
         appBar: AppBar(
             elevation: 0.5,
-            leading: new IconButton(
+            leading:  IconButton(
                 icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
                 onPressed: () {
                   Navigator.maybePop(context);
@@ -56,30 +64,36 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
             backgroundColor: Color(0xFFF5F5F5),
             centerTitle: true,
             actions: <Widget>[
-              Container(
-                width: 62,
-                alignment: const Alignment(0, 0),
-                // 边框设置
-                decoration: const BoxDecoration(
-                  //背景
-                  color: Color(0xffE2E2E2),
-                  //设置四周圆角 角度
-                  borderRadius: BorderRadius.all(Radius.circular(14.0)),
-                  //设置四周边框
-                  border: Border(),
-                ),
-                margin: const EdgeInsets.fromLTRB(5, 12, 16.0, 12),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Text("发布",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: icCanPull
-                              ? Color(0xFF000000)
-                              : Color(0xFF8C8C8C))),
-                ),
-              ),
+              Obx(() => Container(
+                    width: 62,
+                    alignment: const Alignment(0, 0),
+                    // 边框设置
+                    decoration: BoxDecoration(
+                      //背景
+                      color: _controller.isCanPull.value
+                          ? Colors.white
+                          : Color(0xffE2E2E2),
+                      //设置四周圆角 角度
+                      borderRadius: BorderRadius.all(Radius.circular(14.0)),
+                      //设置四周边框
+                      border: Border(),
+                    ),
+                    margin: const EdgeInsets.fromLTRB(5, 12, 16.0, 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_controller.isCanPull.value) {
+                          _pull();
+                        }
+                      },
+                      child: Text("发布",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: _controller.isCanPull.value
+                                  ? Color(0xFF000000)
+                                  : Color(0xFF8C8C8C))),
+                    ),
+                  )),
             ]),
         backgroundColor: Color(0xFFF5F5F5),
         body: _child(),
@@ -99,10 +113,12 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
             child: TextField(
               onChanged: (text) {
                 //输入框内容变化回调
+                _jumpIsCanPull();
               },
               controller: _textFieldController,
-              maxLines: 8,
-              minLines: 8,
+              maxLines: 6,
+              minLines: 4,
+              maxLength: 400,
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.white, width: 0),
@@ -118,7 +134,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
               ),
             ),
           ),
-          _gridView(),
+          _photoAndVideoGridView(),
           SizedBox(
             height: 20,
           ),
@@ -132,7 +148,17 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
     );
   }
 
-  Widget _gridView() {
+  void _jumpIsCanPull() {
+    if (_textFieldController.text.isNotEmpty ||
+        videoUrls != null ||
+        imageUrls.isNotEmpty) {
+      _controller.isCanPull.value = true;
+    } else {
+      _controller.isCanPull.value = false;
+    }
+  }
+
+  Widget _photoAndVideoGridView() {
     return GridView.count(
       shrinkWrap: true,
       //为true可以解决子控件必须设置高度的问题
@@ -153,9 +179,11 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
 
   List<Widget> _listView() {
     List<Widget> list = [];
-    logger.i('_type=$_type $imageUrls \nvideoUrls$videoUrls');
-    if (_type == 2) {
+    logger.i(
+        '_type=$_type $imageUrls \nvideoUrls$videoUrls videoImage$videoImage');
+    if (_type == 2 && videoImage.isNotEmpty) {
       //video
+      list.add(_video());
     } else if (_type == 1) {
       //picture
       int length = imageUrls.length;
@@ -164,6 +192,35 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       }
     }
     return list;
+  }
+
+  Widget _video() {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(right: 8, top: 8),
+          child: Image.file(
+            File(videoImage),
+            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: GestureDetector(
+              onTap: () {
+                videoImage = '';
+                videoUrls = null;
+                _jumpIsCanPull();
+                setState(() {});
+              },
+              child: Container(
+                child: Icon(Icons.remove_circle_outlined,
+                    size: 16, color: Colors.red),
+              )),
+        )
+      ],
+    );
   }
 
   Widget _pictureItem(String url) {
@@ -182,6 +239,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
           child: GestureDetector(
               onTap: () {
                 imageUrls.remove(url);
+                _jumpIsCanPull();
                 setState(() {});
               },
               child: Container(
@@ -195,7 +253,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
   Widget _locationAndTopic() {
     return Row(
       children: [
-        Obx(() => _controller.location.value.isEmpty
+        Obx(() => _controller.region.value.isEmpty
             ? Text('')
             : Container(
                 margin: EdgeInsets.only(left: 16),
@@ -226,7 +284,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
                         fit: BoxFit.fill),
                   ),
                   singeLineText(
-                    _controller.location.value,
+                    _controller.region.value,
                     50,
                     TextStyle(
                       fontSize: ScreenUtil().setSp(10),
@@ -235,7 +293,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _controller.location.value = '';
+                      _controller.region.value = '';
                       logger.i('message delete location');
                     },
                     child: Container(
@@ -275,8 +333,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
                         right: ScreenUtil().setWidth(4)),
                     child: Image(
                         color: MyColor.blackColor,
-                        image:
-                            const AssetImage("assets/images/ic_location.png"),
+                        image: const AssetImage("assets/images/topic.png"),
                         fit: BoxFit.fill),
                   ),
                   singeLineText(
@@ -289,8 +346,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _controller.topicName.value = '';
-                      logger.i('message delete topic');
+                      _controller.deleteTopic();
                     },
                     child: Container(
                       height: 20,
@@ -326,11 +382,11 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       padding: EdgeInsets.only(left: 24, right: 16),
       child: GestureDetector(
         onTap: () {
-          if (_type == 2 && videoUrls != null) {
+          if (videoUrls != null) {
             MyToast.show('图片与视频不能一起发布');
             return;
           }
-          if (_type == 1 && imageUrls.length == 12) {
+          if (imageUrls.length == 12) {
             MyToast.show('一次最多只能发布12张图片');
             return;
           }
@@ -358,11 +414,11 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       padding: EdgeInsets.only(left: 20, right: 16),
       child: GestureDetector(
         onTap: () {
-          if (_type == 1 && imageUrls.isNotEmpty) {
+          if (imageUrls.isNotEmpty) {
             MyToast.show('图片与视频不能一起发布');
             return;
           }
-          if (_type == 2 && videoUrls != null) {
+          if (videoUrls != null) {
             MyToast.show('一次最多只能发布1个视频');
             return;
           }
@@ -390,7 +446,9 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 16),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          _controller.getLocation();
+        },
         child: Column(
           children: [
             Image.asset(
@@ -413,7 +471,12 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 16),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          _controller.getTopicList().then((value) => {
+                logger.i('$value'),
+                if (value.isNotEmpty) {_showTopic(value)}
+              });
+        },
         child: Column(
           children: [
             Image.asset(
@@ -433,14 +496,106 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
     );
   }
 
+  void _showTopic(List<TrendsTopicTypeInfo> list) {
+    List<Widget> children = [];
+    for (int i = 0; i < list.length; i++) {
+      children.add(_topicItem(list[i]));
+    }
+    showModalBottomSheet(
+        enableDrag: false,
+        elevation: 0,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      )),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(bottom: 20.0, top: 16),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0)),
+                        ),
+                        child: Column(children: <Widget>[
+                          CustomText(
+                              text: '话题选择',
+                              textAlign: Alignment.center,
+                              padding: EdgeInsets.only(bottom: 16),
+                              textStyle:
+                                  TextStyle(fontSize: 17, color: Colors.black)),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          Container(
+                            height: 200,
+                            child: ListView(
+                              children: children,
+                            ),
+                          ),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          getTextButton(
+                              CustomText(
+                                  text: "取消",
+                                  textAlign: Alignment.center,
+                                  textStyle: TextStyle(
+                                      fontSize: 17,
+                                      color: Color(0xffFD4343))), () {
+                            Navigator.pop(context);
+                          }),
+                        ]))
+                  ]));
+        });
+  }
+
+  Widget _topicItem(TrendsTopicTypeInfo info) {
+    return GestureDetector(
+      child: Column(
+        children: [
+          CustomText(
+              padding: EdgeInsets.all(6),
+              text: info.title,
+              textAlign: Alignment.center,
+              textStyle: TextStyle(fontSize: 17, color: Color(0xff000000))),
+          Divider(
+            height: 1,
+            color: Color(0xffE6E6E6),
+          )
+        ],
+      ),
+      onTap: () {
+        _controller.choiceTopic(info);
+        Navigator.pop(context);
+      },
+    );
+  }
+
   void _choicePicture() async {
     XFile? f = await getImageFromGallery();
     logger.i(f?.path);
     if (f != null) {
       imageUrls.add(f.path);
+      _type = 1;
+      _jumpIsCanPull();
+      setState(() {});
     }
-    _type = 1;
-    setState(() {});
   }
 
   //拍照
@@ -448,37 +603,129 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
     XFile? f = await getPhoto();
     if (f != null) {
       imageUrls.add(f.path);
+      _type = 1;
+      _jumpIsCanPull();
+      setState(() {});
     }
-    _type = 1;
-    setState(() {});
   }
 
   void _choiceVideo() async {
     XFile? f = await getVideoFromGallery();
     logger.i(f?.path);
     if (f != null) {
-      imageUrls.add(f.path);
+      videoImage = await getVideoImage(f.path);
+      if (videoImage.isNotEmpty) {
+        videoUrls = f.path;
+        _type = 2;
+        _jumpIsCanPull();
+        setState(() {});
+      } else {
+        MyToast.show('操作失败');
+      }
     }
-    _type = 2;
-
-    setState(() {});
   }
 
   //录视频
   void _tokeVideo() async {
     XFile? f = await getVideo();
     if (f != null) {
-      imageUrls.add(f.path);
+      videoImage = await getVideoImage(f.path);
+      if (videoImage.isNotEmpty) {
+        videoUrls = f.path;
+        _type = 2;
+        _jumpIsCanPull();
+        setState(() {});
+      } else {
+        MyToast.show('操作失败');
+      }
     }
-    _type = 2;
-    setState(() {});
+  }
+
+  void _pull() {
+    if (_textFieldController.text.isEmpty &&
+        imageUrls.isEmpty &&
+        videoUrls == null) {
+      MyToast.show('您还没输入动态内容!');
+      return;
+    }
+    List<String> urls = [];
+    if (_type == 1) {
+      urls.addAll(imageUrls);
+    } else if (_type == 2) {
+      String s = videoUrls ?? "";
+      if (s.isNotEmpty) {
+        urls.add(s);
+      } else {
+        _type = 0;
+      }
+    }
+    _controller.pullTrends(_type, _textFieldController.text, localUrl: urls);
   }
 }
 
 class _Controller extends GetxController {
-  List<String> topics = [];
-  RxString topicName = '美女派对话题'.obs;
-  RxString location = '成都市'.obs;
+  RxString topicName = ''.obs;
+  RxString region = ''.obs;
+  RxBool isCanPull = false.obs;
+  late double lat;
+  late double lon;
+
+  List<TrendsTopicTypeInfo> topicList = [];
+  TrendsTopicTypeInfo? _choiceTopic;
+
+  void deleteTopic() {
+    _choiceTopic = null;
+    topicName.value = '';
+  }
+
+  void choiceTopic(TrendsTopicTypeInfo info) {
+    _choiceTopic = info;
+    if (_choiceTopic != null) {
+      topicName.value = info.title;
+    }
+  }
+
+  pullTrends(int type, String content,
+      {List<String> localUrl = const []}) async {
+    addTrends(type,
+            content: content,
+            localUrls: localUrl,
+            topicId: _choiceTopic?.id,
+            topicName: _choiceTopic?.title)
+        .then((value) => {
+              if (value.isOk())
+                {
+                  //发布成功
+                  Get.back()
+                }
+            });
+  }
+
+  Future<List<TrendsTopicTypeInfo>> getTopicList() async {
+    if (topicList.isEmpty) {
+      BasePageData<List<TrendsTopicTypeInfo>?> value =
+          await getTrendsTopicTypeList();
+      if (value.isOk()) {
+        topicList = value.data ?? [];
+      }
+    }
+    return topicList;
+  }
+
+  void getLocation() async {
+    bool hasPermission = await checkAndRequestPermission();
+    if (hasPermission) {
+      MyToast.show('正在获取您的位置...');
+      Position position = await getPosition();
+      logger.i(position);
+      lon = position.longitude;
+      lat = position.latitude;
+      BasePageData<Address?> data = await getAddress(lon, lat);
+      if (data.isOk()) {
+        region.value = data.data?.region ?? '';
+      }
+    }
+  }
 
   @override
   void onInit() {}

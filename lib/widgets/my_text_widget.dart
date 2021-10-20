@@ -14,12 +14,13 @@ TextPainter _isExpansion(String text, {double maxWidth = double.infinity}) {
     ..layout(maxWidth: maxWidth);
 }
 
-Widget singeLineText(String text, double width, TextStyle style) {
+Widget singeLineText(String text, double width, TextStyle style,
+    {TextAlign? textAlign}) {
   return ConstrainedBox(
     constraints: BoxConstraints(maxWidth: width),
     child: Text(text,
         maxLines: 1,
-        textAlign: TextAlign.left,
+        textAlign: textAlign ?? TextAlign.left,
         overflow: TextOverflow.ellipsis,
         style: style),
   );

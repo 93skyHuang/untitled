@@ -7,7 +7,7 @@ class GetStorageUtils {
   //
   static final _accountStorage = GetStorage('AccountStorage');
 
-  static final _otherStorage = GetStorage('OtherStorage');
+  static final _commonStorage = GetStorage();
 
   static String getRegistionID() {
     return _accountStorage.read('registionID') ?? '';
@@ -37,18 +37,6 @@ class GetStorageUtils {
     return _accountStorage.write('uid', uid);
   }
 
-  static List<FindTabInfo>? getFindTab() {
-    List<dynamic>? list = _accountStorage.read('find_tab');
-    List<FindTabInfo>? infoList =
-        list?.map((e) => FindTabInfo.fromJson(e)).toList();
-    return infoList;
-  }
-
-  ///发现页面导航栏
-  static void saveFindTab(List<FindTabInfo>? f) {
-    _accountStorage.write('find_tab', f);
-  }
-
   static int getSex() {
     return _accountStorage.read('sex') ?? 1;
   }
@@ -56,5 +44,17 @@ class GetStorageUtils {
   ///
   static void saveSex(int sex) {
     _accountStorage.write('sex', sex);
+  }
+
+  static List<FindTabInfo>? getFindTab() {
+    List<dynamic>? list = _commonStorage.read('find_tab');
+    List<FindTabInfo>? infoList =
+    list?.map((e) => FindTabInfo.fromJson(e)).toList();
+    return infoList;
+  }
+
+  ///发现页面导航栏
+  static void saveFindTab(List<FindTabInfo>? f) {
+    _commonStorage.write('find_tab', f);
   }
 }

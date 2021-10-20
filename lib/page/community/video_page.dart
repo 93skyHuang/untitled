@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/video_trends_info.dart';
@@ -5,6 +6,8 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
+
+import '../video_play_page.dart';
 
 ///视频页面
 class VideoWidget extends StatefulWidget {
@@ -65,7 +68,6 @@ class _VideoWidgetState extends State<VideoWidget>
   }
 
   void getData({bool isLoad = false}) {
-    getMyFootList(pageNo);
     getVideoTrends(pageNo).then((value) => {
           logger.i(value),
           if (value.isOk())
@@ -131,53 +133,24 @@ class _VideoWidgetState extends State<VideoWidget>
     }
   }
 
-  Widget _item1() {
+  Widget _itemView(VideoTrendsInfo info) {
     return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: double.infinity,
-        height: ScreenUtil().setHeight(220),
-        margin: EdgeInsets.all(4),
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: [
-            cardNetworkImage(
-                '', ScreenUtil().setWidth(367), ScreenUtil().setHeight(220),
-                radius: 8),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: ScreenUtil().setWidth(340)),
-              child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    '搞笑美女路边搭讪',
-                    maxLines: 2,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, color: Color(0xffffffff)),
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _itemView(VideoTrendsInfo newTrendsInfo) {
-    return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(TrendVideoPlayPage(), arguments: {'videoTrendsInfo': info});
+      },
       child: Container(
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            cardNetworkImage('${newTrendsInfo.imgArr}',
-                ScreenUtil().setWidth(182), ScreenUtil().setHeight(242),
+            cardNetworkImage('${info.imgArr}', ScreenUtil().setWidth(182),
+                ScreenUtil().setHeight(242),
                 radius: 8),
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: ScreenUtil().setWidth(160)),
               child: Padding(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    '${newTrendsInfo.content}',
+                    '${info.content}',
                     maxLines: 2,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
@@ -188,6 +161,5 @@ class _VideoWidgetState extends State<VideoWidget>
         ),
       ),
     );
-    ;
   }
 }

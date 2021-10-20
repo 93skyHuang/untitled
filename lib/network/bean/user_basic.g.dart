@@ -89,7 +89,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     ..expectRegion = json['expectRegion'] as String?
     ..expectConstellation = json['expectConstellation'] as String?
     ..expectType = json['expectType'] as String?
-    ..expectHeight = json['expectHeight'] as int?
+    ..expectHeight = json['expectHeight'] as String?
     ..hobby =
         (json['hobby'] as List<dynamic>).map((e) => e as String?).toList();
 }

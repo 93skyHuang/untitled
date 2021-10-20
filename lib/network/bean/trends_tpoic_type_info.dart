@@ -12,7 +12,7 @@ class TrendsTopicTypeInfo {
   //  * trendsSum [该话题下有多少个动态]
   int? id = 0;
   int? sex;
-  String? title;
+  String title='';
   String? image;
   String? description;
   int? trendsSum;

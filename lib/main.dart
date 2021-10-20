@@ -7,7 +7,7 @@ import 'basic/include.dart';
 import 'messages.dart';
 
 void main() async {
-  await GetStorage.init();
+  await GetStorage.init('AccountStorage');
   runApp(GetMaterialApp(
     localizationsDelegates: const [
       // 下拉刷新控件
