@@ -233,7 +233,7 @@ Future<BasePageData> updateUserInfo({
 //      * hobby [我的兴趣爱好](兴趣爱好以数组格式传递)
 Future<BasePageData> updateUserData({
   String? expectAge,
-  int? expectHeight,
+  String? expectHeight,
   String? expectRegion,
   String? expectConstellation,
   String? expectType,

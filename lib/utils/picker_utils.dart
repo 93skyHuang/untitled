@@ -4,6 +4,7 @@ import 'package:untitled/basic/include.dart';
 
 typedef _SingleClickCallBack = void Function(
     int selectedIndex, dynamic selectedData);
+typedef _ArrayClickCallBack = void Function( List<int> selectedIndex);
 typedef _DateClickCallBack = void Function(
     String selectDateStr, DateTime selectDataTime);
 
@@ -58,6 +59,28 @@ void showHeightPicker(BuildContext context,
       data: _heights, choice: choice, clickCallBack: clickCallBack);
 }
 
+
+
+final List<int> _ages = [];
+
+void showAgePicker(BuildContext context,
+    {int choice = 18, required _SingleClickCallBack clickCallBack}) {
+  if (_ages.isEmpty) {
+    for (int i = 18; i < 80; i++) {
+      _ages.add(i);
+    }
+  }
+  showStringPicker<int>(context,
+      data: _ages, choice: choice, clickCallBack: clickCallBack);
+}
+//星座
+final List<String> _constellations = ['水瓶座','双鱼座','白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座','摩羯座'];
+
+void showConstellationsPicker(BuildContext context,
+    {String choice = '', required _SingleClickCallBack clickCallBack}) {
+  showStringPicker<String>(context,
+      data: _constellations, choice: choice, clickCallBack: clickCallBack);
+}
 // //单列
 void showStringPicker<T>(
   BuildContext context, {
@@ -74,25 +97,21 @@ void showStringPicker<T>(
   }, selecteds: [data.indexOf(choice)], title: title);
 }
 
-//
-// //多列
-// static void showArrayPicker<T>(
-//     BuildContext context,{
-//       @required List<T> data,
-//       String title,
-//       List<int> normalIndex,
-//       PickerDataAdapter adapter,
-//       @required _ArrayClickCallBack clickCallBack,
-//     }) {
-//   openModalPicker(context, adapter: adapter??PickerDataAdapter(
-//       pickerdata: data,isArray: true
-//   ), clickCallBack: (Picker picker,List<int> selecteds) {
-//     clickCallBack(selecteds,picker.getSelectedValues());
-//   },selecteds: normalIndex,title: title);
-//
-//
-// }
-//
+//多列
+  void showArrayPicker<T>(
+    BuildContext context,{
+      required List<List<int>> data,
+      String title='',
+      required List<int> normalIndex,
+      required _ArrayClickCallBack clickCallBack,
+    }) {
+  openModalPicker(context, adapter:  PickerDataAdapter(
+      pickerdata: data,isArray: true
+  ), clickCallBack: (Picker picker,List<int> selecteds) {
+    clickCallBack(selecteds);
+  },selecteds: normalIndex,title: title);
+}
+
 void openModalPicker(
   BuildContext context, {
   required PickerAdapter adapter,

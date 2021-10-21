@@ -38,12 +38,13 @@ class UserInfo {
   int? isVideo;
   int? svip;
   int? vip;
-  int? svipEndTime;
+  String? svipEndTime;
   String? expectAge = '';
   String? expectHeight = '';
   String? expectConstellation = '';
   String? expectType = '';
-  List<String?> hobby =[];
+  String? expectRegion = '';
+  List<String>? hobby =[];
 
   UserInfo();
   factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
