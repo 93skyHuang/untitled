@@ -70,8 +70,14 @@ class _EditUserState extends State<EditUser> {
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: 30, bottom: 20),
                   child: ClipOval(
-                    child: Image(
-                      image: AssetImage("assets/images/user_icon.png"),
+                    child: _editUserInfoController.userInfo.value.headImgUrl == null||_editUserInfoController.userInfo.value.headImgUrl==''
+                        ? Image.asset(
+                      'assets/images/user_icon.png',
+                    )
+                        : Image.network(
+                      "${_editUserInfoController.userInfo.value.headImgUrl}",
+                      height:110,
+                      width:110,
                     ),
                   ),
                 ),
@@ -82,14 +88,14 @@ class _EditUserState extends State<EditUser> {
                 ),
                 ItemArrow(
                   onPressed: () {
-                    Get.to(() => EditBasicInfoPage());
+                    Get.to(EditBasicInfoPage())!.then((value) => _editUserInfoController.getInfo());
                   },
                   text: '基本资料',
                   showDivider: false,
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
                 CustomText(
-                  text: '昵称：小飞象  城市：成都市  性别：女',
+                  text: '昵称：${_editUserInfoController.userInfo.value.cname}  城市：${_editUserInfoController.userInfo.value.region}  性别：女',
                   textStyle: TextStyle(fontSize: 14, color: Color(0xff8C8C8C)),
                   margin: EdgeInsets.only(left: 16, bottom: 16),
                 ),
@@ -166,7 +172,6 @@ class _EditUserState extends State<EditUser> {
               ],
             ),
           ),
-// This trailing comma makes auto-formatting nicer for build methods.
         ));
   }
 
@@ -285,7 +290,7 @@ class _EditUserState extends State<EditUser> {
     if (result != null) {
       province = result.provinceName ?? "";
       city = result.cityName ?? "";
-      _editUserInfoController.userInfo.value.region = city;
+      _editUserInfoController.userInfo.value.expectRegion = city;
     }
   }
 

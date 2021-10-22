@@ -32,7 +32,7 @@ void showEducationPicker(BuildContext context,
 }
 
 void showMonthlyIncomePicker(BuildContext context,
-    {required _SingleClickCallBack clickCallBack}) {
+    {String choice='8000',required _SingleClickCallBack clickCallBack}) {
   List<String> income = [
     '4000以下',
     '6000',
@@ -43,7 +43,7 @@ void showMonthlyIncomePicker(BuildContext context,
     '100000以上',
   ];
   showStringPicker<String>(context,
-      data: income, choice: '8000', clickCallBack: clickCallBack);
+      data: income, choice: choice, clickCallBack: clickCallBack);
 }
 
 final List<int> _heights = [];

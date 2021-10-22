@@ -24,6 +24,8 @@ class UserInfo {
 //           * expectConstellation [期望对象星座]
 //           * expectType [你在这里寻找什么]
 //          * hobby [我的兴趣爱好]
+//     monthlyIncome 收入
+//    education 教育程度
   int uid = 0;
   String? headImgUrl = '';
   String? cname = '';
@@ -35,6 +37,8 @@ class UserInfo {
   String? autograph = '';
   String? birthday = '';
   String? backgroundImage = '';
+  String? monthlyIncome = '';
+  String? education = '';
   int? isVideo;
   int? svip;
   int? vip;

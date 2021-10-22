@@ -8,6 +8,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/base_page_data.dart';
+import 'package:untitled/network/bean/user_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/utils/image_picker_util.dart';
@@ -23,21 +24,45 @@ class EditBasicInfoPage extends StatefulWidget {
 }
 
 class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
-  String birthday = '';
-  int? height;
-  int sex = -1;
+  late UserInfo userInfo;
+  String? birthday = '';
+  int? height = 0;
+  int? sex = 1;
 
   //上传至oss返回的路径
   String? headerImgUrl;
 
   //本地选择的图片路径
   String? headerImgUrlLocal;
-
-  String monthlyIncome = '';
-  String education = '';
+  String? monthlyIncome = '';
+  String? education = '';
   String province = '';
-  String city = '';
-  String autograph = '';
+  String? city = '';
+  String? autograph = '';
+
+  late final TextEditingController _controllerNickName =
+      TextEditingController();
+  late final TextEditingController _controllerInfo = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo().then((value) => {
+          userInfo = value.data!,
+          birthday = userInfo.birthday,
+          height = userInfo.height,
+          sex = userInfo.sex,
+          headerImgUrl = userInfo.headImgUrl,
+          city = userInfo.region,
+          autograph = userInfo.autograph,
+          monthlyIncome = userInfo.monthlyIncome,
+          education = userInfo.education,
+          province = '',
+          _controllerNickName.text = userInfo.cname ?? '',
+          _controllerInfo.text = userInfo.autograph ?? '',
+          setState(() {}),
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +115,13 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                         width: 110,
                         height: 110,
                         child: headerImgUrlLocal == null
-                            ? Image.asset(
-                                'assets/images/user_icon.png',
-                              )
+                            ? (headerImgUrl == null
+                                ? Image.asset(
+                                    'assets/images/user_icon.png',
+                                  )
+                                : Image.network(
+                                    "$headerImgUrl",
+                                  ))
                             : Image.file(
                                 File('$headerImgUrlLocal'),
                                 fit:
@@ -141,7 +170,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               ),
               _itemArrow(
                 '生日',
-                birthday,
+                '$birthday',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
                   _choiceBirthday();
@@ -157,7 +186,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               ),
               _itemArrow(
                 '月收入',
-                monthlyIncome,
+                '$monthlyIncome',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
                   _choiceMonthlyIncome();
@@ -165,7 +194,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               ),
               _itemArrow(
                 '学历',
-                education,
+                '$education',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
                   _choiceEducation();
@@ -186,8 +215,6 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
       ),
     );
   }
-
-  final TextEditingController _controllerInfo = TextEditingController();
 
   Widget _textFieldInfo() {
     return TextField(
@@ -288,8 +315,6 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
     );
   }
 
-  final TextEditingController _controllerNickName = TextEditingController();
-
   Widget _inputNickName() {
     return Stack(
       alignment: Alignment.centerLeft,
@@ -358,7 +383,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
   }
 
   void _choiceSex() async {
-    showSexPicker(context, choice: sex == -1 ? 1 : sex,
+    showSexPicker(context, choice: sex ?? 1,
         clickCallBack: (int index, dynamic d) {
       sex = d + 1;
       setState(() {});
@@ -383,14 +408,15 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
   }
 
   void _choiceMonthlyIncome() async {
-    showMonthlyIncomePicker(context, clickCallBack: (int index, dynamic d) {
+    showMonthlyIncomePicker(context, choice: monthlyIncome ?? '8000',
+        clickCallBack: (int index, dynamic d) {
       monthlyIncome = d;
       setState(() {});
     });
   }
 
   void _choiceEducation() async {
-    showEducationPicker(context, choice: education,
+    showEducationPicker(context, choice: education ?? '',
         clickCallBack: (int index, dynamic d) {
       education = d;
       setState(() {});
@@ -409,7 +435,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
         headImgUrl: headerImgUrl,
         cname: _controllerNickName.text,
         birthday: birthday,
-        autograph: autograph,
+        autograph: _controllerInfo.text,
         province: province,
         region: city,
         sex: sex,

@@ -21,7 +21,6 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) {
     ..userdata = json['userdata'] == null
         ? null
         : UserData.fromJson(json['userdata'] as Map<String, dynamic>)
-    ..hobby = (json['hobby'] as List<dynamic>).map((e) => e as String?).toList()
     ..isVideo = json['isVideo'] as int?
     ..isHead = json['isHead'] as int?
     ..isCard = json['isCard'] as int?
@@ -48,7 +47,6 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'followSum': instance.followSum,
       'trendsSum': instance.trendsSum,
       'userdata': instance.userdata,
-      'hobby': instance.hobby,
       'isVideo': instance.isVideo,
       'isHead': instance.isHead,
       'isCard': instance.isCard,
@@ -89,9 +87,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     ..expectRegion = json['expectRegion'] as String?
     ..expectConstellation = json['expectConstellation'] as String?
     ..expectType = json['expectType'] as String?
-    ..expectHeight = json['expectHeight'] as String?
-    ..hobby =
-        (json['hobby'] as List<dynamic>).map((e) => e as String?).toList();
+    ..expectHeight = json['expectHeight'] as String?;
 }
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
@@ -100,5 +96,4 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'expectConstellation': instance.expectConstellation,
       'expectType': instance.expectType,
       'expectHeight': instance.expectHeight,
-      'hobby': instance.hobby,
     };
