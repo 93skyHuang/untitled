@@ -29,7 +29,7 @@ UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
     ..expectType = json['expectType'] as String?
     ..expectRegion = json['expectRegion'] as String?
     ..hobby =
-        (json['hobby'] as List<dynamic>).map((e) => e as String?).cast<String>().toList();
+        (json['hobby'] as List<dynamic>?)?.map((e) => e as String).toList();
 }
 
 Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{

@@ -6,7 +6,10 @@ import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/video_trends_info.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/chat/chat_page.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
+import 'package:untitled/widgets/toast.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +25,7 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
   late VideoPlayerController _videoController;
   final _Controller _controller = Get.put(_Controller());
   late VideoTrendsInfo info;
+  bool isPlaying = false;
 
   @override
   void initState() {
@@ -39,24 +43,18 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
   void initPlay() async {
     await _videoController.play();
     logger.i('initPlay ');
+    isPlaying = true;
     setState(() {});
-    _videoController.addListener(() {
-      logger.i(_videoController.videoPlayerOptions);
-    });
+    _videoController.addListener(playerListener);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.black,
-      child: GestureDetector(
-          onDoubleTap: () {
-            logger.i('onDoubleTap ');
-            _videoController.pause();
-          },
+      body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -81,18 +79,27 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                       }),
                 ),
               ),
-              Center(
-                child: _videoController.value.isPlaying
-                    ? Container()
-                    : _videoController.value.isInitialized
-                        ? IconButton(
-                            icon: Icon(Icons.play_circle_fill,
-                                size: 50, color: Colors.white),
-                            onPressed: () {
-                              _videoController.play();
-                            })
-                        : Container(),
-              ),
+              GestureDetector(
+                  onDoubleTap: () {
+                    logger.i('onDoubleTap $isPlaying');
+                    if (isPlaying) {
+                      pause();
+                    }
+                  },
+                  child: Center(
+                    child: _videoController.value.isPlaying
+                        ? Container()
+                        : _videoController.value.isInitialized
+                            ? IconButton(
+                                icon: Icon(Icons.play_circle_fill,
+                                    size: 50, color: Colors.white),
+                                onPressed: () {
+                                  if (!isPlaying) {
+                                    play();
+                                  }
+                                })
+                            : Container(),
+                  )),
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
@@ -120,7 +127,11 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                           textAlign: TextAlign.right),
                       SizedBox(height: 30),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          logger.i('私聊');
+                          pause();
+                          _controller.goToChatPage();
+                        },
                         child: Image.asset('assets/images/private_chat.png'),
                       ),
                       SizedBox(height: 10),
@@ -187,13 +198,37 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
               ),
             ],
           )),
-    ));
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
+    _videoController.removeListener(playerListener);
     _videoController.dispose();
+  }
+
+  void pause() async {
+    isPlaying = false;
+    if (_videoController.value.isPlaying) {
+      await _videoController.pause();
+      setState(() {});
+    }
+  }
+
+  void play() async {
+    await _videoController.play();
+    isPlaying = true;
+    setState(() {});
+  }
+
+  void playerListener() {
+    logger.i('${_videoController.value.isPlaying} isPlaying$isPlaying');
+    //状态改变
+    if (isPlaying != _videoController.value.isPlaying) {
+      isPlaying = _videoController.value.isPlaying;
+      setState(() {});
+    }
   }
 }
 
@@ -211,8 +246,45 @@ class _Controller extends GetxController {
   void clickLike() {
     if (!isLike.value) {
       likeNum++;
+      isLike.value = true;
+      addTrendsFabulous(info.trendsId ?? 0).then((value) => {
+            if (value.isOk())
+              {
+                info.isTrendsFabulous = 1,
+                info.fabulousSum = likeNum.value,
+              }
+            else
+              {
+                MyToast.show(value.msg),
+                likeNum--,
+                isLike.value = false,
+              }
+          });
     } else {
       likeNum--;
+      isLike.value = false;
+      deleteTrendsFabulous(info.trendsId ?? 0).then((value) => {
+            if (value.isOk())
+              {
+                info.isTrendsFabulous = 0,
+                info.fabulousSum = likeNum.value,
+              }
+            else
+              {
+                MyToast.show(value.msg),
+                likeNum++,
+                isLike.value = true,
+              }
+          });
     }
+  }
+
+  void goToChatPage() {
+    getHomeUserData(info.uid).then((value) => {
+          if (value.isOk())
+            {
+              Get.to(ChatPage(), arguments: value.data),
+            }
+        });
   }
 }

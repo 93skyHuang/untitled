@@ -31,7 +31,7 @@ void nimSdkInit() async {
         );
   NimCore.instance.initialize(options).then((result) {
     if (result.isSuccess) {
-      logger.i('云信 initialize info=$auto');
+      logger.i('云信 initialize isSuccess info=$auto');
     } else {
       logger.e('云信initialize 失败info=$auto      '
           'errorDetails${result.errorDetails}'

@@ -143,23 +143,27 @@ class LoginPage extends StatelessWidget {
           onChanged: (value) {},
           controller: _controllerCode,
         ),
-        Align(alignment: Alignment.centerRight,child:  Obx(
-              () => TextButton(
-            onPressed: () {
-              if (_loginController.isSendSmsCode.isFalse) {
-                String phone = _controllerPhone.value.text;
-                if (phone.isNotEmpty) {
-                  _loginController.getSmsCode(phone);
+        Align(
+          alignment: Alignment.centerRight,
+          child: Obx(
+            () => TextButton(
+              onPressed: () {
+                if (_loginController.isSendSmsCode.isFalse) {
+                  String phone = _controllerPhone.value.text;
+                  if (phone.isNotEmpty) {
+                    _loginController.getSmsCode(phone);
+                  }
                 }
-              }
-            },
-            child: Text(
-              _loginController.isSendSmsCode.isTrue ? '验证码已发送' : '获取验证码',
-              style: TextStyle(
-                  color: MyColor.whiteFFFFFF, fontSize: ScreenUtil().setSp(14)),
+              },
+              child: Text(
+                _loginController.isSendSmsCode.isTrue ? '验证码已发送' : '获取验证码',
+                style: TextStyle(
+                    color: MyColor.whiteFFFFFF,
+                    fontSize: ScreenUtil().setSp(14)),
+              ),
             ),
           ),
-        ),)
+        )
       ],
     );
   }
@@ -214,13 +218,12 @@ class LoginPage extends StatelessWidget {
   }
 
   void _clickProtocol() {
-    Get.toNamed(webViewPName, arguments: {
-      'url': 'http://www.sancun.vip/index/Index/ysxy',
-      'title': '用户协议'
-    });
+    Get.toNamed(webViewPName,
+        arguments: {'url': 'http://www.sancun.vip/yhxy', 'title': '用户协议'});
   }
 
   void _clickPrivacy() {
-    logger.i('_clickPrivacy');
+    Get.toNamed(webViewPName,
+        arguments: {'url': 'http://www.sancun.vip/ysxy', 'title': '用户协议'});
   }
 }

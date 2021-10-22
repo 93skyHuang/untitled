@@ -222,7 +222,7 @@ class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    logger.i("FocusOnBtn${widget.info.isFollow} ${widget.info.cname}");
+    logger.i("LikeAndCommentWidget${widget.info.isFollow} ${widget.info.cname}");
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,

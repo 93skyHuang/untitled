@@ -17,5 +17,6 @@ LoginResp _$LoginRespFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$LoginRespToJson(LoginResp instance) => <String, dynamic>{
       'uid': instance.uid,
       'sex': instance.sex,
+      'isNewUser': instance.isNewUser,
       'loginToken': instance.loginToken,
     };

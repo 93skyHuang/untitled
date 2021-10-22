@@ -10,14 +10,14 @@ import 'package:untitled/widgets/null_list_widget.dart';
 import '../video_play_page.dart';
 
 ///视频页面
-class VideoWidget extends StatefulWidget {
+class VideoListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _VideoWidgetState();
+    return _VideoListPageState();
   }
 }
 
-class _VideoWidgetState extends State<VideoWidget>
+class _VideoListPageState extends State<VideoListPage>
     with AutomaticKeepAliveClientMixin {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);

@@ -276,7 +276,7 @@ Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i('$basePageData');
-  } catch (error) {
+  } on DioError catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
@@ -1152,7 +1152,6 @@ Future<BasePageData> addTrendsFabulous(
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
-  MyToast.show(basePageData.msg);
   return basePageData;
 }
 
@@ -1176,7 +1175,6 @@ Future<BasePageData> deleteTrendsFabulous(
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
-  MyToast.show(basePageData.msg);
   return basePageData;
 }
 
