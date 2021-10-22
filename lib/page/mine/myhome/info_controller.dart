@@ -1,22 +1,20 @@
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:logger/logger.dart';
-import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/network/bean/user_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 
-class MineController extends GetxController {
-  Rx<UserBasic>  userBasic=UserBasic().obs;
+class InfoController extends GetxController {
+  Rx<UserInfo> userInfo = UserInfo().obs;
 
   @override
   void onInit() {
-    logger.i("MineControlleronInit");
+    logger.i("MyHomeControllerInit");
     getInfo();
   }
+
   void getInfo() {
-    getUserBasic().then((value) => {
-      userBasic.value = value.data!
-    });
+    getUserInfo().then((value) => {userInfo.value = value.data!});
   }
 
   @override

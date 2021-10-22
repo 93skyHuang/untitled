@@ -30,12 +30,13 @@ class UserBasic {
   String? birthday = '';
   int? height ;
   String? constellation = '';
+  String? region = '';
+  String? autograph = '';
   int uid = 0;
   int? age = 0;
   int? followSum = 0;
   int? trendsSum = 0;
   UserData? userdata ;
-  List<String?>? hobby =[];
   int? isVideo;
   int? isHead;
   int? isCard;
@@ -63,7 +64,7 @@ class Trends {
   int type;
   String? video;
   String? content;
-  List<String>? imgArr;
+  List<String?>? imgArr;
 
   Trends(this.id, this.type);
 
@@ -88,7 +89,6 @@ class UserData {
   String? expectType;
   String? expectHeight;
   int? isPhone;
-  List<String?>? hobby=[];
 
   UserData();
 

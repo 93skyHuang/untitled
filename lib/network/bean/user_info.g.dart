@@ -19,7 +19,10 @@ UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
     ..autograph = json['autograph'] as String?
     ..birthday = json['birthday'] as String?
     ..backgroundImage = json['backgroundImage'] as String?
+    ..monthlyIncome = json['monthlyIncome'] as String?
+    ..education = json['education'] as String?
     ..isVideo = json['isVideo'] as int?
+    ..isHead = json['isHead'] as int?
     ..svip = json['svip'] as int?
     ..vip = json['vip'] as int?
     ..svipEndTime = json['svipEndTime'] as String?
@@ -28,8 +31,10 @@ UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
     ..expectConstellation = json['expectConstellation'] as String?
     ..expectType = json['expectType'] as String?
     ..expectRegion = json['expectRegion'] as String?
-    ..hobby =
-        (json['hobby'] as List<dynamic>?)?.map((e) => e as String).toList();
+    ..hobby = (json['hobby'] as List<dynamic>)
+        .map((e) => e as String?)
+        .cast<String>()
+        .toList();
 }
 
 Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
@@ -45,8 +50,11 @@ Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
       'birthday': instance.birthday,
       'backgroundImage': instance.backgroundImage,
       'isVideo': instance.isVideo,
+      'isHead': instance.isHead,
       'svip': instance.svip,
       'vip': instance.vip,
+      'monthlyIncome': instance.monthlyIncome,
+      'education': instance.education,
       'svipEndTime': instance.svipEndTime,
       'expectAge': instance.expectAge,
       'expectHeight': instance.expectHeight,

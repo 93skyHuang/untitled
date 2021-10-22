@@ -1,52 +1,70 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/network/bean/chat_user_info.dart';
 import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/network/bean/user_info.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/mine/info/edit_user_info.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_menu.dart';
 
-class InfoPage extends StatelessWidget {
-  UserBasic info;
+import 'info_controller.dart';
+import 'my_home_controller.dart';
 
-  InfoPage({
-    required this.info,
-  });
+class InfoPage extends StatefulWidget {
+  final MyHomeController _myHomeController;
+
+  InfoPage(this._myHomeController);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _InfoPageState(_myHomeController);
+  }
+}
+
+class _InfoPageState extends State with SingleTickerProviderStateMixin {
+  _InfoPageState(this._myHomeController);
+
+  MyHomeController _myHomeController;
+
+  int uid = 0;
+  int? height = 0;
+
+  String? constellation = '';
+  int? age = 0;
+  int? sex = 1;
+  String? region = '';
+  String? autograph = '';
+  String? birthday = '';
+  String? backgroundImage = '';
+  String? monthlyIncome = '';
+  String? education = '';
+  int? isVideo;
+  int? isHead;
+  String? expectAge = '';
+  String? expectHeight = '';
+  String? expectConstellation = '';
+  String? expectType = '';
+  String? expectRegion = '';
+  List<String> verify = [];
+  List<String> icons = [];
+  List<Widget> details = [];
+  List<Widget> expects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> verify = ['实名认证', '头像认证', '真人认证', '手机认证'];
-    List<String> icons = [
-      "assets/images/icon_verified_name.png",
-      "assets/images/icon_verified_avatar.png",
-      "assets/images/icon_verified_person.png",
-      "assets/images/icon_verified_phone.png"
-    ];
-    List<Widget> details = [
-      CustomTextRadius(
-        text: '性别：男',
-      ),
-      CustomTextRadius(
-        text: '身高：165cm',
-      ),
-      CustomTextRadius(
-        text: '生肖：马',
-      ),
-      CustomTextRadius(
-        text: '星座：摩羯座',
-      ),
-      CustomTextRadius(
-        text: '城市：成都',
-      ),
-      CustomTextRadius(
-        text: '月收入：1万-2万',
-      ),
-      CustomTextRadius(
-        text: '学历：本科',
-      )
-    ];
-
     return SingleChildScrollView(
         child: Container(
       child: Column(
@@ -56,14 +74,19 @@ class InfoPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: '一天前\n四川成都｜女｜20岁｜90后',
+                text: '陌声ID： ${uid}\n${region}｜${sex == 1 ? '男' : '女'}｜${age}岁',
                 textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                 margin: EdgeInsets.only(left: 18, top: 20, bottom: 10),
               ),
               Container(
                   margin: EdgeInsets.only(right: 18, top: 20),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => EditUser())!.then((value) {
+                        getInfo();
+                        _myHomeController.getInfo();
+                      });
+                    },
                     child: Row(
                       children: [
                         Image(
@@ -96,7 +119,7 @@ class InfoPage extends StatelessWidget {
           Container(
               margin: EdgeInsets.all(16),
               child: CustomText(
-                text: '我在寻求四川成都，年龄20-29岁身高165cm女生',
+                text: '${autograph}',
                 textStyle: TextStyle(fontSize: 12, color: Colors.black),
               ),
               padding: EdgeInsets.only(left: 20, right: 20, bottom: 9, top: 9),
@@ -104,30 +127,33 @@ class InfoPage extends StatelessWidget {
                 color: Color(0xffE6E6E6),
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
               )),
-          Divider(
-            color: Color(0xffE6E6E6),
-          ),
-          CustomText(
-            text: '个人认证',
-            textStyle: TextStyle(fontSize: 14, color: Colors.black),
-            margin: EdgeInsets.only(left: 16, top: 5),
-          ),
-          Container(
-            height: 75,
-            padding: EdgeInsets.only(left: 16),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return new ItemMenu(
-                  margin: EdgeInsets.only(right: 30),
-                  text: verify[index],
-                  img: icons[index],
-                  onPressed: () {},
-                );
-              },
-              itemCount: verify.length,
+          if (verify.length > 0)
+            Divider(
+              color: Color(0xffE6E6E6),
             ),
-          ),
+          if (verify.length > 0)
+            CustomText(
+              text: '个人认证',
+              textStyle: TextStyle(fontSize: 14, color: Colors.black),
+              margin: EdgeInsets.only(left: 16, top: 5),
+            ),
+          if (verify.length > 0)
+            Container(
+              height: 75,
+              padding: EdgeInsets.only(left: 16),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return new ItemMenu(
+                    margin: EdgeInsets.only(right: 30),
+                    text: verify[index],
+                    img: icons[index],
+                    onPressed: () {},
+                  );
+                },
+                itemCount: verify.length,
+              ),
+            ),
           Divider(
             color: Color(0xffE6E6E6),
           ),
@@ -136,8 +162,13 @@ class InfoPage extends StatelessWidget {
             textStyle: TextStyle(fontSize: 14, color: Colors.black),
             margin: EdgeInsets.only(left: 16, top: 5),
           ),
-          Wrap(
-            children: details,
+          Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.only(left: 16),
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              children: details,
+            ),
           ),
           Container(
             height: 0.5,
@@ -149,11 +180,117 @@ class InfoPage extends StatelessWidget {
             textStyle: TextStyle(fontSize: 14, color: Colors.black),
             margin: EdgeInsets.only(left: 16, top: 5),
           ),
-          Wrap(
-            children: details,
-          ),
+          Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.only(left: 16),
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              children: expects,
+            ),
+          )
         ],
       ),
     ));
+  }
+
+  void getInfo() {
+    UserInfo userInfo;
+    getUserInfo().then((value) => {userInfo = value.data!, setInfo(userInfo)});
+  }
+
+  void setInfo(UserInfo userInfo) {
+    expects.clear();
+    details.clear();
+    uid = userInfo.uid;
+    sex = userInfo.sex;
+    details.add(CustomTextRadius(
+      text: '性别：${sex == 1 ? '男' : '女'}',
+    ));
+    age = userInfo.age;
+    details.add(CustomTextRadius(
+      text: '年龄：${age}',
+    ));
+    height = userInfo.height;
+    if (height != 0) {
+      details.add(CustomTextRadius(
+        text: '身高：${height}cm',
+      ));
+    }
+    constellation = userInfo.constellation;
+    if (constellation != '') {
+      details.add(CustomTextRadius(
+        text: '星座：${constellation}',
+      ));
+    }
+    region = userInfo.region;
+    if (region != null) {
+      details.add(CustomTextRadius(
+        text: '城市：${region}',
+      ));
+    }
+    autograph = userInfo.autograph;
+    birthday = userInfo.birthday;
+    if (birthday != '') {
+      details.add(CustomTextRadius(
+        text: '生日：${birthday}',
+      ));
+    }
+    monthlyIncome = userInfo.monthlyIncome;
+    if (monthlyIncome != '') {
+      details.add(CustomTextRadius(
+        text: '月收入：${monthlyIncome}',
+      ));
+    }
+    education = userInfo.education;
+    if (education != '') {
+      details.add(CustomTextRadius(
+        text: '学历：${education}',
+      ));
+    }
+    backgroundImage = userInfo.backgroundImage;
+    isVideo = userInfo.isVideo;
+    isHead = userInfo.isHead;
+    expectAge = userInfo.expectAge;
+    if (expectAge != '') {
+      expects.add(CustomTextRadius(
+        text: '年龄：${expectAge}',
+      ));
+    }
+    expectHeight = userInfo.expectHeight;
+    if (expectHeight != '') {
+      expects.add(CustomTextRadius(
+        text: '身高：${expectHeight}',
+      ));
+    }
+    expectConstellation = userInfo.expectConstellation;
+    if (expectConstellation != '') {
+      expects.add(CustomTextRadius(
+        text: '星座：${expectConstellation}',
+      ));
+    }
+    expectType = userInfo.expectType;
+    if (expectType != '') {
+      expects.add(CustomTextRadius(
+        text: '目标：${expectType}',
+      ));
+    }
+    expectRegion = userInfo.expectRegion;
+    if (expectRegion != '') {
+      expects.add(CustomTextRadius(
+        text: '城市：${expectRegion}',
+      ));
+    }
+    if (isHead == 1) {
+      //0-否，1-是]
+      verify.add('头像认证');
+      icons.add("assets/images/icon_verified_avatar.png");
+    }
+    if (isVideo == 1) {
+      //0-否，1-是]
+      verify.add('视频认证');
+      icons.add("assets/images/icon_verified_person.png");
+    }
+
+    setState(() {});
   }
 }
