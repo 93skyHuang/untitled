@@ -14,6 +14,8 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) {
     ..birthday = json['birthday'] as String?
     ..height = json['height'] as int?
     ..constellation = json['constellation'] as String?
+    ..region = json['region'] as String?
+    ..autograph = json['autograph'] as String?
     ..uid = json['uid'] as int
     ..age = json['age'] as int?
     ..followSum = json['followSum'] as int?
@@ -54,6 +56,8 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'commentList': instance.commentList,
       'time': instance.time,
       'svip': instance.svip,
+      'region': instance.region,
+      'autograph': instance.autograph,
     };
 
 Trends _$TrendsFromJson(Map<String, dynamic> json) {

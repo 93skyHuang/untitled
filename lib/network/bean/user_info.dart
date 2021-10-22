@@ -16,6 +16,7 @@ class UserInfo {
 //      * birthday [生日]
 //      * backgroundImage [用户主页背景图]
 //      * isVideo [是否已视频认证，0-否，1-是]
+//      * isHead [是否已头像认证，0-否，1-是]
 //      * svip [是否是月卡用户0-否，1-是]
 //      * svipEndTime [月卡到期时间0-否，1-是]
 //      * expectAge [交友年龄]
@@ -40,6 +41,7 @@ class UserInfo {
   String? monthlyIncome = '';
   String? education = '';
   int? isVideo;
+  int? isHead;
   int? svip;
   int? vip;
   String? svipEndTime;

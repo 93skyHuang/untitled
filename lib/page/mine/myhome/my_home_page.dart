@@ -28,10 +28,9 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Obx(() => buildNestedScrollView()),
+      body:   Obx(() =>buildNestedScrollView()),
     );
   }
-
   ///构建滑动布局
   NestedScrollView buildNestedScrollView() {
     return NestedScrollView(
@@ -79,14 +78,14 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               return new ItemTrend(
               );
             },
-            itemCount: 5,
+            itemCount: _myHomeController.userBasic.value.trendsList!.length,
           ),
         ),
         Text(
           "这是第二个页面",
           style: TextStyle(color: Colors.blue),
         ),
-        InfoPage(info: _myHomeController.userBasic.value),
+        InfoPage(_myHomeController),
       ],
     );
   }
@@ -131,12 +130,11 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
             ),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                  "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg",
+                image: NetworkImage("${_myHomeController.userBasic.value.headImgUrl??''}",
                 ),
                 fit: BoxFit.fill,
               ),
-            ),
+            ) ,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +147,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                       Navigator.maybePop(context);
                     }),
                 CustomText(
-                  text: '这里是昵称',
+                  text: '${_myHomeController.userBasic.value.cname}',
                   textAlign: Alignment.topLeft,
                   textStyle: TextStyle(fontSize: 17, color: Colors.white),
                   margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),

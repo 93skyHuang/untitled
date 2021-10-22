@@ -30,6 +30,8 @@ class UserBasic {
   String? birthday = '';
   int? height ;
   String? constellation = '';
+  String? region = '';
+  String? autograph = '';
   int uid = 0;
   int? age = 0;
   int? followSum = 0;
