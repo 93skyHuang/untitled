@@ -17,7 +17,7 @@ class CommunityTabBarView extends StatelessWidget {
   }
 
   List<Widget> _list() {
-    List<Widget> list = [RecommendWidget(),VideoWidget(),FocusOnPage()];
+    List<Widget> list = [RecommendWidget(),VideoListPage(),FocusOnPage()];
     return list;
   }
 }

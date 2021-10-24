@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/page/find/find_page.dart';
 
 import 'community/community_page.dart';
+import 'home_controller.dart';
 import 'messages/messages_page.dart';
 import 'mine/mine_page.dart';
 import 'nearby/nearby_page.dart';
@@ -19,6 +21,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
+  HomeController homeController = Get.put(HomeController());
+
   int _currentIndex = 0;
   final List<Widget> _pageList = [
     FindPage(),

@@ -18,38 +18,79 @@ class ItemTrend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String longText = '超过最大行数三行的多行文本超过最大行数三行的多行文本超过最大行数三行的多行文本'
-        '超过最大行数三行的多行文本超过最大行数三行的多行文本超过最大行数三行的多行文本超过最大行数三行的多行文本';
     return GestureDetector(
         onTap: () {},
         child: Container(
-          child: Column(
+          padding: EdgeInsets.only(top: 20, bottom: 16, left: 16,right: 16 ),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color: Color(0xffE6E6E6),
+                      width: 0.5,
+                      style: BorderStyle.solid))),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomText(text: '一天前',textStyle: TextStyle(fontSize: 14,color: Colors.black),margin: EdgeInsets.only(left: 18,top: 20),),
-                  // CustomText(text: '不知道说点什么，那就随便说几句。凑凑字数啊～今天很开心的',textStyle: TextStyle(fontSize: 14,color: Color(0xff8C8C8C)),margin: EdgeInsets.only(left: 20,top: 20,right: 18)),
-                  // TQExpandableText(
-                  //   text: longText,
-                  //   maxLines: 3,
-                  //   style: TextStyle(fontSize: 15, color: Colors.black),
-                  //   expand: false,
-                  // ),  TQExpandableText(
-
-                  Expanded(
-                    child: TQExpandableText(
-                        '测试长文字折叠 文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠测试长文字折叠',
-                      ),
-                  ),
-
-                ],
+              CustomText(
+                text: '一天前',
+                textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                margin: EdgeInsets.only(right: 20),
               ),
-              Text('data'),
-              Divider(
-                color: Color(0xffE6E6E6),
-              )
+              Expanded(
+                  child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TQExpandableText(
+                    '测试长测测试测试测试长 长文字折叠测试长 长文字折叠文字折叠测试长 长文字折叠文字折叠试长 长文字折叠测试长 长文字折叠测试长 长文字折叠测试长 长文字折叠测试长 长文字折叠测试长 长文字折叠测试长 长文字折叠测试长 长文字折叠长文字折叠',
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                          onTap: () {},
+                          child: Image(
+                            image:
+                                AssetImage("assets/images/icon_heart_grey.png"),
+                          )),
+                      CustomText(
+                        text: '20',
+                        textStyle:
+                            TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                        margin: EdgeInsets.only(
+                            right: 20, top: 16, bottom: 2, left: 5),
+                      ),
+                      GestureDetector(
+                          onTap: () {},
+                          child: Image(
+                              image: AssetImage(
+                                  "assets/images/icon_comment.png"))),
+                      CustomText(
+                        text: '10',
+                        textStyle:
+                            TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                        margin: EdgeInsets.only(
+                            right: 20, top: 16, bottom: 2, left: 5),
+                      ),
+                      Expanded(
+                          child: CustomText(
+                        textAlign: Alignment.centerRight,
+                        text: '删除',
+                        textStyle: TextStyle(fontSize: 12, color: Colors.black),
+                        margin: EdgeInsets.only(right: 5, top: 13, bottom: 2),
+                      )),
+                    ],
+                  ),
+                ],
+              )),
             ],
           ),
+          // Divider(
+          //   color: Color(0xffE6E6E6),
+          // )
         ));
-  }  }
+  }
+}

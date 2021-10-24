@@ -7,6 +7,7 @@ import 'package:untitled/persistent/get_storage_utils.dart';
 void nimSdkInit() async {
   NIMLoginInfo? auto;
   int uid = GetStorageUtils.getUID();
+  logger.i("$uid nimSdkInit=$nimSdkInit");
   if (uid != -1) {
     String token = GetStorageUtils.getNimToken();
     String account = "ll$uid";
@@ -30,9 +31,9 @@ void nimSdkInit() async {
         );
   NimCore.instance.initialize(options).then((result) {
     if (result.isSuccess) {
-      logger.i('云信自动登录成功info=$auto');
+      logger.i('云信 initialize isSuccess info=$auto');
     } else {
-      logger.e('云信自动登录失败info=$auto      '
+      logger.e('云信initialize 失败info=$auto      '
           'errorDetails${result.errorDetails}'
           'result.code${result.code}');
     }

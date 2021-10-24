@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/login/add_basic_info.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/route_config.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -26,7 +27,10 @@ class LoginController extends GetxController {
     phoneLogin(phone, code).then((value) => {
           if (value.isOk())
             {
-              Get.offNamed(homePName)
+              if (value.data?.isNewUser == 1)
+                Get.offNamed(addBasicInfoPName)
+              else
+                Get.offNamed(homePName)
             }
           else
             MyToast.show(value.msg)

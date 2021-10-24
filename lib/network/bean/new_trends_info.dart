@@ -30,16 +30,17 @@ class NewTrendsInfo {
   int? sex;
   String? headImgUrl;
   String? cname;
+  String? topicName;
   int? height;
   String? constellation;
   int? age;
-  int? trendsId;
+  int trendsId;
   String? region;
   String? video;
   String? content;
   List<String?> imgArr = [];
   List<String?>? trendsFabulousList;
-  List<CommentBean?>? commentList;
+  List<CommentBean?> commentList=[];
   int? fabulousSum;
   int? commentSum;
   int? beClickedSum;
@@ -50,7 +51,7 @@ class NewTrendsInfo {
   int? isTrendsFabulous;
   int? userLabel;
 
-  NewTrendsInfo();
+  NewTrendsInfo(this.trendsId);
 
   factory NewTrendsInfo.fromJson(Map<String, dynamic> json) =>
       _$NewTrendsInfoFromJson(json);

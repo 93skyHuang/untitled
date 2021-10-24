@@ -14,15 +14,19 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) {
     ..birthday = json['birthday'] as String?
     ..height = json['height'] as int?
     ..constellation = json['constellation'] as String?
+    ..region = json['region'] as String?
+    ..autograph = json['autograph'] as String?
     ..uid = json['uid'] as int
     ..age = json['age'] as int?
     ..followSum = json['followSum'] as int?
     ..trendsSum = json['trendsSum'] as int?
-    ..userdata = json['userdata'] as String?
-    ..hobby = (json['hobby'] as List<dynamic>).map((e) => e as String?).toList()
+    ..userdata = json['userdata'] == null
+        ? null
+        : UserData.fromJson(json['userdata'] as Map<String, dynamic>)
     ..isVideo = json['isVideo'] as int?
     ..isHead = json['isHead'] as int?
     ..isCard = json['isCard'] as int?
+    ..isFollow = json['isFollow'] as int?
     ..trendsList = (json['trendsList'] as List<dynamic>?)
         ?.map((e) =>
             e == null ? null : Trends.fromJson(e as Map<String, dynamic>))
@@ -46,14 +50,16 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'followSum': instance.followSum,
       'trendsSum': instance.trendsSum,
       'userdata': instance.userdata,
-      'hobby': instance.hobby,
       'isVideo': instance.isVideo,
       'isHead': instance.isHead,
       'isCard': instance.isCard,
+      'isFollow': instance.isFollow,
       'trendsList': instance.trendsList,
       'commentList': instance.commentList,
       'time': instance.time,
       'svip': instance.svip,
+      'region': instance.region,
+      'autograph': instance.autograph,
     };
 
 Trends _$TrendsFromJson(Map<String, dynamic> json) {
@@ -79,4 +85,21 @@ Map<String, dynamic> _$TrendsToJson(Trends instance) => <String, dynamic>{
       'video': instance.video,
       'content': instance.content,
       'imgArr': instance.imgArr,
+    };
+
+UserData _$UserDataFromJson(Map<String, dynamic> json) {
+  return UserData()
+    ..expectAge = json['expectAge'] as String?
+    ..expectRegion = json['expectRegion'] as String?
+    ..expectConstellation = json['expectConstellation'] as String?
+    ..expectType = json['expectType'] as String?
+    ..expectHeight = json['expectHeight'] as String?;
+}
+
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+      'expectAge': instance.expectAge,
+      'expectRegion': instance.expectRegion,
+      'expectConstellation': instance.expectConstellation,
+      'expectType': instance.expectType,
+      'expectHeight': instance.expectHeight,
     };

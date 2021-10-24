@@ -1,18 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/gestures.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
-import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
 
-import 'item_widget.dart';
+import 'recommend_item_widget.dart';
 
 ///推荐页面
 class RecommendWidget extends StatefulWidget {
@@ -163,26 +160,12 @@ class _RecommendWidgetState extends State<RecommendWidget>
                           _itemContentImage(info),
                           Padding(
                             padding: EdgeInsets.only(
-                              top: ScreenUtil().setWidth(10),
-                              bottom: ScreenUtil().setWidth(10),
+                              top: ScreenUtil().setWidth(14),
+                              bottom: ScreenUtil().setWidth(14),
                             ),
-                            // child: _itemLable(info),
+                            child: _itemLable(info),
                           ),
-                          Text(
-                            '精选评论',
-                            style: TextStyle(
-                              fontSize: ScreenUtil().setSp(12),
-                              color: MyColor.grey8C8C8C,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: ScreenUtil().setWidth(10),
-                              bottom: ScreenUtil().setWidth(10),
-                            ),
-                            child: _getComment(info),
-                          ),
+                          _comment(info),
                           LikeAndCommentWidget(info),
                         ],
                       )),
@@ -194,10 +177,33 @@ class _RecommendWidgetState extends State<RecommendWidget>
     );
   }
 
-  /**
-   * 点赞按钮
-      //  */
-  // Widget _likeAndComment(NewTrendsInfo i) {}
+  Widget _comment(NewTrendsInfo info) {
+    return info.commentList.isEmpty
+        ? Container(
+            width: 0,
+            height: 0,
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start ,
+            children: [
+              Text(
+                '精选评论',
+                style: TextStyle(
+                  fontSize: ScreenUtil().setSp(12),
+                  color: MyColor.grey8C8C8C,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: ScreenUtil().setWidth(10),
+                  bottom: ScreenUtil().setWidth(10),
+                ),
+                child: _getComment(info),
+              )
+            ],
+          );
+  }
 
   Widget _itemName(NewTrendsInfo info) {
     return Column(
@@ -229,25 +235,107 @@ class _RecommendWidgetState extends State<RecommendWidget>
     return widget;
   }
 
+  //标签
+  Widget _itemLable(NewTrendsInfo info) {
+    List<Widget> list = [];
+    if (info.region != null) {
+      list.add(Container(
+          height: ScreenUtil().setHeight(23),
+          // 边框设置
+          decoration: const BoxDecoration(
+            //背景
+            color: Color(0x1A5DB1DE),
+            //设置四周圆角 角度
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            //设置四周边框
+            border: Border(),
+          ),
+          // 设置 child 居中
+          alignment: const Alignment(0, 0),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  left: ScreenUtil().setWidth(6),
+                  top: ScreenUtil().setWidth(6),
+                  bottom: ScreenUtil().setWidth(6),
+                  right: ScreenUtil().setWidth(4)),
+              child: Image(
+                  color: MyColor.blackColor,
+                  image: const AssetImage("assets/images/ic_location.png"),
+                  fit: BoxFit.fill),
+            ),
+            Text(
+              '${info.region}',
+              style: TextStyle(
+                fontSize: ScreenUtil().setSp(12),
+                color: MyColor.blackColor,
+              ),
+            ),
+            Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
+          ])));
+      if (info.topicName != null) {
+        list.add(
+          Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(10))),
+        );
+        list.add(radiusContainer(
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  left: ScreenUtil().setWidth(6),
+                  top: ScreenUtil().setWidth(6),
+                  bottom: ScreenUtil().setWidth(6),
+                  right: ScreenUtil().setWidth(4)),
+              child: Image(
+                  color: MyColor.blackColor,
+                  image: const AssetImage("assets/images/topic.png"),
+                  fit: BoxFit.fill),
+            ),
+            Text(
+              '${info.topicName}',
+              style: TextStyle(
+                fontSize: ScreenUtil().setSp(12),
+                color: MyColor.blackColor,
+              ),
+            ),
+            Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
+          ]),
+          c: Color(0xffE6E6E6),
+          radius: 12,
+          height: ScreenUtil().setHeight(23),
+        ));
+      }
+    }
+    return Container(
+        width: _textContextWidth,
+        child: Row(
+          children: list,
+        ));
+  }
+
   Widget _getComment(NewTrendsInfo info) {
-    return Column(
-      children: [
-        Row(
-          children: [_getSingleComment('yonghu', 'jjjjjjjjjjjjjjjj')],
-        ),
-        Padding(
+    List<Widget> list = [];
+    int commentLength = info.commentList.length;
+    if (commentLength > 0) {
+      if (commentLength == 1) {
+        CommentBean? commentBean = info.commentList[0];
+        list.add(_getSingleComment(
+            '${commentBean?.cname}', '${commentBean?.content}'));
+      } else {
+        CommentBean? commentBean = info.commentList[0];
+        list.add(_getSingleComment(
+            '${commentBean?.cname}', '${commentBean?.content}'));
+        list.add(Padding(
           padding: EdgeInsets.only(
             top: ScreenUtil().setWidth(5),
           ),
-        ),
-        Row(
-          children: [
-            _getSingleComment(
-                'yonghujjjjjjjjjjjjjjj555555555555555555555555555555555555555555555j',
-                'jjjjjjjjjjjjjjj555555555555555555555555555555555555555555555j')
-          ],
-        ),
-      ],
+        ));
+        CommentBean? commentBean1 = info.commentList[1];
+        list.add(_getSingleComment(
+            '${commentBean1?.cname}', '${commentBean1?.content}'));
+      }
+    }
+    return Column(
+      children: list,
     );
   }
 

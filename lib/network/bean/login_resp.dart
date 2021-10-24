@@ -6,7 +6,8 @@ part 'login_resp.g.dart';
 class LoginResp {
   LoginResp();
   int uid = 0;
-  int sex = 0;
+  int sex = 1;
+  int? isNewUser = 0;
   String? loginToken = '';
 
   factory LoginResp.fromJson(Map<String, dynamic> json) =>

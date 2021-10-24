@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/login/add_basic_info.dart';
+import 'package:untitled/page/login/login_page.dart';
+import 'package:untitled/page/mine/info/edit_user_info.dart';
 import 'package:untitled/widget/custom_text.dart';
 
 import '../../route_config.dart';
@@ -205,16 +208,30 @@ class LikeAndCommentWidget extends StatefulWidget {
 }
 
 class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
+  bool isFabulous = false;
+  int focusNum = 0;
+  int commentNum = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    isFabulous = widget.info.isTrendsFabulous == 1;
+    focusNum = widget.info.fabulousSum ?? 0;
+    commentNum = widget.info.commentSum ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
-    logger.i("FocusOnBtn${widget.info.isFollow} ${widget.info.cname}");
-    bool isFabulous = widget.info.isTrendsFabulous == 1;
+    logger.i("LikeAndCommentWidget${widget.info.isFollow} ${widget.info.cname}");
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           TextButton(
-              onPressed: () {},
+              //点赞
+              onPressed: () {
+                _focusClick();
+              },
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(const Size(0, 0)),
                 visualDensity: VisualDensity.compact,
@@ -231,16 +248,15 @@ class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
           Padding(
             padding: EdgeInsets.only(right: 20),
             child: Text(
-              '128',
+              '${widget.info.fabulousSum == 0 ? '' : widget.info.fabulousSum}',
               style: TextStyle(
                   color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(12)),
             ),
           ),
           TextButton(
+              //评论
               onPressed: () {
-                Get.toNamed(photoViewScalePName, arguments: {
-                  'url': 'http://sancunkongjian.oss-cn-beijing.aliyuncs.com/TIS/20200418/2020041821385320771.jpg',
-                });
+                Get.to(AddBasicInfoPage());
               },
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(const Size(0, 0)),
@@ -253,12 +269,39 @@ class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
                   image: const AssetImage("assets/images/icon_comment.png"),
                   fit: BoxFit.fill)),
           Text(
-            '67',
+            '${widget.info.commentSum == 0 ? '' : widget.info.commentSum}',
             style: TextStyle(
                 color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(12)),
           ),
         ],
       ),
     );
+  }
+
+  void _focusClick() {
+    if (isFabulous) {
+      deleteTrendsFabulous(widget.info.trendsId).then((value) => {
+            if (value.isOk())
+              {
+                isFabulous = false,
+                focusNum--,
+                _updatePage(),
+              }
+          });
+    } else {
+      addTrendsFabulous(widget.info.trendsId).then((value) => {
+            if (value.isOk())
+              {
+                isFabulous = true,
+                focusNum++,
+                _updatePage(),
+              }
+          });
+    }
+  }
+
+  void _updatePage() {
+    logger.i('updatePage');
+    setState(() {});
   }
 }

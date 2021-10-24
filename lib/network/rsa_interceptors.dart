@@ -52,7 +52,6 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
                     response.data['data'] = json.decode(value),
                 })
             .whenComplete(() => {
-                  logger.i('======》Decrypted RESPONSE :${response.toString()}'),
                   handler.next(response),
                 });
       } else {

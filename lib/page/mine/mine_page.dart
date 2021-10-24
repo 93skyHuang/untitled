@@ -11,10 +11,10 @@ import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/page/mine/visitor/visitor_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
-
-import 'edit_user_info.dart';
+import 'edit_basic_info.dart';
 import 'fans/fan_page.dart';
 import 'follow/follow_page.dart';
+import 'info/edit_user_info.dart';
 import 'mine_controller.dart';
 import 'myhome/my_home_page.dart';
 
@@ -133,11 +133,16 @@ class _MinePageState extends State<MinePage> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg",
-                          // "${_mineController.userBasic.value.headImgUrl}",
-                          width: 60,
-                          height: 60,
+                        child:_mineController.userBasic.value.headImgUrl == null||_mineController.userBasic.value.headImgUrl==''
+                            ? Image.asset(
+                          'assets/images/user_icon.png',
+                          height:60,
+                          width:60,
+                        )
+                            : Image.network(
+                          "${_mineController.userBasic.value.headImgUrl}",
+                          height:60,
+                          width:60,
                         ),
                       ),
                       Expanded(
@@ -167,7 +172,8 @@ class _MinePageState extends State<MinePage> {
                       ),
                       Container(
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => EditUser())!.then((value) => _mineController.getInfo());},
                             child: Row(
                               children: [
                                 Image(
@@ -188,7 +194,6 @@ class _MinePageState extends State<MinePage> {
                           decoration: new BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15.0)),
-                            //设置四周边框
                             border: new Border.all(
                                 width: 1, color: Color(0xff8C8C8C)),
                           ))
@@ -204,7 +209,7 @@ class _MinePageState extends State<MinePage> {
                       margin: EdgeInsets.only(left: 16),
                     ),
                     CustomText(
-                      text: '${_mineController.userBasic.value.trendsList!.length}',
+                      text: '0',
                       textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     CustomText(
@@ -253,21 +258,27 @@ class _MinePageState extends State<MinePage> {
                           ),
                         ],
                       ),
-                      Container(
-                          padding: EdgeInsets.only(
-                              left: 12, right: 12, bottom: 5, top: 3),
-                          decoration: new BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16.0)),
-                          ),
-                          child: Text(
-                            "去完善",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff5DB1DE),
+                      GestureDetector(
+                        onTap: (){
+                          Get.to(EditBasicInfoPage())!.then((value) => _mineController.getInfo());
+                        },
+                        child:
+                        Container(
+                            padding: EdgeInsets.only(
+                                left: 12, right: 12, bottom: 5, top: 3),
+                            decoration: new BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16.0)),
                             ),
-                          ))
+                            child: Text(
+                              "去完善",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xff5DB1DE),
+                              ),
+                            )),
+                      )
                     ],
                   ),
                 ),

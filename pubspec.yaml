@@ -61,12 +61,13 @@ dependencies:
   #土司
   fluttertoast: ^8.0.8
 
-  #  #定位信息
-  #  geolocator: ^7.6.2#
+  #  #定位信息 Android编译过不了 sdk的编译版本为31 我们的为30
+  geolocator: ^7.7.0
 
-  #拍照选择图片
+  #拍照选择图片 查看image_picker_util
   image_picker: ^0.8.4+2
-
+  #获取视频缩略图
+  video_thumbnail: ^0.4.3
   #
   webview_flutter: ^2.1.1
 
@@ -83,6 +84,18 @@ dependencies:
 
   # 图片预览缩放
   photo_view: ^0.13.0
+
+  # 城市选择器 https://pub.dev/packages/city_pickers
+  city_pickers: ^1.0.1
+
+  #flutter_picker 底部弹窗选择
+  flutter_picker: ^2.0.2
+  #  用于格式日期
+  date_format: ^2.0.4
+
+  #  视频相关类
+  video_player: ^2.2.5
+#  flutter_sound_lite: ^8.4.1
 
 dev_dependencies:
   flutter_test:

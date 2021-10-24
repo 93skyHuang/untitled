@@ -25,6 +25,7 @@ class MyClassicFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const ClassicFooter(idleText: '上拉加载', loadingText: '加载中...');
+    return const ClassicFooter(idleText: '上拉加载',
+        loadingText: '加载中...',canLoadingText:'上拉加载更多',noDataText:'没有数据啦！');
   }
 }

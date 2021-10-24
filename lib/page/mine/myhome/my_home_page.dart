@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 
+import 'info_page.dart';
+import 'my_home_controller.dart';
 
 //个人首页页面
 class MyHomePage extends StatefulWidget {
@@ -17,14 +22,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State with SingleTickerProviderStateMixin {
+  final MyHomeController _myHomeController = Get.put(MyHomeController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: buildNestedScrollView(),
+      body:   Obx(() =>buildNestedScrollView()),
     );
   }
-
   ///构建滑动布局
   NestedScrollView buildNestedScrollView() {
     return NestedScrollView(
@@ -47,6 +53,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
           ),
         ];
       },
+
       ///主体部分
       body: buildTabBarView(),
     );
@@ -64,18 +71,21 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
     return TabBarView(
       controller: tabController,
       children: <Widget>[
-        SingleChildScrollView(
-          child: Container(
-            alignment: Alignment.bottomLeft,
-            child: Text("这是第一个页面"),
-            height: 1000,
+        Container(
+          child:
+          ListView.builder(
+            itemBuilder: (context, index) {
+              return new ItemTrend(
+              );
+            },
+            itemCount: _myHomeController.userBasic.value.trendsList!.length,
           ),
         ),
         Text(
           "这是第二个页面",
           style: TextStyle(color: Colors.blue),
         ),
-        ItemTrend(),
+        InfoPage(_myHomeController),
       ],
     );
   }
@@ -112,7 +122,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
       child: Column(
         children: [
           Container(
-            height: 375,
+            height: 365,
             alignment: Alignment.topLeft,
             width: double.infinity,
             padding: EdgeInsets.only(
@@ -120,12 +130,11 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
             ),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                  "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg",
+                image: NetworkImage("${_myHomeController.userBasic.value.headImgUrl??''}",
                 ),
                 fit: BoxFit.fill,
               ),
-            ),
+            ) ,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +147,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                       Navigator.maybePop(context);
                     }),
                 CustomText(
-                  text: '这里是昵称',
+                  text: '${_myHomeController.userBasic.value.cname}',
                   textAlign: Alignment.topLeft,
                   textStyle: TextStyle(fontSize: 17, color: Colors.white),
                   margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),

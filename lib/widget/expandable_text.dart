@@ -9,7 +9,7 @@ class TQExpandableText extends StatefulWidget {
   const TQExpandableText(
       this.text, {
         this.expanded = false,
-        this.maxLines = 4,
+        this.maxLines = 3,
       });
 
   final String text;
@@ -103,7 +103,7 @@ class ExpandableTextState extends State<TQExpandableText> {
           textSize.width - linkWidth,
           textSize.height,
         ));
-        final endOffset = textPainter.getOffsetBefore(position.offset-2);
+        final endOffset = textPainter.getOffsetBefore(position.offset);
 
         TextSpan textSpan;
         if (textPainter.didExceedMaxLines) {

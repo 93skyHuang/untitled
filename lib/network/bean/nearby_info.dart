@@ -42,11 +42,11 @@ class TrendsImg{
   //[动态内容集合]video-视频地址，type-类型（0-心情（只有一段文字），
   // 1-动态（有文字和图片），2-视频），id-动态ID，imgArr动态图片
   String? video;
-  int? type;
-  int? id;
-  List<String?>? imgArr;
+  int type;
+  int id;
+  String imgArr='';
 
-  TrendsImg();
+  TrendsImg(this.id,this.type);
   factory TrendsImg.fromJson(Map<String, dynamic> json) => _$TrendsImgFromJson(json);
 
   Map<String?, dynamic> toJson() => _$TrendsImgToJson(this);

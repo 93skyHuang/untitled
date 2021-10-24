@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
@@ -15,9 +17,16 @@ import '../route_config.dart';
 /**
  * 闪屏页面
  */
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() {
+    return _SplashPageState();
+  }
+}
+
+class _SplashPageState extends State<SplashPage> {
   void init(BuildContext context) {
     //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
     ScreenUtil.init(
@@ -26,15 +35,12 @@ class SplashPage extends StatelessWidget {
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(360, 690),
         orientation: Orientation.portrait);
-    //云信sdk初始化
-    nimSdkInit();
-    pageJump();
   }
 
   void pageJump() {
     int uid = GetStorageUtils.getUID();
     if (uid != -1) {
-      autoLogin(uid).then((value) => {
+      autoLogin().then((value) => {
             if (value.isOk())
               {Get.offNamed(homePName)}
             else
@@ -43,6 +49,19 @@ class SplashPage extends StatelessWidget {
     } else {
       Get.offNamed(loginPName);
     }
+  }
+
+  @override
+  void initState() {
+    //云信sdk初始化
+    nimSdkInit();
+    GetStorage.init();
+    logger.i('initState');
+    super.initState();
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      logger.i('addPostFrameCallback');
+      pageJump();
+    });
   }
 
   @override

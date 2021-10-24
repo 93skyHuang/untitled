@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/community/pull_dynamic_page.dart';
 import 'community_tab_bar.dart';
 import 'community_tab_bar_view.dart';
 
@@ -65,8 +67,8 @@ class _CommunityPageState extends State<CommunityPage>
   bool get wantKeepAlive => true;
 
   Widget addBtn() {
-    return InkWell(
-        onTap: pullDymaic,
+    return GestureDetector(
+        onTap: _pullDynamic,
         child: Row(children: [
           Padding(
             padding: EdgeInsets.only(
@@ -86,7 +88,7 @@ class _CommunityPageState extends State<CommunityPage>
         ]));
   }
 
-  void pullDymaic() {
-    logger.i('发布动态');
+  void _pullDynamic() {
+    Get.to(PullDynamicPage());
   }
 }

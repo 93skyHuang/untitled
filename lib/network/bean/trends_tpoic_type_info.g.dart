@@ -10,7 +10,7 @@ TrendsTopicTypeInfo _$TrendsTopicTypeInfoFromJson(Map<String, dynamic> json) {
   return TrendsTopicTypeInfo()
     ..id = json['id'] as int?
     ..sex = json['sex'] as int?
-    ..title = json['title'] as String?
+    ..title = json['title'] as String
     ..image = json['image'] as String?
     ..description = json['description'] as String?
     ..trendsSum = json['trendsSum'] as int?;

@@ -28,7 +28,7 @@ VideoTrendsInfo _$VideoTrendsInfoFromJson(Map<String, dynamic> json) {
     ..area = json['area'] as String?
     ..commentList = (json['commentList'] as List<dynamic>?)
         ?.map((e) =>
-    e == null ? null : CommentBean.fromJson(e as Map<String, dynamic>))
+            e == null ? null : CommentBean.fromJson(e as Map<String, dynamic>))
         .toList()
     ..isTrendsFabulous = json['isTrendsFabulous'] as int?
     ..trendsFabulousList = (json['trendsFabulousList'] as List<dynamic>?)

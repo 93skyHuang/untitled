@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:nim_core/nim_core.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
@@ -33,16 +35,18 @@ class _MessagesPageState extends State<MessagesPage>
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  int pageNo = 1;
-  List<NearbyInfo> _list = [];
+  List<NIMSession> _list = [];
   final double _textContextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(180);
 
   @override
   void initState() {
     logger.i('initState');
-    _onRefresh();
     super.initState();
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      _onRefresh();
+    });
+
   }
 
   @override
@@ -58,15 +62,12 @@ class _MessagesPageState extends State<MessagesPage>
           actions: [
             TextButton(
                 onPressed: () {
-                  _controller.newSystemMsg.value = "9999999999999996666666666";
-                  _controller.newSystemMsgTime.value = "6666";
-                  _controller.isCanChat.value = true;
+                  _controller.querySystemMsg();
                 },
                 child: Text('test')),
             TextButton(
                 onPressed: () {
-                  _controller.newSystemMsg.value = "1";
-                  _controller.isCanChat.value = false;
+                  _controller.querySessionList();
                 },
                 child: Text('test2'))
           ],
@@ -84,7 +85,6 @@ class _MessagesPageState extends State<MessagesPage>
           // 配置默认底部指示器
           controller: _refreshController,
           onRefresh: _onRefresh,
-          onLoading: _onLoading,
           child: _getListView(),
         ));
   }
@@ -94,52 +94,15 @@ class _MessagesPageState extends State<MessagesPage>
 
   void _onRefresh() async {
     logger.i("_onRefresh");
-    pageNo = 1;
-    getData();
-  }
-
-  // 上拉加载更多
-  void _onLoading() async {
-    logger.i("_onLoading");
-    pageNo++;
-    getData(isLoad: true);
-  }
-
-  void getData({bool isLoad = false}) {
-    // getNearbyList(pageNo).then((value) => {
-    //       logger.i(value),
-    //       if (value.isOk())
-    //         if (isLoad)
-    //           {
-    //             _refreshController.loadComplete(),
-    //             _list.addAll(value.data ?? []),
-    //             updatePage(),
-    //           }
-    //         else
-    //           {
-    //             _refreshController.refreshCompleted(),
-    //             _list = value.data ?? [],
-    //             updatePage(),
-    //           }
-    //       else
-    //         {
-    //           isLoad
-    //               ? _refreshController.loadFailed()
-    //               : _refreshController.refreshFailed()
-    //         }
-    //     });
-  }
-
-  void updatePage() {
-    logger.i('updatePage');
-    setState(() {});
+    _list = await _controller.querySessionList();
+    _refreshController.refreshCompleted();
   }
 
   Widget _getListView() {
     int length = _list.length;
     List<Widget> listView = [_systemItem()];
-    for (int i = 0; i < 3; i++) {
-      listView.add(_chatItemView(null));
+    for (int i = 0; i < length; i++) {
+      listView.add(_chatItemView(_list[i]));
     }
     return ListView(
       children: listView,
@@ -154,6 +117,7 @@ class _MessagesPageState extends State<MessagesPage>
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
           logger.i("itemclick");
+          getUserInfo();
         },
         child: Column(
           children: [
@@ -163,14 +127,36 @@ class _MessagesPageState extends State<MessagesPage>
                 padding: EdgeInsets.fromLTRB(12, 16, 16, 16),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        "assets/images/ic_launcher.png",
-                        fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                        width: ScreenUtil().setWidth(44),
-                        height: ScreenUtil().setWidth(44),
-                      ),
+                    Stack(
+                      alignment: AlignmentDirectional.topEnd,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 4, right: 2),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              "assets/images/ic_launcher.png",
+                              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                              width: ScreenUtil().setWidth(44),
+                              height: ScreenUtil().setWidth(44),
+                            ),
+                          ),
+                        ),
+                        Obx(() => _controller.unReadSystemMsg > 0
+                            ? Container(
+                                alignment: Alignment.center,
+                                width: ScreenUtil().setWidth(14),
+                                height: ScreenUtil().setWidth(14),
+                                child: Text('${_controller.unReadSystemMsg}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: ScreenUtil().setSp(8))),
+                                decoration: BoxDecoration(
+                                    color: Color(0xffFD4343),
+                                    borderRadius: BorderRadius.circular(8)))
+                            : Container()),
+                      ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -210,7 +196,7 @@ class _MessagesPageState extends State<MessagesPage>
         ));
   }
 
-  Widget _chatItemView(NearbyInfo? info) {
+  Widget _chatItemView(NIMSession session) {
     return TextButton(
         style: ButtonStyle(
             minimumSize: MaterialStateProperty.all(const Size(0, 0)),
@@ -242,18 +228,21 @@ class _MessagesPageState extends State<MessagesPage>
                             ),
                           ),
                         ),
-                        Container(
-                            alignment: Alignment.center,
-                            width: ScreenUtil().setWidth(14),
-                            height: ScreenUtil().setWidth(14),
-                            child: Text('9',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenUtil().setSp(8))),
-                            decoration: BoxDecoration(
-                                color: Color(0xffFD4343),
-                                borderRadius: BorderRadius.circular(8)))
+                        session.unreadCount > 0
+                            ? Container(
+                                alignment: Alignment.center,
+                                width: ScreenUtil().setWidth(14),
+                                height: ScreenUtil().setWidth(14),
+                                child: Text(
+                                    '${session.unreadCount > 99 ? 99 : session.unreadCount}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: ScreenUtil().setSp(8))),
+                                decoration: BoxDecoration(
+                                    color: Color(0xffFD4343),
+                                    borderRadius: BorderRadius.circular(8)))
+                            : Container()
                       ],
                     ),
                     Column(
@@ -261,7 +250,7 @@ class _MessagesPageState extends State<MessagesPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         singeLineText(
-                            '名字',
+                            '${session.senderNickname}',
                             _textContextWidth,
                             TextStyle(
                                 color: Color(0xff000014),

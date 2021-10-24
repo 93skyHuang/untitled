@@ -30,16 +30,17 @@ class UserBasic {
   String? birthday = '';
   int? height ;
   String? constellation = '';
+  String? region = '';
+  String? autograph = '';
   int uid = 0;
   int? age = 0;
   int? followSum = 0;
   int? trendsSum = 0;
-  // int? followSum = 0;
-  String? userdata = '';
-  List<String?> hobby =[];
+  UserData? userdata ;
   int? isVideo;
   int? isHead;
   int? isCard;
+  int? isFollow;
   List<Trends?>? trendsList;
   List<String?>? commentList;
   String? time ;
@@ -63,7 +64,7 @@ class Trends {
   int type;
   String? video;
   String? content;
-  List<String>? imgArr;
+  List<String?>? imgArr;
 
   Trends(this.id, this.type);
 
@@ -71,4 +72,28 @@ class Trends {
       _$TrendsFromJson(json);
 
   Map<String?, dynamic> toJson() => _$TrendsToJson(this);
+}
+
+//动态信息
+@JsonSerializable()
+class UserData {
+  ///     * expectAge [交友年龄]
+  //      * expectRegion [期望对象城市]
+  //      * expectHeight [期望对象身高]
+  //      * expectConstellation [期望对象星座]
+  //      * expectType [你在这里寻找什么]
+  //      * hobby [我的兴趣爱好](兴趣爱好以数组格式传递)
+  String? expectAge;
+  String? expectRegion;
+  String? expectConstellation;
+  String? expectType;
+  String? expectHeight;
+  int? isPhone;
+
+  UserData();
+
+  factory UserData.fromJson(Map<String, dynamic> json) =>
+      _$UserDataFromJson(json);
+
+  Map<String?, dynamic> toJson() => _$UserDataToJson(this);
 }
