@@ -46,6 +46,15 @@ class GetStorageUtils {
     _accountStorage.write('sex', sex);
   }
 
+  static bool getSvip() {
+    return _accountStorage.read('svip') ?? false;
+  }
+
+  ///
+  static void saveSvip(bool svip) {
+    _accountStorage.write('svip', svip);
+  }
+
   static List<FindTabInfo>? getFindTab() {
     List<dynamic>? list = _commonStorage.read('find_tab');
     List<FindTabInfo>? infoList =

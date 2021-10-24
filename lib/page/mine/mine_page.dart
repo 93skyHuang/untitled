@@ -11,10 +11,13 @@ import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/page/mine/visitor/visitor_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
+import 'beliked/beliked_page.dart';
 import 'edit_basic_info.dart';
 import 'fans/fan_page.dart';
 import 'follow/follow_page.dart';
+import 'history/history_page.dart';
 import 'info/edit_user_info.dart';
+import 'like/like_page.dart';
 import 'mine_controller.dart';
 import 'myhome/my_home_page.dart';
 
@@ -39,9 +42,7 @@ class _MinePageState extends State<MinePage> {
       img: "assets/images/mine_verify.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        // Get.to(() => VerifyCenterPage());
-        getUserBasic().then((value) =>
-            {logger.i('终1111于${value.toString()} ---${value.isOk()}')});
+        Get.to(() => VerifyCenterPage());
       },
     ),
     ItemMenu(
@@ -56,7 +57,8 @@ class _MinePageState extends State<MinePage> {
       text: '我喜欢的',
       img: "assets/images/mine_like.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(() => LikePage());},
     ),
     ItemMenu(
       text: '我的粉丝',
@@ -77,13 +79,15 @@ class _MinePageState extends State<MinePage> {
       text: '我的足迹',
       img: "assets/images/mine_history.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(() => HistoryPage());},
     ),
     ItemMenu(
       text: '喜欢我的',
       img: "assets/images/mine_follows.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
+      onPressed: () {
+        Get.to(() => BelikedPage());},
     ),
     ItemMenu(
       text: '安全中心',

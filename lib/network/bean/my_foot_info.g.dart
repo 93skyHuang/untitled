@@ -12,6 +12,7 @@ MyFootInfo _$MyFootInfoFromJson(Map<String, dynamic> json) {
     ..height = json['height'] as int?
     ..headImgUrl = json['headImgUrl'] as String?
     ..cname = json['cname'] as String?
+    ..constellation = json['constellation'] as String?
     ..time = json['time'] as String?;
 }
 
@@ -21,5 +22,6 @@ Map<String, dynamic> _$MyFootInfoToJson(MyFootInfo instance) =>
       'height': instance.height,
       'headImgUrl': instance.headImgUrl,
       'cname': instance.cname,
+      'constellation': instance.constellation,
       'time': instance.time,
     };

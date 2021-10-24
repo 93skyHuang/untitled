@@ -77,17 +77,19 @@ class _VerifyCenterPageState extends State<VerifyCenterPage> {
                       ],
                     ),
                     GestureDetector(
-                      onTap: (){
-                        Get.to(()=>AvatarVerifiedPage());
+                      onTap: () {
+                        // Get.to(()=>AvatarVerifiedPage());
+                        showBottomOpen(context);
                       },
-                      child:Container(
+                      child: Container(
                           height: 40,
                           alignment: Alignment.center,
                           width: 214,
                           margin: EdgeInsets.only(top: 20),
                           decoration: new BoxDecoration(
                             color: Color(0xffF3CD8E),
-                            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
                           ),
                           child: Text(
                             "立即认证",
@@ -95,14 +97,193 @@ class _VerifyCenterPageState extends State<VerifyCenterPage> {
                               fontSize: 17,
                               color: Colors.black,
                             ),
-                          )) ,
+                          )),
                     )
-
                   ],
                 )),
           ],
         ),
       ),
     );
+  }
+
+  void showBottomOpen(BuildContext context) {
+    showModalBottomSheet(
+        enableDrag: false,
+        elevation: 0,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      )),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(
+                            bottom: 20.0, left: 40, right: 40, top: 191),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/images/verify_bg.png",
+                            ),
+                            fit: BoxFit.fill,
+                          ),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0)),
+                        ),
+                        child: Column(children: <Widget>[
+                          CustomText(
+                              text: "真人认证",
+                              textStyle: TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
+                          CustomText(
+                              text: "提交真实信息，助你快速脱单。",
+                              padding: EdgeInsets.only(top: 4, bottom: 20),
+                              textStyle: TextStyle(
+                                  fontSize: 12, color: Color(0xff8C8C8C))),
+                          CustomText(
+                              text: "1.请露出正脸和上半身，拍摄3秒以上15秒以内的视频",
+                              textStyle: TextStyle(
+                                  fontSize: 12, color: Color(0xff8C8C8C))),
+                          CustomText(
+                              text: "2.请保证头像与真人认证为同一人",
+                              padding: EdgeInsets.only(top: 11, bottom: 11),
+                              textStyle: TextStyle(
+                                  fontSize: 12, color: Color(0xff8C8C8C))),
+                          CustomText(
+                              text: "3.视频仅用于官方认证，不会对用户展示",
+                              padding: EdgeInsets.only(top: 4, bottom: 20),
+                              textStyle: TextStyle(
+                                  fontSize: 12, color: Color(0xff8C8C8C))),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.pop(context);
+                              showCamera(context);
+                            },
+                            child: Container(
+                              height: 40,
+                              alignment: Alignment.center,
+                              width: 214,
+                              margin: EdgeInsets.only(top: 20),
+                              decoration: new BoxDecoration(
+                                color: Color(0xffF3CD8E),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: Text(
+                                "开始认证",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
+                              ))
+                            ,),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: CustomText(
+                              textAlign: Alignment.center,
+                                text: "知道了",
+                                padding: EdgeInsets.only(top:20),
+                                textStyle: TextStyle(
+                                    fontSize: 12, color: Color(0xff8C8C8C))),
+                          ),
+                        ]))
+                  ]));
+        });
+  }
+  void showCamera(BuildContext context) {
+    showModalBottomSheet(
+        enableDrag: false,
+        elevation: 0,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      )),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(
+                            bottom: 20.0, left: 40, right: 40, top: 101),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0)),
+                        ),
+                        child: Column(children: <Widget>[
+                          Image(
+                            image:
+                            AssetImage("assets/images/icon_circle.png"),
+                          ),
+                          CustomText(
+                              text: "把脸移入圈内",
+                              textAlign: Alignment.center,
+                              margin: EdgeInsets.only(top: 30),
+                              textStyle: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                          CustomText(
+                              text: "拍摄真实信息，获取“真人”标签",
+                              margin: EdgeInsets.only(top: 20, bottom: 50),
+                              textAlign: Alignment.center,
+                              textStyle: TextStyle(
+                                  fontSize: 15, color: Colors.white)),
+                          Container(
+                              height: 40,
+                              alignment: Alignment.center,
+                              width: 214,
+                              decoration: new BoxDecoration(
+                                color: Color(0xffF3CD8E),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                              ),
+                              child: Text(
+                                "立即认证",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
+                              )),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: CustomText(
+                                textAlign: Alignment.center,
+                                text: "取消认证",
+                                padding: EdgeInsets.only(top:20),
+                                textStyle: TextStyle(
+                                    fontSize: 12, color: Color(0xff8C8C8C))),
+                          ),
+                        ]))
+                  ]));
+        });
   }
 }

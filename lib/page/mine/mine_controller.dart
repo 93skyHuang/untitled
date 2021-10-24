@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 
 class MineController extends GetxController {
   Rx<UserBasic>  userBasic=UserBasic().obs;
@@ -15,7 +16,8 @@ class MineController extends GetxController {
   }
   void getInfo() {
     getUserBasic().then((value) => {
-      userBasic.value = value.data!
+      userBasic.value = value.data!,
+      GetStorageUtils.saveSvip( userBasic.value.svip==1)
     });
   }
 
