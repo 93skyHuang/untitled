@@ -40,7 +40,8 @@ class LoginController extends GetxController {
   void getSmsCodeSuccess() {
     isSendSmsCode.value = true;
     Future.delayed(const Duration(seconds: 30)).then((value) => {
-          logger.i('delayed message'),
+          logger.i('delayed message $isClose'),
+      if(!isClose)
           if (isSendSmsCode.value) {isSendSmsCode.value = false}
         });
   }
@@ -50,8 +51,10 @@ class LoginController extends GetxController {
     logger.i("onInit");
   }
 
+  bool isClose=false;
   @override
   void onClose() {
+    isClose=true;
     logger.i("onClose");
   }
 

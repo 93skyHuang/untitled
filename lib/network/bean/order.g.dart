@@ -7,7 +7,7 @@ part of 'order.dart';
 // **************************************************************************
 
 Order _$OrderFromJson(Map<String, dynamic> json) {
-  return Order()..orderId = json['orderId'] as String?;
+  return Order(json['orderId'] as int);
 }
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{

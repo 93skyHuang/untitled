@@ -231,7 +231,7 @@ packages:
       name: dio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   encrypt:
     dependency: "direct main"
     description:
@@ -286,6 +286,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.2"
+  flutter_inapp_purchase:
+    dependency: "direct main"
+    description:
+      name: flutter_inapp_purchase
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.0.3"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -306,7 +313,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -344,7 +351,7 @@ packages:
       name: geolocator
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.7.0"
+    version: "7.7.1"
   geolocator_android:
     dependency: transitive
     description:
@@ -540,14 +547,21 @@ packages:
       name: nim_core
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.5"
+    version: "1.0.0-rc.7"
   nim_core_platform_interface:
     dependency: transitive
     description:
       name: nim_core_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.5"
+    version: "1.0.0-rc.6"
+  nim_core_windows:
+    dependency: transitive
+    description:
+      name: nim_core_windows
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0-beta.10"
   octo_image:
     dependency: transitive
     description:
@@ -853,7 +867,7 @@ packages:
       name: webview_flutter
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   webview_flutter_android:
     dependency: transitive
     description:

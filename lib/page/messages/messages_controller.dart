@@ -35,20 +35,20 @@ class MessagesController extends GetxController {
    * 查询一条系统消息
    */
   void querySystemMsg() async {
-    final result =
-        await NimCore.instance.systemMessageService.querySystemMessages(1);
-    logger.i(result);
-    if (result.isSuccess) {
-      List<SystemMessage> msg = result.data ?? [];
-      logger.i(msg.length);
-      if (msg.isNotEmpty) {
-        SystemMessage systemMessage = msg[0];
-        newSystemMsg.value = systemMessage.content ?? newSystemMsg.value;
-        int time = systemMessage.time ?? 0;
-        newSystemMsgTime.value = '$time';
-        logger.i(systemMessage);
-      }
-    }
+    // final result =
+    //     await NimCore.instance.systemMessageService.querySystemMessages(1);
+    // logger.i(result);
+    // if (result.isSuccess) {
+    //   List<SystemMessage> msg = result.data ?? [];
+    //   logger.i(msg.length);
+    //   if (msg.isNotEmpty) {
+    //     SystemMessage systemMessage = msg[0];
+    //     newSystemMsg.value = systemMessage.content ?? newSystemMsg.value;
+    //     int time = systemMessage.time ?? 0;
+    //     newSystemMsgTime.value = '$time';
+    //     logger.i(systemMessage);
+    //   }
+    // }
   }
 
   ///获取会话列表

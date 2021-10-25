@@ -6,8 +6,8 @@ part 'order.g.dart';
 class Order {
   // ** orderId [充值订单号]
 
-  String? orderId = '';
-  Order();
+  int orderId ;
+  Order(this.orderId);
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
 
   Map<String?, dynamic> toJson() => _$OrderToJson(this);

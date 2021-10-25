@@ -1222,6 +1222,27 @@ Future<BasePageData<Order?>> createOrder(String productID) async {
   return basePageData;
 }
 
+/// 生成内购订单号
+Future<BasePageData> verifyOrder(int orderId,String receiptData,String transactionID,) async {
+  BasePageData basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response = await getDio().post('/index/Pay/verifyOrder',
+        data: {'uid': uid, 'orderId': orderId,'receipt_data':receiptData,'transactionID':transactionID});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(
+          baseResp.code, baseResp.msg, Order.fromJson(baseResp.data));
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
 /// OSS文件上传 视频、图片先使用此接口进行上传
 Future<BasePageData<String?>> fileUpload(String filePath) async {
   BasePageData<String?> basePageData;

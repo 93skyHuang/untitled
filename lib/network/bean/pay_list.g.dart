@@ -7,14 +7,13 @@ part of 'pay_list.dart';
 // **************************************************************************
 
 PayList _$PayListFromJson(Map<String, dynamic> json) {
-  return PayList()
+  return PayList((json['monthlyCardList'] as List<dynamic>)
+      .map((e) => MonthlyCard.fromJson(e as Map<String, dynamic>))
+      .toList())
     ..headImgUrl = json['headImgUrl'] as String?
     ..cname = json['cname'] as String?
     ..svip = json['svip'] as int?
-    ..monthlyCardList = (json['monthlyCardList'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : MonthlyCard.fromJson(e as Map<String, dynamic>))
-        .toList();
+    ;
 }
 
 Map<String, dynamic> _$PayListToJson(PayList instance) => <String, dynamic>{
@@ -25,10 +24,8 @@ Map<String, dynamic> _$PayListToJson(PayList instance) => <String, dynamic>{
     };
 
 MonthlyCard _$MonthlyCardFromJson(Map<String, dynamic> json) {
-  return MonthlyCard()
+  return MonthlyCard(json['iosKey'] as String,json['money'] as String,)
     ..describe = json['describe'] as String?
-    ..money = json['money'] as String?
-    ..iosKey = json['iosKey'] as String?
     ..text1 = json['text1'] as String?
     ..text2 = json['text2'] as String?
     ..text3 = json['text3'] as String?

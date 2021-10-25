@@ -79,8 +79,8 @@ class NimNetworkManager {
   }
 
   void querySystemMsg() async {
-    final result =
-        await NimCore.instance.systemMessageService.querySystemMessages(1);
+    // final result =
+    //     await NimCore.instance.systemMessageService.querySystemMessages(1);
   }
 
   void createSession() async {

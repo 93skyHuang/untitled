@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/page/mine/vip/vip_controller.dart';
 import 'package:untitled/widget/custom_text.dart';
 
@@ -55,22 +56,22 @@ class _VipPageState extends State<VipPage> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg",
+                    child: Obx(()=>Image.network(
+                      _vipController.imgurl.value,
                       width: 60,
                       height: 60,
-                    ),
+                    )),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomText(
-                        text: '这里是昵称',
+                      Obx(()=>CustomText(
+                        text: _vipController.name.value,
                         textAlign: Alignment.center,
                         textStyle: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                         margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-                      ),
+                      )),
                       Image(
                         image: AssetImage("assets/images/vip_uncharge.png"),
                       ),
@@ -319,7 +320,7 @@ class _VipPageState extends State<VipPage> {
                 Expanded(
                     child: GestureDetector(
                       onTap: (){
-                        // this._vipController.getPaylist();
+                        _vipController.pay();
                       },
                   child: Container(
                       height: 60,

@@ -97,6 +97,9 @@ dependencies:
   video_player: ^2.2.5
 #  flutter_sound_lite: ^8.4.1
 
+  #iOS内购
+  flutter_inapp_purchase: ^5.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
