@@ -1,9 +1,9 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/find_tab_info.dart';
+import 'package:untitled/network/bean/user_basic.dart';
 
 class GetStorageUtils {
-
   //
   static final _accountStorage = GetStorage('AccountStorage');
 
@@ -26,6 +26,7 @@ class GetStorageUtils {
   static Future<void> saveNimToken(String nimToken) {
     return _accountStorage.write('nimToken', nimToken);
   }
+
 
   static int getUID() {
     return _accountStorage.read('uid') ?? -1;
@@ -58,12 +59,25 @@ class GetStorageUtils {
   static List<FindTabInfo>? getFindTab() {
     List<dynamic>? list = _commonStorage.read('find_tab');
     List<FindTabInfo>? infoList =
-    list?.map((e) => FindTabInfo.fromJson(e)).toList();
+        list?.map((e) => FindTabInfo.fromJson(e)).toList();
     return infoList;
   }
 
   ///发现页面导航栏
   static void saveFindTab(List<FindTabInfo>? f) {
     _commonStorage.write('find_tab', f);
+  }
+
+  ///保存某个人的基本信息数据
+  static void saveUserBasic(int uid, UserBasic userBasic) {
+    _commonStorage.write('$uid', userBasic);
+  }
+
+  ///获取某个人的基本信息数据
+  static UserBasic? getUserBasic(int uid) {
+    final userBasicMap = _commonStorage.read('$uid');
+    logger.i(userBasicMap);
+    // return userBasicMap == null ? null : UserBasic.fromJson(userBasicMap);
+    return userBasicMap ;
   }
 }

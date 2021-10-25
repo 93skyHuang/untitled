@@ -224,6 +224,6 @@ class LoginPage extends StatelessWidget {
 
   void _clickPrivacy() {
     Get.toNamed(webViewPName,
-        arguments: {'url': 'http://www.sancun.vip/ysxy', 'title': '用户协议'});
+        arguments: {'url': 'http://www.sancun.vip/ysxy', 'title': '隐私声明'});
   }
 }

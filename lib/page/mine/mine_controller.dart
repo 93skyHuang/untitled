@@ -16,8 +16,11 @@ class MineController extends GetxController {
   }
   void getInfo() {
     getUserBasic().then((value) => {
-      userBasic.value = value.data!,
-      GetStorageUtils.saveSvip( userBasic.value.svip==1)
+      if(value.isOk()){
+        userBasic.value = value.data!,
+        GetStorageUtils.saveSvip( userBasic.value.svip==1),
+        GetStorageUtils.saveUserBasic(value.data!.uid, value.data!)
+      }
     });
   }
 

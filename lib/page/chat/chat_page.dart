@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
@@ -21,6 +22,7 @@ import 'package:untitled/widgets/null_list_widget.dart';
 
 import '../messages/messages_controller.dart';
 import 'chat_controller.dart';
+import 'message_bean.dart';
 
 //聊天页面
 class ChatPage extends StatefulWidget {
@@ -34,6 +36,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final ChatController _controller = Get.put(ChatController());
+  TextEditingController textEditingController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -41,6 +45,7 @@ class _ChatPageState extends State<ChatPage> {
     //聊天用户的uid
     UserBasic userBasic = Get.arguments as UserBasic;
     _controller.setUserBasic(userBasic);
+    list = _controller.getMsg();
   }
 
   @override
@@ -73,19 +78,347 @@ class _ChatPageState extends State<ChatPage> {
         body: Stack(
           children: [
             _userCard(),
-            // SmartRefresher(
-            //   enablePullDown: true,
-            //   enablePullUp: true,
-            //   header: const MyClassicHeader(),
-            //   footer: const MyClassicFooter(),
-            //   // 配置默认底部指示器
-            //   controller: _refreshController,
-            //   onRefresh: _onRefresh,
-            //   onLoading: _onLoading,
-            //   child: _getListView(),
-            // )
-          ],
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Color(0xFFF0F0F0),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      //列表内容少的时候靠上
+                      alignment: Alignment.topCenter,
+                      child: _renderList(),
+                    ),
+                  ),
+                  Container(
+                    height: ScreenUtil().setHeight(50),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF0F0F0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x14000000),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Obx(() => GestureDetector(
+                              onTap: () {
+                                _controller.openOrCloseRecoding();
+                              },
+                              child: _controller.isShowRecodingBtn.value
+                                  ? Container(
+                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        //背景
+                                        color: MyColor.mainColor,
+                                        //设置四周圆角 角度
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                        //设置四周边框
+                                        border: Border(),
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      child: Icon(
+                                        Icons.keyboard,
+                                        size: 30,
+                                      ),
+                                    )
+                                  : Container(
+                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        //背景
+                                        color: MyColor.mainColor,
+                                        //设置四周圆角 角度
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                        //设置四周边框
+                                        border: Border(),
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      child: Icon(
+                                        Icons.mic_rounded,
+                                        size: 30,
+                                      ),
+                                    ),
+                            )),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                            constraints: BoxConstraints(
+                              maxHeight: 100.0,
+                              minHeight: 50.0,
+                            ),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFF5F6FF),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2))),
+                            child: Obx(() => _controller.isShowRecodingBtn.value
+                                ? GestureDetector(
+                                    onTapDown: (tapDown) {
+                                      _controller.startRecoding();
+                                    },
+                                    onTapUp: (tapUp) {
+                                      _controller.stopRecoding();
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                        _controller.isRecoding.value
+                                            ? '松开结束'
+                                            : '按住说话',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: MyColor.mainColor,
+                                            fontSize: 16),
+                                      ),
+                                    ))
+                                : TextField(
+                                    controller: textEditingController,
+                                    maxLines: null,
+                                    maxLength: 200,
+                                    decoration: InputDecoration(
+                                      counterText: '',
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 16.0,
+                                          right: 16.0,
+                                          bottom: 10),
+                                      hintText: "回复",
+                                      hintStyle: TextStyle(
+                                          color: Color(0xFFADB3BA),
+                                          fontSize: 14),
+                                    ),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 14),
+                                  )),
+                          ),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              sendTxt();
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                //背景
+                                color: Color(0xFFF3CD8E),
+                                //设置四周圆角 角度
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                //设置四周边框
+                                border: Border(),
+                              ),
+                              height: 40,
+                              width: 80,
+                              child: Text(
+                                '发送',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ));
+  }
+
+  List<MessageBean> list = []; //列表要展示的数据
+
+  _renderList() {
+    return GestureDetector(
+      child: ListView.builder(
+        reverse: true,
+        shrinkWrap: true,
+        padding: EdgeInsets.only(top: 27),
+        itemBuilder: (context, index) {
+          var item = list[index];
+          return GestureDetector(
+            child: item.isReceive
+                ? _renderRowSendByOthers(context, item)
+                : _renderRowSendByMe(context, item),
+            onTap: () {},
+          );
+        },
+        itemCount: list.length,
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: _scrollController,
+      ),
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+    );
+  }
+
+  Widget _renderRowSendByOthers(BuildContext context, MessageBean item) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16, 0, 0, 20),
+      child: Column(
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              //头像
+              Obx(() => cardNetworkImage2(_controller.headerUrl.value, 40, 40,
+                  errorWidget: Icon(
+                    Icons.person,
+                    size: 34,
+                    color: Colors.white,
+                  ))),
+              //内容区域
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.fromLTRB(2, 16, 0, 0),
+                        ),
+                        Container(
+                          width: ScreenUtil().screenWidth * 0.6,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(4.0, 7.0),
+                                  color: Color(0x04000000),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          margin: EdgeInsets.only(left: 10),
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            item.content,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _renderRowSendByMe(BuildContext context, MessageBean item) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
+      child: Column(
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textDirection: TextDirection.rtl,
+            children: <Widget>[
+              //头像
+              Obx(() => cardNetworkImage2(_controller.headerUrl.value, 40, 40,
+                  errorWidget: Icon(
+                    Icons.person,
+                    size: 30,
+                    color: Colors.white,
+                  ))),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: <Widget>[
+                      Row(
+                        textDirection: TextDirection.rtl,
+                        children: <Widget>[
+                          ConstrainedBox(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 10),
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(4.0, 7.0),
+                                      color: Color(0x04000000),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                  color: MyColor.mainColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                item.content,
+                                softWrap: true,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                            constraints: BoxConstraints(
+                              maxWidth: ScreenUtil().screenWidth * 0.6,
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
+                              child: item.messageStatus == 0
+                                  ? ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 10, maxHeight: 10),
+                                      child: Container(
+                                        width: 10,
+                                        height: 10,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.0,
+                                          valueColor:
+                                              new AlwaysStoppedAnimation<Color>(
+                                                  Colors.grey),
+                                        ),
+                                      ),
+                                    )
+                                  : item.messageStatus == 2
+                                      ? Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                          size: 11,
+                                        )
+                                      : Container()),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  sendTxt() {
+    // _controller.sendTextMessage(content);
+  }
+
+  addMessage(content, tag) {
+    int time = new DateTime.now().millisecondsSinceEpoch;
+    setState(() {});
   }
 
   Widget _userCard() {

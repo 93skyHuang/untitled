@@ -98,6 +98,7 @@ Future<BasePageData<LoginResp?>> phoneLogin(String phone, String code) async {
       //保存相关信息
       String token = basePageData.data?.loginToken ?? "";
       int uid = basePageData.data?.uid ?? -1;
+      NimNetworkManager.instance.nimLogin(uid, token);
       GetStorageUtils.saveUid(uid);
       GetStorageUtils.saveNimToken(token);
       GetStorageUtils.saveSex(basePageData.data?.sex ?? 1);

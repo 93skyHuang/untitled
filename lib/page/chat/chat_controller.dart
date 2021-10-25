@@ -15,13 +15,33 @@ import 'package:untitled/widgets/toast.dart';
  */
 class ChatController extends GetxController {
   RxBool isFollow = false.obs;
+  RxBool isShowRecodingBtn = false.obs;
+  RxBool isRecoding = false.obs;
+  RxString headerUrl = ''.obs; //对方的头像
+  RxString mineHeaderUrl = ''.obs; //自己的头像
   late UserBasic userBasic;
+  late UserBasic mineBasic;
 
   // List<MessageBean> message=[];
 
   void setUserBasic(UserBasic userBasic) {
     this.userBasic = userBasic;
     isFollow.value = userBasic.isFollow == 1;
+    headerUrl.value = userBasic.headImgUrl ?? '';
+    mineHeaderUrl.value = userBasic.headImgUrl ?? '';
+  }
+
+  List<MessageBean> getMsg() {
+    List<MessageBean> message = [];
+    for (int i = 0; i < 2; i++) {
+      MessageBean messageBean = MessageBean();
+      messageBean.isReceive = i % 2 == 0;
+      messageBean.content = 'jtjis44444444444444444444444sji$i';
+      messageBean.messageStatus = i % 3;
+      message.add(messageBean);
+    }
+
+    return message;
   }
 
   int treadLength() {
@@ -106,6 +126,24 @@ class ChatController extends GetxController {
     NimCore.instance.messageService.onMessage.listen((List<NIMMessage> list) {
       // 处理新收到的消息，为了上传处理方便，SDK 保证参数 messages 全部来自同一个聊天对象。
     });
+  }
+
+  ///打开录音
+  void openOrCloseRecoding() {
+    if (isShowRecodingBtn.value) {
+      isShowRecodingBtn.value = false;
+    } else {
+      isShowRecodingBtn.value = true;
+    }
+  }
+
+  ///操作录音
+  void startRecoding() {
+    isRecoding.value = true;
+  }
+
+  void stopRecoding(){
+    isRecoding.value = false;
   }
 
   @override
