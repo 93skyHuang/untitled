@@ -223,7 +223,7 @@ class _MinePageState extends State<MinePage> {
                       margin: EdgeInsets.only(left: 30),
                     ),
                     CustomText(
-                      text: 'null',
+                      text: '${_mineController.userBasic.value.pasDaySum} ',
                       textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     CustomText(

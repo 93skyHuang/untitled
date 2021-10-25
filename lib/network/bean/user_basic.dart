@@ -35,6 +35,7 @@ class UserBasic {
   int uid = 0;
   int? age = 0;
   int? followSum = 0;
+  int? pasDaySum = 0;
   int? trendsSum = 0;
   UserData? userdata ;
   int? isVideo;
