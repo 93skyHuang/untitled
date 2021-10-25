@@ -38,8 +38,7 @@ class VisitorPage extends StatelessWidget {
                   img: _visitorController.visitors[index].headImgUrl == null
                       ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
                       : _visitorController.visitors[index].headImgUrl,
-                  info:'',
-                      // '${_visitorController.visitors[index].distance}，${_visitorController.visitors[index].age}，${_visitorController.visitors[index].constellation}',
+                  info:'${_visitorController.visitors[index].region}，${_visitorController.visitors[index].age}，${_visitorController.visitors[index].constellation}',
                   onPressed: () {},
                   time: '${_visitorController.visitors[index].time}',
                   isSvip: isSvip,

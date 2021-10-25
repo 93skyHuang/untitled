@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:untitled/page/mine/verified_page.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 
 import 'avatar/avatar_verified_page.dart';
 
-class VerifyCenterPage extends StatefulWidget {
-  const VerifyCenterPage();
+class VerifyCenterPage extends StatelessWidget {
+  bool isHead=GetStorageUtils.getIsHead();
+  bool isVideo=GetStorageUtils.getIsVideo();
+  VerifyCenterPage();
 
-  @override
-  State<VerifyCenterPage> createState() => _VerifyCenterPageState();
-}
-
-class _VerifyCenterPageState extends State<VerifyCenterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +44,77 @@ class _VerifyCenterPageState extends State<VerifyCenterPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('实名认证',
+                    Text('头像认证',
                         style: TextStyle(fontSize: 16, color: Colors.black)),
                     CustomText(
                       text: '迅速提升吸引力，更容易被人喜欢',
                       textStyle:
                           TextStyle(fontSize: 12, color: Color(0xFF8C8C8C)),
+                      textAlign: Alignment.center,
+                      margin: EdgeInsets.only(top: 2, bottom: 20),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ItemMenu(
+                          text: '认证标识',
+                          img: "assets/images/icon_verified_name.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          text: '提升推荐',
+                          img: "assets/images/verify_center_recommond.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          text: '加速曝光',
+                          img: "assets/images/verify_center_arrow.png",
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(()=>AvatarVerifiedPage());
+                      },
+                      child: Container(
+                          height: 40,
+                          alignment: Alignment.center,
+                          width: 214,
+                          margin: EdgeInsets.only(top: 20),
+                          decoration: new BoxDecoration(
+                            color: Color(0xffF3CD8E),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                          ),
+                          child: Text(
+                            "立即认证",
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                            ),
+                          )),
+                    )
+                  ],
+                )),
+            Container(
+                height: 220,
+                alignment: Alignment.center,
+                margin:
+                EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('视频认证',
+                        style: TextStyle(fontSize: 16, color: Colors.black)),
+                    CustomText(
+                      text: '迅速提升吸引力，更容易被人喜欢',
+                      textStyle:
+                      TextStyle(fontSize: 12, color: Color(0xFF8C8C8C)),
                       textAlign: Alignment.center,
                       margin: EdgeInsets.only(top: 2, bottom: 20),
                     ),
@@ -89,7 +151,7 @@ class _VerifyCenterPageState extends State<VerifyCenterPage> {
                           decoration: new BoxDecoration(
                             color: Color(0xffF3CD8E),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(40.0)),
+                            BorderRadius.all(Radius.circular(40.0)),
                           ),
                           child: Text(
                             "立即认证",

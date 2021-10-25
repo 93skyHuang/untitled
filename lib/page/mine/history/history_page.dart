@@ -22,13 +22,6 @@ class HistoryPage extends StatelessWidget {
               onPressed: () {
                 Navigator.maybePop(context);
               }),
-          actions: [
-            new IconButton(
-                icon: Icon(Icons.delete_outlined, size: 25, color:  Color(0xffFD4343)),
-                onPressed: () {
-                  Navigator.maybePop(context);
-                }),
-          ],
           title:
               Text("我的足迹", style: TextStyle(fontSize: 17, color: Colors.black)),
           backgroundColor: Color(0xFFF5F5F5),
@@ -44,8 +37,7 @@ class HistoryPage extends StatelessWidget {
                   img: _historyController.historys[index].headImgUrl == null
                       ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
                       : _historyController.historys[index].headImgUrl,
-                  info:'',
-                  // '${_historyController.historys[index].distance}，${_historyController.historys[index].age}，${_historyController.historys[index].constellation}',
+                  info:'${_historyController.historys[index].region}，${_historyController.historys[index].age}，${_historyController.historys[index].constellation}',
                   onPressed: () {},
                   time: '${_historyController.historys[index].time}',
                 );
