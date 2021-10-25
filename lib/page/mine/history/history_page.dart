@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widget/item_fan.dart';
 import 'package:untitled/widget/item_follow.dart';
 import 'history_controller.dart';
 
 class HistoryPage extends StatelessWidget {
   HistoryPage();
 
-  HistoryController _followController = new HistoryController();
+  HistoryController _historyController = new HistoryController();
 
   @override
   Widget build(BuildContext context) {
-    _followController.getList();
+    _historyController.getList();
     return Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         appBar: AppBar(
@@ -31,21 +32,17 @@ class HistoryPage extends StatelessWidget {
           child: Obx(
             () => ListView.builder(
               itemBuilder: (context, index) {
-                return new ItemFollow(
-                  name: '${_followController.follows[index].cname}',
-                  img: _followController.follows[index].headImgUrl == null
+                return new  ItemFan(
+                  name: '${_historyController.historys[index].cname}',
+                  img: _historyController.historys[index].headImgUrl == null
                       ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
-                      : _followController.follows[index].headImgUrl,
-                  info: _followController.follows[index].constellation == null
-                      ? ''
-                      : _followController.follows[index].constellation,
+                      : _historyController.historys[index].headImgUrl,
+                  info:'${_historyController.historys[index].region}，${_historyController.historys[index].age}，${_historyController.historys[index].constellation}',
                   onPressed: () {},
-                  onMorePressed: () {
-                    showBottomOpen(context);
-                  },
+                  time: '${_historyController.historys[index].time}',
                 );
               },
-              itemCount: _followController.follows.length,
+              itemCount: _historyController.historys.length,
             ),
           ),
         ));

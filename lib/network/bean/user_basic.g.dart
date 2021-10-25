@@ -20,6 +20,7 @@ UserBasic _$UserBasicFromJson(Map<String, dynamic> json) {
     ..age = json['age'] as int?
     ..followSum = json['followSum'] as int?
     ..trendsSum = json['trendsSum'] as int?
+    ..pasDaySum = json['pasDaySum'] as int?
     ..userdata = json['userdata'] == null
         ? null
         : UserData.fromJson(json['userdata'] as Map<String, dynamic>)
@@ -60,18 +61,19 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
       'svip': instance.svip,
       'region': instance.region,
       'autograph': instance.autograph,
+      'pasDaySum': instance.pasDaySum,
     };
 
 Trends _$TrendsFromJson(Map<String, dynamic> json) {
-  return Trends(
-    json['id'] as int,
-    json['type'] as int,
-  )
+  return Trends()
+    ..id = json['id'] as int
+    ..type = json['type'] as int
     ..fabulousSum = json['fabulousSum'] as int
     ..beClickedSum = json['beClickedSum'] as int
     ..commentSum = json['commentSum'] as int
     ..video = json['video'] as String?
     ..content = json['content'] as String?
+    ..time = json['time'] as String?
     ..imgArr =
         (json['imgArr'] as List<dynamic>?)?.map((e) => e as String).toList();
 }
@@ -84,6 +86,7 @@ Map<String, dynamic> _$TrendsToJson(Trends instance) => <String, dynamic>{
       'type': instance.type,
       'video': instance.video,
       'content': instance.content,
+      'time': instance.time,
       'imgArr': instance.imgArr,
     };
 

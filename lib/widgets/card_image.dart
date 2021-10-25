@@ -7,7 +7,7 @@ import 'package:untitled/basic/include.dart';
 
 //带圆角的网络图片
 Widget cardNetworkImage(String url, double widget, double height,
-    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4}) {
+    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4,String errorImagesUrl='assets/images/image_load_failed.png'}) {
   return Card(
     margin: margin ?? EdgeInsets.all(4),
     shape: shape ??
@@ -23,9 +23,34 @@ Widget cardNetworkImage(String url, double widget, double height,
           imageUrl: url,
           placeholder: (context, url) => const CircularProgressIndicator(),
           errorWidget: (context, url, error) => Image.asset(
-            'assets/images/image_load_failed.png',
+            errorImagesUrl,
             fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
           ),
+        )),
+  );
+}
+
+
+//带圆角的网络图片
+Widget cardNetworkImage2(String url, double widget, double height,
+    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4,Widget errorWidget=const Icon(
+      Icons.error_outline,
+      color: Colors.red,
+    )}) {
+  return Card(
+    margin: margin ?? EdgeInsets.all(4),
+    shape: shape ??
+        RoundedRectangleBorder(
+            borderRadius: BorderRadiusDirectional.circular(radius)),
+    clipBehavior: Clip.antiAlias,
+    color: Colors.grey,
+    child: SizedBox(
+        width: widget,
+        height: height,
+        child: CachedNetworkImage(
+          fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          imageUrl: url,
+          errorWidget: (context, url, error) => errorWidget,
         )),
   );
 }

@@ -12,6 +12,8 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/messages/messages_page_bean.dart';
+import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
@@ -35,7 +37,7 @@ class _MessagesPageState extends State<MessagesPage>
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  List<NIMSession> _list = [];
+  List<MsgPageBean> _list = [];
   final double _textContextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(180);
 
@@ -46,7 +48,6 @@ class _MessagesPageState extends State<MessagesPage>
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       _onRefresh();
     });
-
   }
 
   @override
@@ -59,18 +60,18 @@ class _MessagesPageState extends State<MessagesPage>
           centerTitle: true,
           backgroundColor: MyColor.pageBgColor,
           elevation: 0.5,
-          actions: [
-            TextButton(
-                onPressed: () {
-                  _controller.querySystemMsg();
-                },
-                child: Text('test')),
-            TextButton(
-                onPressed: () {
-                  _controller.querySessionList();
-                },
-                child: Text('test2'))
-          ],
+          // actions: [
+          //   TextButton(
+          //       onPressed: () {
+          //         _controller.querySystemMsg();
+          //       },
+          //       child: Text('test')),
+          //   TextButton(
+          //       onPressed: () {
+          //         _onRefresh();
+          //       },
+          //       child: Text('test2'))
+          // ],
           title: Text(
             '消息',
             style: TextStyle(
@@ -79,9 +80,8 @@ class _MessagesPageState extends State<MessagesPage>
         ),
         body: SmartRefresher(
           enablePullDown: true,
-          enablePullUp: true,
+          enablePullUp: false,
           header: const MyClassicHeader(),
-          footer: const MyClassicFooter(),
           // 配置默认底部指示器
           controller: _refreshController,
           onRefresh: _onRefresh,
@@ -96,6 +96,7 @@ class _MessagesPageState extends State<MessagesPage>
     logger.i("_onRefresh");
     _list = await _controller.querySessionList();
     _refreshController.refreshCompleted();
+    setState(() {});
   }
 
   Widget _getListView() {
@@ -117,7 +118,6 @@ class _MessagesPageState extends State<MessagesPage>
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
           logger.i("itemclick");
-          getUserInfo();
         },
         child: Column(
           children: [
@@ -132,15 +132,9 @@ class _MessagesPageState extends State<MessagesPage>
                       children: [
                         Padding(
                           padding: EdgeInsets.only(top: 4, right: 2),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              "assets/images/ic_launcher.png",
-                              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                              width: ScreenUtil().setWidth(44),
-                              height: ScreenUtil().setWidth(44),
-                            ),
-                          ),
+                          child: cardNetworkImage('', ScreenUtil().setWidth(44),
+                              ScreenUtil().setWidth(44),
+                              errorImagesUrl: 'assets/images/ic_launcher.png'),
                         ),
                         Obx(() => _controller.unReadSystemMsg > 0
                             ? Container(
@@ -196,7 +190,7 @@ class _MessagesPageState extends State<MessagesPage>
         ));
   }
 
-  Widget _chatItemView(NIMSession session) {
+  Widget _chatItemView(MsgPageBean info) {
     return TextButton(
         style: ButtonStyle(
             minimumSize: MaterialStateProperty.all(const Size(0, 0)),
@@ -218,23 +212,19 @@ class _MessagesPageState extends State<MessagesPage>
                       children: [
                         Padding(
                           padding: EdgeInsets.only(top: 4, right: 2),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              "assets/images/ic_launcher.png",
-                              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                              width: ScreenUtil().setWidth(44),
-                              height: ScreenUtil().setWidth(44),
-                            ),
-                          ),
+                          child: cardNetworkImage(
+                              info.heardUrl,
+                              ScreenUtil().setWidth(44),
+                              ScreenUtil().setWidth(44),
+                              errorImagesUrl: 'assets/images/user_icon.png'),
                         ),
-                        session.unreadCount > 0
+                        info.unreadMsgNum > 0
                             ? Container(
                                 alignment: Alignment.center,
                                 width: ScreenUtil().setWidth(14),
                                 height: ScreenUtil().setWidth(14),
                                 child: Text(
-                                    '${session.unreadCount > 99 ? 99 : session.unreadCount}',
+                                    '${info.unreadMsgNum > 99 ? 99 : info.unreadMsgNum}',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -250,13 +240,13 @@ class _MessagesPageState extends State<MessagesPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         singeLineText(
-                            '${session.senderNickname}',
+                            '${info.nickName}',
                             _textContextWidth,
                             TextStyle(
                                 color: Color(0xff000014),
                                 fontSize: ScreenUtil().setSp(14))),
                         singeLineText(
-                            '信息',
+                            '${info.getInfo()}',
                             _textContextWidth,
                             TextStyle(
                                 color: Color(0xff8C8C8C),
@@ -270,12 +260,12 @@ class _MessagesPageState extends State<MessagesPage>
                         Obx(() => _controller.isCanChat.value
                             ? Image.asset('assets/images/lock.png')
                             : Text('')),
-                        Obx(() => singeLineText(
-                            _controller.newSystemMsgTime.value,
+                        singeLineText(
+                            info.time,
                             _textContextWidth,
                             TextStyle(
                                 color: Color(0xff8C8C8C),
-                                fontSize: ScreenUtil().setSp(12)))),
+                                fontSize: ScreenUtil().setSp(12))),
                       ],
                     )
                   ],

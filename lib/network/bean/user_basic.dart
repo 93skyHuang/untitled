@@ -35,6 +35,7 @@ class UserBasic {
   int uid = 0;
   int? age = 0;
   int? followSum = 0;
+  int? pasDaySum = 0;
   int? trendsSum = 0;
   UserData? userdata ;
   int? isVideo;
@@ -57,16 +58,17 @@ class UserBasic {
 class Trends {
   ///[对方动态列表]id-动态ID,video-视频地址,content-动态内容,imgArr-动态图片集,fabulousSum-被赞次数,beClickedSum-被看次数,
   ///commentSum-被评论数,type-动态类型（0-心情（只有一段文字），1-动态（有文字和图片），2-视频）
-  int id;
+  int id=0;
   int fabulousSum = 0;
   int beClickedSum = 0;
   int commentSum = 0;
-  int type;
+  int type=0;
   String? video;
+  String? time;
   String? content;
   List<String?>? imgArr;
 
-  Trends(this.id, this.type);
+  Trends();
 
   factory Trends.fromJson(Map<String, dynamic> json) =>
       _$TrendsFromJson(json);

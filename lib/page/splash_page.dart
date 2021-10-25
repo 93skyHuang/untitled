@@ -55,11 +55,11 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     //云信sdk初始化
     nimSdkInit();
-    GetStorage.init();
     logger.i('initState');
     super.initState();
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       logger.i('addPostFrameCallback');
+      GetStorage.init();
       pageJump();
     });
   }

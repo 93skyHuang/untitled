@@ -4,7 +4,7 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 
 class HistoryController extends GetxController {
-  RxList follows = [].obs;
+  RxList historys = [].obs;
 
   @override
   void onInit() {
@@ -12,7 +12,7 @@ class HistoryController extends GetxController {
   }
 
   void getList() {
-    getFollowList(1).then((value) => {follows.value = value.data!});
+    getMyFootList(1).then((value) => {historys.value = value.data!});
   }
 
   @override

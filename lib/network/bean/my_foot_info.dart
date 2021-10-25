@@ -22,7 +22,10 @@ class MyFootInfo {
   int? height;
   String? headImgUrl = '';
   String? cname = '';
+  String? region = '';
+  int? age ;
   String? time = '';
+  String? constellation = '';
 
   factory MyFootInfo.fromJson(Map<String, dynamic> json) =>
       _$MyFootInfoFromJson(json);

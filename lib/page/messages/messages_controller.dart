@@ -2,7 +2,13 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:nim_core/nim_core.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
+import 'package:untitled/utils/time_utils.dart';
+
+import 'messages_page_bean.dart';
 
 /**
  * 消息控制
@@ -10,7 +16,7 @@ import 'package:untitled/network/logger.dart';
 class MessagesController extends GetxController {
   RxString newSystemMsg = ''.obs;
   RxString newSystemMsgTime = ''.obs;
-  RxBool isCanChat = false.obs;
+  RxBool isCanChat = GetStorageUtils.getSvip().obs;
   RxInt unReadSystemMsg = 0.obs;
 
   void newSystemMessageOnReceiver() {
@@ -52,14 +58,40 @@ class MessagesController extends GetxController {
   }
 
   ///获取会话列表
-  Future<List<NIMSession>> querySessionList() async {
+  Future<List<MsgPageBean>> querySessionList() async {
     final result = await NimCore.instance.messageService.querySessionList();
     List<NIMSession> list = result.data ?? [];
     logger.i("$result  length=${list.length}");
+    List<MsgPageBean> listBean = [];
     for (int i = 0; i < list.length; i++) {
       logger.i(list[i].sessionId);
+      NIMSession session = list[i];
+      MsgPageBean msgPageBean = MsgPageBean();
+      msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
+      msgPageBean.unreadMsgNum = session.unreadCount;
+      int uid = int.parse(
+          session.sessionId.substring(session.sessionId.lastIndexOf('l')+1));
+      UserBasic? userBasic = await getUserInfo(uid);
+      msgPageBean.heardUrl = '${userBasic?.headImgUrl}';
+      msgPageBean.nickName = '${userBasic?.cname}';
+      msgPageBean.age = userBasic?.age;
+      msgPageBean.height = userBasic?.height;
+      msgPageBean.region = userBasic?.region;
+      listBean.add(msgPageBean);
     }
-    return list;
+    return listBean;
+  }
+
+  Future<UserBasic?> getUserInfo(int uid) async {
+    UserBasic? userBasic = GetStorageUtils.getUserBasic(uid);
+    if (userBasic == null) {
+      final d = await getHomeUserData(uid);
+      if (d.isOk()) {
+        userBasic = d.data ?? UserBasic();
+        GetStorageUtils.saveUserBasic(uid, userBasic);
+      }
+    }
+    return userBasic;
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/video_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
 import 'package:untitled/widgets/toast.dart';
 import 'package:video_player/video_player.dart';
@@ -279,12 +280,16 @@ class _Controller extends GetxController {
     }
   }
 
-  void goToChatPage() {
-    getHomeUserData(info.uid).then((value) => {
-          if (value.isOk())
-            {
-              Get.to(ChatPage(), arguments: value.data),
-            }
-        });
+  void goToChatPage() async {
+    final u = GetStorageUtils.getUserBasic(info.uid);
+    if (u == null) {
+      final value = await getHomeUserData(info.uid);
+      if (value.isOk()) {
+        GetStorageUtils.saveUserBasic(info.uid, value.data!);
+        Get.to(ChatPage(), arguments: value.data);
+      }
+    } else {
+      Get.to(ChatPage(), arguments: u);
+    }
   }
 }
