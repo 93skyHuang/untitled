@@ -8,6 +8,7 @@ import 'package:untitled/persistent/get_storage_utils.dart';
 
 class MyHomeController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
+  RxList trends = [].obs;
 
   @override
   void onInit() {
@@ -16,7 +17,9 @@ class MyHomeController extends GetxController {
   }
 
   void getInfo() {
-    getUserBasic().then((value) => {userBasic.value = value.data!});
+    getUserBasic().then((value) => {userBasic.value = value.data!,
+    trends.value=userBasic.value.trendsList!
+    });
   }
 
   @override

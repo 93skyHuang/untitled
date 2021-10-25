@@ -39,7 +39,18 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
           SliverAppBar(
             ///true SliverAppBar 不会滑动
             pinned: true,
-            leading: Text(''),
+            leading:  IconButton(
+                icon:
+                Icon(Icons.chevron_left, size: 38, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            title:  CustomText(
+              text: '${_myHomeController.userBasic.value.cname}',
+              textAlign: Alignment.topLeft,
+              textStyle: TextStyle(fontSize: 17, color: Colors.white),
+              margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
+            ),
             backgroundColor: Colors.white,
             elevation: 0,
 
@@ -75,10 +86,13 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
           child:
           ListView.builder(
             itemBuilder: (context, index) {
-              return new ItemTrend(
+              return ItemTrend(
+                trends: _myHomeController.trends.value[index],
+                onPressed: (){},
+                onDelete: (){},
               );
             },
-            itemCount: _myHomeController.userBasic.value.trendsList!.length,
+            itemCount: _myHomeController.trends.value.length,
           ),
         ),
         Text(
@@ -135,25 +149,6 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                 fit: BoxFit.fill,
               ),
             ) ,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                    icon:
-                        Icon(Icons.chevron_left, size: 38, color: Colors.white),
-                    onPressed: () {
-                      Navigator.maybePop(context);
-                    }),
-                CustomText(
-                  text: '${_myHomeController.userBasic.value.cname}',
-                  textAlign: Alignment.topLeft,
-                  textStyle: TextStyle(fontSize: 17, color: Colors.white),
-                  margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-                ),
-              ],
-            ),
           ),
         ],
       ),

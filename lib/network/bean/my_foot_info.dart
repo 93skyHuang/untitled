@@ -22,6 +22,8 @@ class MyFootInfo {
   int? height;
   String? headImgUrl = '';
   String? cname = '';
+  String? region = '';
+  int? age ;
   String? time = '';
   String? constellation = '';
 

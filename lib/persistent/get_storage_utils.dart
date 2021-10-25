@@ -56,6 +56,24 @@ class GetStorageUtils {
     _accountStorage.write('svip', svip);
   }
 
+  static bool getIsHead() {
+    return _accountStorage.read('isHead') ?? false;
+  }
+
+  ///
+  static void saveIsHead(bool isHead) {
+    _accountStorage.write('isHead', isHead);
+  }
+
+  static bool getIsVideo() {
+    return _accountStorage.read('isVideo') ?? false;
+  }
+
+  ///
+  static void saveIsVideo(bool isVideo) {
+    _accountStorage.write('isVideo', isVideo);
+  }
+
   static List<FindTabInfo>? getFindTab() {
     List<dynamic>? list = _commonStorage.read('find_tab');
     List<FindTabInfo>? infoList =

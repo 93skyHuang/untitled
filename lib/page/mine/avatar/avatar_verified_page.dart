@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 
 class AvatarVerifiedPage extends StatefulWidget {
@@ -9,8 +13,8 @@ class AvatarVerifiedPage extends StatefulWidget {
 }
 
 class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
-  final TextEditingController idTextFieldController = TextEditingController();
-  final TextEditingController nameTextFieldController = TextEditingController();
+  //本地选择的图片路径
+  String? headerImgUrlLocal;
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +40,19 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
               onTap: () {
                 showBottomOpen(context);
               },
-              child: Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(top: 50, bottom: 10),
-                child: Image(
-                  image: AssetImage("assets/images/user_icon.png"),
+              child:  Container(
+                width: 110,
+                height: 110,
+                margin: EdgeInsets.only(top: 60),
+                child: ClipOval(
+                child: headerImgUrlLocal == null
+                      ?  Image.asset(
+                    'assets/images/user_icon.png',
+                  ) : Image.file(
+                    File('$headerImgUrlLocal'),
+                    fit:
+                    Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                  ),
                 ),
               ),
             ),
@@ -55,7 +67,7 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
               margin: EdgeInsets.only(top: 10, bottom: 20),
               textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
             ),
-            GestureDetector(
+            if(headerImgUrlLocal==null||headerImgUrlLocal=='')GestureDetector(
               onTap: () {
                 showBottomOpen(context);
               },
@@ -69,6 +81,22 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                 ),
                 child: Text('提交认证',
                     style: TextStyle(color: Color(0xff8C8C8C), fontSize: 17)),
+              ),
+            ),
+            if(headerImgUrlLocal!=null&&headerImgUrlLocal!='')GestureDetector(
+              onTap: () {
+              },
+              child: Container(
+                width: 214,
+                height: 40,
+                alignment: Alignment.center,
+                decoration: new BoxDecoration(
+                  color: Color(0xffF3CD8E),
+                  borderRadius:
+                  BorderRadius.all(Radius.circular(40.0)),
+                ),
+                child: Text('提交认证',
+                    style: TextStyle(color: Colors.black, fontSize: 17)),
               ),
             )
           ],
@@ -230,8 +258,11 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                             ),
                           ]),
                       GestureDetector(
-                        onTap: () {
-                          showBottomOpen(context);
+                        onTap: () async {
+                          Navigator.pop(context);
+                          XFile? f = await getImageFromGallery();
+                          headerImgUrlLocal = f?.path;
+                          setState(() {});
                         },
                         child: Container(
                           width: 214,
@@ -248,7 +279,7 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          showBottomOpen(context);
+                          Navigator.pop(context);
                         },
                         child: Container(
                           width: 214,
