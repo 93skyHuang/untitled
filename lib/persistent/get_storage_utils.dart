@@ -27,7 +27,6 @@ class GetStorageUtils {
     return _accountStorage.write('nimToken', nimToken);
   }
 
-
   static int getUID() {
     return _accountStorage.read('uid') ?? -1;
   }
@@ -74,11 +73,11 @@ class GetStorageUtils {
     _accountStorage.write('isVideo', isVideo);
   }
 
-  static List<FindTabInfo>? getFindTab() {
+  static List<FindTabInfo> getFindTab() {
     List<dynamic>? list = _commonStorage.read('find_tab');
     List<FindTabInfo>? infoList =
         list?.map((e) => FindTabInfo.fromJson(e)).toList();
-    return infoList;
+    return infoList ?? [];
   }
 
   ///发现页面导航栏
@@ -87,8 +86,8 @@ class GetStorageUtils {
   }
 
   ///保存某个人的基本信息数据
-  static void saveUserBasic(int uid, UserBasic userBasic) {
-    _commonStorage.write('$uid', userBasic);
+  static void saveUserBasic(UserBasic userBasic) {
+    _commonStorage.write('${userBasic.uid}', userBasic);
   }
 
   ///获取某个人的基本信息数据
@@ -96,6 +95,12 @@ class GetStorageUtils {
     final userBasicMap = _commonStorage.read('$uid');
     logger.i(userBasicMap);
     // return userBasicMap == null ? null : UserBasic.fromJson(userBasicMap);
-    return userBasicMap ;
+    return userBasicMap;
+  }
+
+  static UserBasic? getMineUserBasic() {
+    final userBasicMap = _commonStorage.read('${getUID()}');
+    logger.i(userBasicMap);
+    return userBasicMap;
   }
 }

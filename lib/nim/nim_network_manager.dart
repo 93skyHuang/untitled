@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:nim_core/nim_core.dart';
 import 'package:untitled/network/logger.dart';
 
@@ -78,12 +80,26 @@ class NimNetworkManager {
         .listen((SystemMessage event) {});
   }
 
-  void querySystemMsg() async {
-    // final result =
-    //     await NimCore.instance.systemMessageService.querySystemMessages(1);
+  /**
+   * 查询与该用户的历史消息
+   */
+  Future<NIMResult<List<NIMMessage>>> queryHistoryMsg(int uid) async {
+    final result = await NimCore.instance.messageService
+        .queryMessageList('ll$uid', NIMSessionType.p2p, 20);
+    return result;
   }
 
-  void createSession() async {
+  /**
+   * 查询与该用户的更多历史消息 传入最后一条消息
+   */
+  Future<NIMResult<List<NIMMessage>>> queryMoreHistoryMsg(
+      NIMMessage anchor) async {
+    final result = await NimCore.instance.messageService
+        .queryMessageListEx(anchor, QueryDirection.QUERY_OLD, 30);
+    return result;
+  }
+
+  void createSession(int uid) async {
     /// [sessionId] - 会话id ，对方帐号或群组id。
     /// [sessionType] - 会话类型
     /// [tag] - 会话tag ， eg:置顶标签（UIKit中的实现： RECENT_TAG_STICKY） ，用户参照自己的tag 实现即可， 如不需要，传 0 即可
@@ -91,7 +107,11 @@ class NimNetworkManager {
     /// [linkToLastMessage] - 是否放入最后一条消息的相关信息
     NIMResult<NIMSession> result = await NimCore.instance.messageService
         .createSession(
-            sessionId: "sessionId", sessionType: NIMSessionType.p2p, time: 0);
+            sessionId: 'll$uid',
+            sessionType: NIMSessionType.p2p,
+            time: DateTime.now().millisecond);
+    logger.i(
+        '${result.isSuccess} ${result.data?.sessionId}  ${result.data?.senderNickname}');
   }
 
   Future<NIMResult<NIMMessage>> createTextMsg(String content, int uid) {
@@ -107,6 +127,28 @@ class NimNetworkManager {
             : Future.value(value));
     result.then((value) =>
         logger.i('${value.isSuccess} ${value.errorDetails} ${value.code}'));
+    return result;
+  }
+
+  Future<NIMResult<NIMMessage>> sendAudioMessage(
+      String filePath, int uid) async {
+    // 该帐号为示例
+    String account = 'll$uid';
+// 以单聊类型为例
+    NIMSessionType sessionType = NIMSessionType.p2p;
+// 示例音频，需要开发者在相应目录下有文件
+    File file = File(filePath);
+// 发送语音消息
+    Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
+            sessionId: account,
+            sessionType: sessionType,
+            filePath: file.path,
+            fileSize: file.lengthSync(),
+            duration: 2000)
+        .then((value) => value.isSuccess
+            ? NimCore.instance.messageService
+                .sendMessage(message: value.data!, resend: false)
+            : Future.value(value));
     return result;
   }
 }
