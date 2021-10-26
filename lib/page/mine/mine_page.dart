@@ -9,6 +9,7 @@ import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/page/mine/visitor/visitor_page.dart';
+import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
 import 'beliked/beliked_page.dart';
@@ -58,7 +59,7 @@ class _MinePageState extends State<MinePage> {
       img: "assets/images/mine_like.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(() => LikePage());},
+        Get.to(() => ReportPage());},
     ),
     ItemMenu(
       text: '我的粉丝',

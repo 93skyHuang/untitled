@@ -46,7 +46,7 @@ class _SettingPageState extends State<SettingPage> {
               color: Color(0xffE6E6E6),
             ),
             ItemArrow(
-              onPressed: () {},
+              onPressed: () {clearApplicationCache();},
               text: '清理缓存',
               value: '$size',
               padding: EdgeInsets.only(left: 16,right: 16),
@@ -97,7 +97,6 @@ class _SettingPageState extends State<SettingPage> {
           ],
         ),
       ),
-// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
   static Future<double> getTotalSizeOfFilesInDir(
@@ -154,6 +153,21 @@ class _SettingPageState extends State<SettingPage> {
         await deleteDirectory(child);
         await child.delete();
       }
+    }
+  }
+  /// 删除缓存
+   void clearApplicationCache() async {
+    Directory docDirectory = await getApplicationDocumentsDirectory();
+    Directory tempDirectory = await getTemporaryDirectory();
+
+    if (docDirectory.existsSync()) {
+      await deleteDirectory(docDirectory);
+      loadApplicationCache();
+    }
+
+    if (tempDirectory.existsSync()) {
+      await deleteDirectory(tempDirectory);
+      loadApplicationCache();
     }
   }
 }

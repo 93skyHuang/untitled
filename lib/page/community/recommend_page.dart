@@ -4,6 +4,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/widget/trend_img.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
@@ -157,7 +158,7 @@ class _RecommendWidgetState extends State<RecommendWidget>
                               padding: EdgeInsets.only(
                             bottom: ScreenUtil().setWidth(10),
                           )),
-                          _itemContentImage(info),
+                          TrendImg(imgs: info.imgArr, contextWidth: _textContextWidth,onClick: (img){},),
                           Padding(
                             padding: EdgeInsets.only(
                               top: ScreenUtil().setWidth(14),

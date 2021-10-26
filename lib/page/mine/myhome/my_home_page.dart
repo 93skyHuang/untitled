@@ -7,6 +7,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
+import 'package:untitled/widget/item_video.dart';
 
 import 'info_page.dart';
 import 'my_home_controller.dart';
@@ -28,9 +29,10 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body:   Obx(() =>buildNestedScrollView()),
+      body: Obx(() => buildNestedScrollView()),
     );
   }
+
   ///构建滑动布局
   NestedScrollView buildNestedScrollView() {
     return NestedScrollView(
@@ -39,13 +41,12 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
           SliverAppBar(
             ///true SliverAppBar 不会滑动
             pinned: true,
-            leading:  IconButton(
-                icon:
-                Icon(Icons.chevron_left, size: 38, color: Colors.white),
+            leading: IconButton(
+                icon: Icon(Icons.chevron_left, size: 38, color: Colors.white),
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            title:  CustomText(
+            title: CustomText(
               text: '${_myHomeController.userBasic.value.cname}',
               textAlign: Alignment.topLeft,
               textStyle: TextStyle(fontSize: 17, color: Colors.white),
@@ -83,21 +84,28 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
       controller: tabController,
       children: <Widget>[
         Container(
-          child:
-          ListView.builder(
+          child: ListView.builder(
             itemBuilder: (context, index) {
               return ItemTrend(
                 trends: _myHomeController.trends.value[index],
-                onPressed: (){},
-                onDelete: (){},
+                onPressed: () {},
+                onDelete: () {},
               );
             },
             itemCount: _myHomeController.trends.value.length,
           ),
         ),
-        Text(
-          "这是第二个页面",
-          style: TextStyle(color: Colors.blue),
+        Container(
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return ItemVideo(
+                trends: _myHomeController.videoTrends.value[index],
+                onPressed: () {},
+                onDelete: () {},
+              );
+            },
+            itemCount: _myHomeController.videoTrends.value.length,
+          ),
         ),
         InfoPage(_myHomeController),
       ],
@@ -144,11 +152,12 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
             ),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage("${_myHomeController.userBasic.value.headImgUrl??''}",
+                image: NetworkImage(
+                  "${_myHomeController.userBasic.value.headImgUrl ?? ''}",
                 ),
                 fit: BoxFit.fill,
               ),
-            ) ,
+            ),
           ),
         ],
       ),

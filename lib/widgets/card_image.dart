@@ -96,3 +96,29 @@ Widget radiusContainer(Widget child,
       alignment: const Alignment(0, 0),
       child: child);
 }
+
+//带圆角的网络图片
+Widget customNetworkImage(String url, double width, double height,
+    {ShapeBorder? shape, EdgeInsetsGeometry? margin,BorderRadius? radius,
+      String errorImagesUrl='assets/images/image_load_failed.png'}) {
+  return Card(
+    margin: margin ?? EdgeInsets.all(4),
+    shape: shape ??
+        RoundedRectangleBorder(
+            borderRadius: radius??BorderRadius.circular(8)),
+    clipBehavior: Clip.antiAlias,
+    color: Colors.white,
+    child: SizedBox(
+        width: width,
+        height: height,
+        child: CachedNetworkImage(
+          fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          imageUrl: url,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Image.asset(
+            errorImagesUrl,
+            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          ),
+        )),
+  );
+}
