@@ -88,7 +88,7 @@ class MessagesController extends GetxController {
       final d = await getHomeUserData(uid);
       if (d.isOk()) {
         userBasic = d.data ?? UserBasic();
-        GetStorageUtils.saveUserBasic(uid, userBasic);
+        GetStorageUtils.saveUserBasic(userBasic);
       }
     }
     return userBasic;

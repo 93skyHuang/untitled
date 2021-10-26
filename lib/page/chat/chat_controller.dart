@@ -7,68 +7,82 @@ import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/nim/nim_network_manager.dart';
-import 'package:untitled/page/chat/message_bean.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/toast.dart';
 
 /**
  * 聊天控制
  */
 class ChatController extends GetxController {
+  final NimNetworkManager _nimNetworkManager = NimNetworkManager.instance;
   RxBool isFollow = false.obs;
   RxBool isShowRecodingBtn = false.obs;
   RxBool isRecoding = false.obs;
   RxString headerUrl = ''.obs; //对方的头像
   RxString mineHeaderUrl = ''.obs; //自己的头像
-  late UserBasic userBasic;
-  late UserBasic mineBasic;
+  late UserBasic hisBasic;
+  UserBasic? mineBasic = GetStorageUtils.getMineUserBasic();
 
-  // List<MessageBean> message=[];
+  List<NIMMessage> nimMessageList = <NIMMessage>[].obs;
 
-  void setUserBasic(UserBasic userBasic) {
-    this.userBasic = userBasic;
-    isFollow.value = userBasic.isFollow == 1;
-    headerUrl.value = userBasic.headImgUrl ?? '';
-    mineHeaderUrl.value = userBasic.headImgUrl ?? '';
+  void setUserBasic(UserBasic hisBasic) {
+    this.hisBasic = hisBasic;
+    isFollow.value = hisBasic.isFollow == 1;
+    headerUrl.value = hisBasic.headImgUrl ?? '';
+    mineHeaderUrl.value = '${mineBasic?.headImgUrl}';
   }
 
-  List<MessageBean> getMsg() {
-    List<MessageBean> message = [];
-    for (int i = 0; i < 2; i++) {
-      MessageBean messageBean = MessageBean();
-      messageBean.isReceive = i % 2 == 0;
-      messageBean.content = 'jtjis44444444444444444444444sji$i';
-      messageBean.messageStatus = i % 3;
-      message.add(messageBean);
+  /// 是否是他发送的消息
+  bool isHisMsg(String? account) {
+    return '$account'.contains('${hisBasic.uid}');
+  }
+
+  void queryHistoryMsg() async {
+    final result = await _nimNetworkManager.queryHistoryMsg(hisBasic.uid);
+    if (result.isSuccess) {
+      List<NIMMessage> list = result.data ?? [];
+      if (list.isNotEmpty) {
+        nimMessageList.addAll(list);
+      }
     }
-
-    return message;
   }
 
-  int treadLength() {
-    return userBasic.trendsList?.length ?? 0;
+  void queryMoreHistoryMsg() async {
+    if (nimMessageList.isNotEmpty) {
+      final result = await _nimNetworkManager
+          .queryMoreHistoryMsg(nimMessageList[nimMessageList.length]);
+      if (result.isSuccess) {
+        List<NIMMessage> list = result.data ?? [];
+        nimMessageList.addAll(list);
+      }
+    }
+  }
+
+  int trendsLength() {
+    return hisBasic.trendsList?.length ?? 0;
   }
 
   void add() {
-    userBasic.isFollow = 1;
+    hisBasic.isFollow = 1;
     isFollow.value = true;
-    addFollow(userBasic.uid).then((value) => {
+    addFollow(hisBasic.uid).then((value) => {
           if (value.isOk())
             {}
           else
             {
-              userBasic.isFollow = 0,
+              hisBasic.isFollow = 0,
               isFollow.value = false,
             }
         });
   }
 
   void del() {
-    userBasic.isFollow = 0;
+    hisBasic.isFollow = 0;
     isFollow.value = false;
-    delFollow(userBasic.uid).then((value) => {
+    delFollow(hisBasic.uid).then((value) => {
           if (value.isOk())
             {
-              userBasic.isFollow = 1,
+              hisBasic.isFollow = 1,
               isFollow.value = true,
             }
         });
@@ -79,52 +93,28 @@ class ChatController extends GetxController {
    */
   void createSession() async {
     logger.i('createSession');
-    NIMResult<NIMSession> result = await NimCore.instance.messageService
-        .createSession(
-            sessionId: "ll${userBasic.uid}",
-            sessionType: NIMSessionType.p2p,
-            time: DateTime.now().millisecond);
-    logger.i(
-        '${result.isSuccess} ${result.data?.sessionId}  ${result.data?.senderNickname}');
+    _nimNetworkManager.createSession(hisBasic.uid);
   }
 
   void sendTextMessage(String content) async {
     createSession();
-    final r = await chatMessage(userBasic.uid, content);
+    final r = await chatMessage(hisBasic.uid, content);
     if (!r.isOk()) {
       MyToast.show(r.msg);
       return;
     }
     final result =
-        await NimNetworkManager.instance.createTextMsg(content, userBasic.uid);
+        await _nimNetworkManager.createTextMsg(content, hisBasic.uid);
     logger.i('${result.isSuccess} ${result.errorDetails} ${result.code}');
-  }
-
-  void sendAudioMessage(String filePath) async {
-    // 该帐号为示例
-    String account = 'll${userBasic.uid}';
-// 以单聊类型为例
-    NIMSessionType sessionType = NIMSessionType.p2p;
-// 示例音频，需要开发者在相应目录下有文件
-    File file = new File(filePath);
-// 显示名称
-    String displayName = 'this is a file';
-// 发送语音消息
-    Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
-            sessionId: account,
-            sessionType: sessionType,
-            filePath: file.path,
-            fileSize: file.lengthSync(),
-            duration: 2000)
-        .then((value) => value.isSuccess
-            ? NimCore.instance.messageService
-                .sendMessage(message: value.data!, resend: false)
-            : Future.value(value));
+    if (result.isSuccess) {
+      nimMessageList.add(result.data!);
+    }
   }
 
   void messageReceive() {
     NimCore.instance.messageService.onMessage.listen((List<NIMMessage> list) {
       // 处理新收到的消息，为了上传处理方便，SDK 保证参数 messages 全部来自同一个聊天对象。
+      nimMessageList.addAll(list);
     });
   }
 
@@ -138,17 +128,44 @@ class ChatController extends GetxController {
   }
 
   ///操作录音
-  void startRecoding() {
+  void startRecoding() async {
     isRecoding.value = true;
+
+    /// 启动(开始)录音，如果成功，会按照顺序回调onRecordReady和onRecordStart。
+    NimCore.instance.audioService.startRecord({'maxLength': 40});
+
+    /// 监听录音过程事件
+    NimCore.instance.audioService.onAudioRecordStatus
+        .listen((RecordInfo recordInfo) {
+      logger.i(recordInfo);
+      if (recordInfo.recordState == RecordState.SUCCESS) {
+        //录制成功
+        _sendAudio(recordInfo.filePath ?? '');
+      }
+    });
   }
 
-  void stopRecoding(){
+  ///停止录音
+  void stopRecoding() {
     isRecoding.value = false;
+    NimCore.instance.audioService.stopRecord();
+  }
+
+  ///发送语音
+  void _sendAudio(String filePath) async {
+    if (filePath.isNotEmpty) {
+      final r =
+          await _nimNetworkManager.sendAudioMessage(filePath, hisBasic.uid);
+      if (r.isSuccess) {
+        nimMessageList.add(r.data!);
+      }
+    }
   }
 
   @override
   void onInit() {
     logger.i("onInit");
+    queryHistoryMsg();
   }
 
   @override
