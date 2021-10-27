@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/page/mine/visitor/visitor_controller.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/item_visitor.dart';
 
@@ -39,7 +42,9 @@ class VisitorPage extends StatelessWidget {
                       ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
                       : _visitorController.visitors[index].headImgUrl,
                   info:'${_visitorController.visitors[index].region}，${_visitorController.visitors[index].age}，${_visitorController.visitors[index].constellation}',
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => UserHomePage(uid:_visitorController.visitors[index].uid));
+                  },
                   time: '${_visitorController.visitors[index].time}',
                   isSvip: isSvip,
                 );
