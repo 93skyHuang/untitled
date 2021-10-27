@@ -151,9 +151,9 @@ class _NearbyPageState extends State<NearbyPage>
               onTap: () {
                 logger.i('点击大头像');
                 bool isSvip = GetStorageUtils.getSvip();
-                showAlertDialog(context);
+                showOpenSvipDialog(context);
                 if (!isSvip) {
-                  showAlertDialog(context);
+                  showOpenSvipDialog(context);
                 }
               },
             ),
@@ -277,7 +277,7 @@ class _NearbyPageState extends State<NearbyPage>
         logger.i(trendsImg);
         bool isSvip = GetStorageUtils.getSvip();
         if (!isSvip) {
-          showAlertDialog(context);
+          showOpenSvipDialog(context);
         }
       },
     );

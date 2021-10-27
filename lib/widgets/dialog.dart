@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/page/mine/avatar/video_verified_page.dart';
 
-showAlertDialog(BuildContext context) {
+showOpenSvipDialog(BuildContext context) {
   //设置按钮
   Widget cancelButton = TextButton(
     child: Text(

@@ -4,14 +4,15 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
-import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/page/mine/visitor/visitor_page.dart';
 import 'package:untitled/page/report/report_page.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'beliked/beliked_page.dart';
 import 'edit_basic_info.dart';
 import 'fans/fan_page.dart';
@@ -31,7 +32,7 @@ class MinePage extends StatefulWidget {
 
 class _MinePageState extends State<MinePage> {
   final MineController _mineController = Get.put(MineController());
-  final List<Widget> _menuItem = [
+  List<Widget> _menuItem = [
     ItemMenu(
       text: '我的动态',
       img: "assets/images/mine_move.png",
@@ -390,12 +391,134 @@ class _MinePageState extends State<MinePage> {
                     // 设置每子元素的大小（宽高比）
                     childAspectRatio: 1.2,
                     physics: const NeverScrollableScrollPhysics(),
-                    children: _menuItem,
+                    children: _getMenuItem(),
                   ),
                 ),
               ],
             ),
           ),
         ));
+  }
+
+  List<Widget> _getMenuItem() {
+    if (_menuItem.isEmpty) {
+      _menuItem = [
+        ItemMenu(
+          text: '我的动态',
+          img: "assets/images/mine_move.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {},
+        ),
+        ItemMenu(
+          text: '认证中心',
+          img: "assets/images/mine_verify.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            Get.to(() => VerifyCenterPage());
+          },
+        ),
+        ItemMenu(
+          text: '我的访客',
+          img: "assets/images/mine_visitor.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            bool isSvip = GetStorageUtils.getSvip();
+            if (!isSvip) {
+              showOpenSvipDialog(context);
+            } else {
+              Get.to(() => VisitorPage());
+            }
+          },
+        ),
+        ItemMenu(
+          text: '我喜欢的',
+          img: "assets/images/mine_like.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            bool isSvip = GetStorageUtils.getSvip();
+            if (!isSvip) {
+              showOpenSvipDialog(context);
+            } else {
+              Get.to(() => LikePage());
+            }
+          },
+        ),
+        ItemMenu(
+          text: '我的粉丝',
+          img: "assets/images/mine_fans.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            bool isSvip = GetStorageUtils.getSvip();
+            if (!isSvip) {
+              showOpenSvipDialog(context);
+            } else {
+              Get.to(() => FanPage());
+            }
+          },
+        ),
+        ItemMenu(
+          text: '我的关注',
+          img: "assets/images/mine_focus.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            bool isSvip = GetStorageUtils.getSvip();
+            if (!isSvip) {
+              showOpenSvipDialog(context);
+            } else {
+              Get.to(() => FollowPage());
+            }
+          },
+        ),
+        ItemMenu(
+          text: '我的足迹',
+          img: "assets/images/mine_history.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            bool isSvip = GetStorageUtils.getSvip();
+            if (!isSvip) {
+              showOpenSvipDialog(context);
+            } else {
+              Get.to(() => HistoryPage());
+            }
+          },
+        ),
+        ItemMenu(
+          text: '喜欢我的',
+          img: "assets/images/mine_follows.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            bool isSvip = GetStorageUtils.getSvip();
+            if (!isSvip) {
+              showOpenSvipDialog(context);
+            } else {
+              Get.to(() => BelikedPage());
+            }
+          },
+        ),
+        ItemMenu(
+          text: '安全中心',
+          img: "assets/images/mine_safe.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {},
+        ),
+        ItemMenu(
+          text: '设置',
+          img: "assets/images/mine_setting.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            Get.to(() => SettingPage());
+          },
+        ),
+        ItemMenu(
+          text: '我的主页',
+          img: "assets/images/mine_page.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            Get.to(() => MyHomePage());
+          },
+        ),
+      ];
+    }
+    return _menuItem;
   }
 }

@@ -49,9 +49,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
     return Container(
       child: Stack(
         children: [
-          controller == null
-              ? Container()
-              : CameraPreview(controller!),
+          controller == null ? Container() : CameraPreview(controller!),
           Container(
             height: 130,
             color: Color(0xffffffff),
@@ -73,9 +71,6 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/icon_circle.png"),
-              ),
               CustomText(
                   text: "把脸移入圈内",
                   textAlign: Alignment.center,

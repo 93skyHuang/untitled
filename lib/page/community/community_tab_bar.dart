@@ -1,9 +1,15 @@
 //
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/page/home_controller.dart';
 
 class CommunityTabBar extends StatelessWidget {
+  bool isSvip;
+
+  CommunityTabBar({Key? key, this.isSvip = false}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     logger.i('CommunityTabBar');
@@ -16,16 +22,22 @@ class CommunityTabBar extends StatelessWidget {
         indicatorColor: MyColor.redFd4343,
         isScrollable: true,
         //多个按钮可以滑动
-        tabs: const [
-          Tab(
-            text: '推荐',
-          ),
-          Tab(
-            text: '视频',
-          ),
-          Tab(
-            text: '关注',
-          ),
-        ]);
+        tabs: isSvip
+            ? const [
+                Tab(
+                  text: '推荐',
+                ),
+                Tab(
+                  text: '视频',
+                ),
+                Tab(
+                  text: '关注',
+                ),
+              ]
+            : [
+                Tab(
+                  text: '推荐',
+                )
+              ]);
   }
 }

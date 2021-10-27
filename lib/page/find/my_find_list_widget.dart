@@ -40,8 +40,6 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  final HomeController _homeController = Get.find();
-
   @override
   void initState() {
     logger.i('initState');
@@ -60,7 +58,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
     return RefreshConfiguration(
       // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
       hideFooterWhenNotFull: true,
-      child: Obx(() => !_homeController.isSvip.value && widget.isNeedSvip
+      child: /*Obx(() => !_homeController.isSvip.value && widget.isNeedSvip
           ? Container(
               width: double.infinity,
               height: double.infinity,
@@ -97,7 +95,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
                 ),
               ),
             )
-          : SmartRefresher(
+          : */SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
               header: const MyClassicHeader(),
@@ -107,7 +105,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
               onRefresh: _onRefresh,
               onLoading: _onLoading,
               child: _gridView(),
-            )),
+            ),
     );
   }
 
