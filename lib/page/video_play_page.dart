@@ -285,7 +285,7 @@ class _Controller extends GetxController {
     if (u == null) {
       final value = await getHomeUserData(info.uid);
       if (value.isOk()) {
-        GetStorageUtils.saveUserBasic(info.uid, value.data!);
+        GetStorageUtils.saveUserBasic(value.data!);
         Get.to(ChatPage(), arguments: value.data);
       }
     } else {

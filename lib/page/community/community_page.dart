@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/page/community/pull_dynamic_page.dart';
+import 'package:untitled/page/home_controller.dart';
 import 'community_tab_bar.dart';
 import 'community_tab_bar_view.dart';
 
@@ -19,48 +20,59 @@ class CommunityPage extends StatefulWidget {
 
 class _CommunityPageState extends State<CommunityPage>
     with AutomaticKeepAliveClientMixin {
+  final HomeController _homeController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     logger.i('CommunityPage');
+    bool isSvip = _homeController.isSvip.value;
     super.build(context);
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        backgroundColor: MyColor.pageBgColor,
-        appBar: AppBar(
-          backgroundColor: MyColor.pageBgColor,
-          elevation: 0,
-          title: Row(
-            children: [
-              Expanded(
-                child: CommunityTabBar(),
+    return Obx(() => DefaultTabController(
+          length: _homeController.isSvip.value ? 3 : 1,
+          child: Scaffold(
+            backgroundColor: MyColor.pageBgColor,
+            appBar: AppBar(
+              backgroundColor: MyColor.pageBgColor,
+              elevation: 0,
+              title: Row(
+                children: [
+                  Expanded(
+                    child: CommunityTabBar(
+                      isSvip: isSvip,
+                    ),
+                  ),
+                  Container(
+                    width: ScreenUtil().setWidth(70),
+                    height: ScreenUtil().setWidth(30),
+                    // 边框设置
+                    decoration: const BoxDecoration(
+                      //背景
+                      color: Colors.white,
+                      //设置四周圆角 角度
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      //设置四周边框
+                      border: Border(),
+                    ),
+                    // 设置 child 居中
+                    alignment: const Alignment(0, 0),
+                    child: addBtn(),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(
+                    left: ScreenUtil().setWidth(6),
+                  )),
+                ],
               ),
-              Container(
-                width: ScreenUtil().setWidth(70),
-                height: ScreenUtil().setWidth(30),
-                // 边框设置
-                decoration: const BoxDecoration(
-                  //背景
-                  color: Colors.white,
-                  //设置四周圆角 角度
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                  //设置四周边框
-                  border: Border(),
-                ),
-                // 设置 child 居中
-                alignment: const Alignment(0, 0),
-                child: addBtn(),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(
-                left: ScreenUtil().setWidth(6),
-              )),
-            ],
+            ),
+            body: CommunityTabBarView(isSvip: isSvip,),
           ),
-        ),
-        body: CommunityTabBarView(),
-      ),
-    );
+        ));
   }
 
   @override

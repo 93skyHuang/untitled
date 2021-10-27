@@ -5,18 +5,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/discover_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/home_controller.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
 
 ///发现页面列表页面 需要传入发现id
 class MyFindListWidget extends StatefulWidget {
   int id;
+  bool isNeedSvip;
 
-  MyFindListWidget(this.id, {Key? key}) : super(key: key);
+  MyFindListWidget(this.id, {Key? key, this.isNeedSvip = true})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -53,17 +58,54 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
     return RefreshConfiguration(
       // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
       hideFooterWhenNotFull: true,
-      child: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        header: const MyClassicHeader(),
-        footer: const MyClassicFooter(),
-        // 配置默认底部指示器
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        onLoading: _onLoading,
-        child: _gridView(),
-      ),
+      child: /*Obx(() => !_homeController.isSvip.value && widget.isNeedSvip
+          ? Container(
+              width: double.infinity,
+              height: double.infinity,
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Column(
+                  mainAxisSize:MainAxisSize.min,
+                  children: [
+                    Text(
+                      '开通SVIP，成为其中的一员与同城附近异性互动',
+                      style: TextStyle(fontSize: 22, color: MyColor.grey8C8C8C),
+                    ),
+                    SizedBox(height: 20,),
+                    TextButton(
+                        style: ButtonStyle(
+                            //去除点击效果
+                            // overlayColor: MaterialStateProperty.all(Colors.transparent),
+                            minimumSize:
+                                MaterialStateProperty.all(const Size(0, 0)),
+                            visualDensity: VisualDensity.compact,
+                            padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+                            //圆角
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8))),
+                            //背景
+                            backgroundColor:
+                                MaterialStateProperty.all(MyColor.mainColor)),
+                        onPressed: () {},
+                        child: Text('立即开通',
+                            style:
+                                TextStyle(fontSize: 24, color: Colors.white)))
+                  ],
+                ),
+              ),
+            )
+          : */SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: const MyClassicHeader(),
+              footer: const MyClassicFooter(),
+              // 配置默认底部指示器
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              onLoading: _onLoading,
+              child: _gridView(),
+            ),
     );
   }
 

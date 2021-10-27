@@ -7,26 +7,28 @@ import 'package:untitled/widget/trend_img.dart';
 
 import 'expandable_text.dart';
 
-class ItemTrend extends StatelessWidget {
+class ItemVideo extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
   VoidCallback onDelete;
 
-  ItemTrend({
-    required this.trends,
-    required this.onPressed,
-    required this.onDelete,
-  });
 
   double contextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(70 + 32);
+  ItemVideo(
+      {
+        required this.trends,
+        required this.onPressed,
+        required this.onDelete,
+      }
+      );
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {},
         child: Container(
-          padding: EdgeInsets.only(top: 20, bottom: 16, left: 16, right: 16),
+          padding: EdgeInsets.only(top: 20, bottom: 16, left: 16,right: 16 ),
           decoration: BoxDecoration(
               border: Border(
                   bottom: BorderSide(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:nim_core/nim_core.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
@@ -16,13 +17,8 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
-import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
-import 'package:untitled/widgets/null_list_widget.dart';
-
-import '../messages/messages_controller.dart';
 import 'chat_controller.dart';
-import 'message_bean.dart';
 
 //聊天页面
 class ChatPage extends StatefulWidget {
@@ -39,13 +35,15 @@ class _ChatPageState extends State<ChatPage> {
   TextEditingController textEditingController = TextEditingController();
   ScrollController _scrollController = ScrollController();
 
+  ///聊天单边显示区域
+  final contentWidth = ScreenUtil().screenWidth * 0.6;
+
   @override
   void initState() {
     super.initState();
     //聊天用户的uid
     UserBasic userBasic = Get.arguments as UserBasic;
     _controller.setUserBasic(userBasic);
-    list = _controller.getMsg();
   }
 
   @override
@@ -54,13 +52,6 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
         backgroundColor: MyColor.pageBgColor,
         appBar: AppBar(
-          actions: [
-            TextButton(
-                onPressed: () {
-                  _controller.sendTextMessage('合同健康会2');
-                },
-                child: Text('test'))
-          ],
           elevation: 0.5,
           leading: new IconButton(
               icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
@@ -70,154 +61,160 @@ class _ChatPageState extends State<ChatPage> {
           centerTitle: true,
           backgroundColor: MyColor.pageBgColor,
           title: Text(
-            '${_controller.userBasic.cname}',
+            '${_controller.hisBasic.cname}',
             style: TextStyle(
                 color: MyColor.blackColor, fontSize: ScreenUtil().setSp(18)),
           ),
         ),
-        body: Stack(
-          children: [
-            _userCard(),
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Color(0xFFF0F0F0),
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      //列表内容少的时候靠上
-                      alignment: Alignment.topCenter,
-                      child: _renderList(),
-                    ),
+        body: Stack(children: [
+          // _userCard(),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Color(0xFFF0F0F0),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    //列表内容少的时候靠上
+                    alignment: Alignment.topCenter,
+                    child: _renderList(),
                   ),
-                  Container(
-                    height: ScreenUtil().setHeight(50),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF0F0F0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x14000000),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Obx(() => GestureDetector(
-                              onTap: () {
-                                _controller.openOrCloseRecoding();
-                              },
-                              child: _controller.isShowRecodingBtn.value
-                                  ? Container(
-                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
-                                      decoration: BoxDecoration(
-                                        //背景
-                                        color: MyColor.mainColor,
-                                        //设置四周圆角 角度
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        //设置四周边框
-                                        border: Border(),
-                                      ),
-                                      width: 40,
-                                      height: 40,
-                                      child: Icon(
-                                        Icons.keyboard,
-                                        size: 30,
-                                      ),
-                                    )
-                                  : Container(
-                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
-                                      decoration: BoxDecoration(
-                                        //背景
-                                        color: MyColor.mainColor,
-                                        //设置四周圆角 角度
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        //设置四周边框
-                                        border: Border(),
-                                      ),
-                                      width: 40,
-                                      height: 40,
-                                      child: Icon(
-                                        Icons.mic_rounded,
-                                        size: 30,
-                                      ),
+                ),
+                Container(
+                  height: ScreenUtil().setHeight(50),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF0F0F0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x14000000),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Obx(() => GestureDetector(
+                            onTap: () {
+                              _controller.openOrCloseRecoding();
+                            },
+                            child: _controller.isShowRecodingBtn.value
+                                ? Container(
+                                    margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                    decoration: BoxDecoration(
+                                      //背景
+                                      color: MyColor.mainColor,
+                                      //设置四周圆角 角度
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      //设置四周边框
+                                      border: Border(),
                                     ),
-                            )),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                            constraints: BoxConstraints(
-                              maxHeight: 100.0,
-                              minHeight: 50.0,
-                            ),
-                            decoration: BoxDecoration(
-                                color: Color(0xFFF5F6FF),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(2))),
-                            child: Obx(() => _controller.isShowRecodingBtn.value
-                                ? GestureDetector(
-                                    onTapDown: (tapDown) {
-                                      _controller.startRecoding();
-                                    },
-                                    onTapUp: (tapUp) {
-                                      _controller.stopRecoding();
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: Text(
-                                        _controller.isRecoding.value
-                                            ? '松开结束'
-                                            : '按住说话',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: MyColor.mainColor,
-                                            fontSize: 16),
-                                      ),
-                                    ))
-                                : TextField(
-                                    controller: textEditingController,
-                                    maxLines: null,
-                                    maxLength: 200,
-                                    decoration: InputDecoration(
-                                      counterText: '',
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 16.0,
-                                          right: 16.0,
-                                          bottom: 10),
-                                      hintText: "回复",
-                                      hintStyle: TextStyle(
-                                          color: Color(0xFFADB3BA),
-                                          fontSize: 14),
+                                    width: 40,
+                                    height: 40,
+                                    child: Icon(
+                                      Icons.keyboard,
+                                      size: 30,
                                     ),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 14),
-                                  )),
+                                  )
+                                : Container(
+                                    margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                    decoration: BoxDecoration(
+                                      //背景
+                                      color: MyColor.mainColor,
+                                      //设置四周圆角 角度
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      //设置四周边框
+                                      border: Border(),
+                                    ),
+                                    width: 40,
+                                    height: 40,
+                                    child: Icon(
+                                      Icons.mic_rounded,
+                                      size: 30,
+                                    ),
+                                  ),
+                          )),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          constraints: BoxConstraints(
+                            maxHeight: 100.0,
+                            minHeight: 50.0,
                           ),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFF5F6FF),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2))),
+                          child: Obx(() => _controller.isShowRecodingBtn.value
+                              ? GestureDetector(
+                                  onTapDown: (tapDown) {
+                                    _controller.startRecoding();
+                                  },
+                                  onTapUp: (tapUp) {
+                                    _controller.stopRecoding();
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      _controller.isRecoding.value
+                                          ? '松开结束'
+                                          : '按住说话',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: MyColor.mainColor,
+                                          fontSize: 16),
+                                    ),
+                                  ))
+                              : TextField(
+                                  controller: textEditingController,
+                                  maxLines: null,
+                                  maxLength: 200,
+                                  decoration: InputDecoration(
+                                    counterText: '',
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 16.0, right: 16.0, bottom: 10),
+                                    hintText: "回复",
+                                    hintStyle: TextStyle(
+                                        color: Color(0xFFADB3BA), fontSize: 14),
+                                  ),
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14),
+                                )),
                         ),
-                        TextButton(
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: TextButton(
+                            style: ButtonStyle(
+                                //去除点击效果
+                                // overlayColor: MaterialStateProperty.all(
+                                //     Colors.transparent),
+                                minimumSize:
+                                    MaterialStateProperty.all(const Size(0, 0)),
+                                visualDensity: VisualDensity.compact,
+                                padding:
+                                    MaterialStateProperty.all(EdgeInsets.zero),
+                                //圆角
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4))),
+                                //背景
+                                backgroundColor: MaterialStateProperty.all(
+                                    Color(0xFFF3CD8E))),
                             onPressed: () {
                               sendTxt();
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                //背景
-                                color: Color(0xFFF3CD8E),
-                                //设置四周圆角 角度
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                                //设置四周边框
-                                border: Border(),
-                              ),
+                              width: 60,
                               height: 40,
-                              width: 80,
                               child: Text(
                                 '发送',
                                 style: TextStyle(
@@ -225,44 +222,43 @@ class _ChatPageState extends State<ChatPage> {
                                   fontSize: 14,
                                 ),
                               ),
-                            )),
-                      ],
-                    ),
+                            ),
+                          )),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
         ]));
   }
 
-  List<MessageBean> list = []; //列表要展示的数据
-
   _renderList() {
     return GestureDetector(
-      child: ListView.builder(
-        reverse: true,
-        shrinkWrap: true,
-        padding: EdgeInsets.only(top: 27),
-        itemBuilder: (context, index) {
-          var item = list[index];
-          return GestureDetector(
-            child: item.isReceive
-                ? _renderRowSendByOthers(context, item)
-                : _renderRowSendByMe(context, item),
-            onTap: () {},
-          );
-        },
-        itemCount: list.length,
-        physics: const AlwaysScrollableScrollPhysics(),
-        controller: _scrollController,
-      ),
+      child: Obx(() => ListView.builder(
+            reverse: true,
+            shrinkWrap: true,
+            padding: EdgeInsets.only(top: 27),
+            itemBuilder: (context, index) {
+              var item = _controller.nimMessageList[index];
+              return GestureDetector(
+                child: _controller.isHisMsg(item.fromAccount)
+                    ? _renderRowSendByOthers(context, item)
+                    : _renderRowSendByMe(context, item),
+                onTap: () {},
+              );
+            },
+            itemCount: _controller.nimMessageList.length,
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+          )),
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
     );
   }
 
-  Widget _renderRowSendByOthers(BuildContext context, MessageBean item) {
+  Widget _renderRowSendByOthers(BuildContext context, NIMMessage item) {
     return Container(
       padding: EdgeInsets.fromLTRB(16, 0, 0, 20),
       child: Column(
@@ -288,7 +284,7 @@ class _ChatPageState extends State<ChatPage> {
                           margin: EdgeInsets.fromLTRB(2, 16, 0, 0),
                         ),
                         Container(
-                          width: ScreenUtil().screenWidth * 0.6,
+                          width: contentWidth,
                           decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
@@ -302,13 +298,16 @@ class _ChatPageState extends State<ChatPage> {
                                   BorderRadius.all(Radius.circular(10))),
                           margin: EdgeInsets.only(left: 10),
                           padding: EdgeInsets.all(10),
-                          child: Text(
-                            item.content,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
+                          child: item.messageType == NIMMessageType.text
+                              ? Text(
+                                  '${item.content}',
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 13,
+                                  ),
+                                )
+                              : _receiveVoiceItem(item),
                         ),
                       ],
                     ),
@@ -322,7 +321,35 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _renderRowSendByMe(BuildContext context, MessageBean item) {
+  Widget _receiveVoiceItem(NIMMessage item) {
+    NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
+    if (item.messageType == NIMMessageType.audio) {
+      NIMAudioAttachment nimAudioAttachment =
+          NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      int mill = nimAudioAttachment.duration ?? 0;
+      int second = mill ~/ 1000;
+      double width = second < 3
+          ? contentWidth / 4
+          : second < 6
+              ? contentWidth / 3
+              : contentWidth / 2;
+      return Container(
+        width: width,
+        child: Row(
+          children: [
+            Text(
+              '$second"',
+              style: TextStyle(fontSize: 12, color: Colors.black),
+            )
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _renderRowSendByMe(BuildContext context, NIMMessage item) {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
       child: Column(
@@ -333,6 +360,7 @@ class _ChatPageState extends State<ChatPage> {
             children: <Widget>[
               //头像
               Obx(() => cardNetworkImage2(_controller.headerUrl.value, 40, 40,
+                  margin: EdgeInsets.all(0),
                   errorWidget: Icon(
                     Icons.person,
                     size: 30,
@@ -362,37 +390,43 @@ class _ChatPageState extends State<ChatPage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                               padding: EdgeInsets.all(10),
-                              child: Text(
-                                item.content,
-                                softWrap: true,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                            constraints: BoxConstraints(
-                              maxWidth: ScreenUtil().screenWidth * 0.6,
-                            ),
-                          ),
-                          Container(
-                              margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
-                              child: item.messageStatus == 0
-                                  ? ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 10, maxHeight: 10),
-                                      child: Container(
-                                        width: 10,
-                                        height: 10,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.0,
-                                          valueColor:
-                                              new AlwaysStoppedAnimation<Color>(
-                                                  Colors.grey),
-                                        ),
+                              child: item.messageType == NIMMessageType.text
+                                  ? Text(
+                                      '${item.content}',
+                                      softWrap: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
                                       ),
                                     )
-                                  : item.messageStatus == 2
+                                  : _sendVoiceItem(item),
+                            ),
+                            constraints: BoxConstraints(
+                              maxWidth: contentWidth,
+                            ),
+                          ),
+                          ///发送消息状态
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
+                              child: item.status == NIMMessageStatus.sending
+                                  ? item.messageType ==
+                                          NIMMessageType.text //文字不需要加载图标
+                                      ? Container()
+                                      : ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                              maxWidth: 10, maxHeight: 10),
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.0,
+                                              valueColor:
+                                                  new AlwaysStoppedAnimation<
+                                                      Color>(Colors.grey),
+                                            ),
+                                          ),
+                                        )
+                                  : item.status == NIMMessageStatus.fail
                                       ? Icon(
                                           Icons.error,
                                           color: Colors.red,
@@ -412,20 +446,57 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  sendTxt() {
-    // _controller.sendTextMessage(content);
+  /**
+   * 语音item
+   */
+  Widget _sendVoiceItem(NIMMessage item) {
+    NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
+    if (item.messageType == NIMMessageType.audio) {
+      NIMAudioAttachment nimAudioAttachment =
+          NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      int mill = nimAudioAttachment.duration ?? 0;
+      int second = mill ~/ 1000;
+      double width = second < 3
+          ? contentWidth / 4
+          : second < 6
+              ? contentWidth / 3
+              : contentWidth / 2;
+      return Container(
+        width: width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(Icons.pause),
+            Expanded(child: Align()),
+            Text(
+              '$second"',
+              style: TextStyle(fontSize: 12, color: Colors.black),
+            ),
+            SizedBox(
+              width: 10,
+            )
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 
-  addMessage(content, tag) {
-    int time = new DateTime.now().millisecondsSinceEpoch;
-    setState(() {});
+  sendTxt() {
+    String s = textEditingController.text.toString();
+    if (s.isNotEmpty) {
+      textEditingController.text = '';
+      _controller.sendTextMessage(s);
+    }
   }
 
   Widget _userCard() {
     return Container(
       margin: EdgeInsets.all(4),
       width: double.infinity,
-      height: ScreenUtil().setHeight(_controller.treadLength() > 0 ? 235 : 130),
+      height:
+          ScreenUtil().setHeight(_controller.trendsLength() > 0 ? 235 : 130),
       decoration: BoxDecoration(
         //背景
         color: Colors.white,
@@ -445,7 +516,7 @@ class _ChatPageState extends State<ChatPage> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               GestureDetector(
-                child: _headImg(_controller.userBasic.headImgUrl ?? ''),
+                child: _headImg(_controller.hisBasic.headImgUrl ?? ''),
                 onTap: () {
                   logger.i('点击头像');
                 },
@@ -457,7 +528,7 @@ class _ChatPageState extends State<ChatPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     singeLineText(
-                        '${_controller.userBasic.cname}',
+                        '${_controller.hisBasic.cname}',
                         ScreenUtil().setWidth(90),
                         TextStyle(
                             color: MyColor.blackColor,
@@ -482,21 +553,21 @@ class _ChatPageState extends State<ChatPage> {
     return Row(
       children: [
         Text(
-          '${_controller.userBasic.age}岁',
+          '${_controller.hisBasic.age}岁',
           style: TextStyle(
               color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
         ),
-        '${_controller.userBasic.constellation}'.isNotEmpty
+        '${_controller.hisBasic.constellation}'.isNotEmpty
             ? VDivider()
             : Container(),
         Text(
-          '${_controller.userBasic.constellation}',
+          '${_controller.hisBasic.constellation}',
           style: TextStyle(
               color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
         ),
         VDivider(),
         Text(
-          '${_controller.userBasic.height}cm',
+          '${_controller.hisBasic.height}cm',
           style: TextStyle(
               color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(10)),
         ),
@@ -529,19 +600,19 @@ class _ChatPageState extends State<ChatPage> {
   Widget _info3() {
     return Row(
       children: [
-        _controller.userBasic.isVideo == 1
+        _controller.hisBasic.isVideo == 1
             ? Container(
                 margin: EdgeInsets.only(right: 10),
                 child: Image.asset('assets/images/icon_verified_person.png'),
               )
             : Container(),
-        _controller.userBasic.isHead == 1
+        _controller.hisBasic.isHead == 1
             ? Container(
                 margin: EdgeInsets.only(right: 10),
                 child: Image.asset('assets/images/icon_verified_avatar.png'),
               )
             : Container(),
-        _controller.userBasic.isCard == 1
+        _controller.hisBasic.isCard == 1
             ? Container(
                 margin: EdgeInsets.only(right: 10),
                 child: Image.asset('assets/images/icon_verified_name'),
@@ -553,7 +624,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget focusWidget() {
-    if (_controller.userBasic.isFollow == 1) {
+    if (_controller.hisBasic.isFollow == 1) {
       return Container(
         width: ScreenUtil().setWidth(60),
         height: ScreenUtil().setWidth(30),
@@ -636,9 +707,9 @@ class _ChatPageState extends State<ChatPage> {
 
   ///动态图
   Widget _info4() {
-    var list = _controller.userBasic.trendsList;
+    var list = _controller.hisBasic.trendsList;
     List<Widget> listWidget = [];
-    int length = _controller.treadLength();
+    int length = _controller.trendsLength();
     if (length > 0) {
       for (int i = 0; i < length && i < 3; i++) {
         listWidget.add(_infoTrends(list![i]));

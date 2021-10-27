@@ -6,19 +6,18 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
-class MyHomeController extends GetxController {
+class UserHomeController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
   RxList trends = [].obs;
   RxList videoTrends = [].obs;
 
   @override
   void onInit() {
-    logger.i("MyHomeControllerInit");
-    getInfo();
+    logger.i("UserHomeController");
   }
 
-  void getInfo() {
-    getUserBasic().then((value) => {
+  void getInfo(int uid) {
+    getHomeUserData(uid).then((value) => {
       if(value.isOk()){
         trends.clear(),
         videoTrends.clear(),
@@ -34,6 +33,23 @@ class MyHomeController extends GetxController {
     });
   }
 
+  void add() {
+    addFollow(userBasic.value.uid).then((value) => {
+      if (value.isOk())
+        {
+          getInfo(userBasic.value.uid),
+        }
+    });
+  }
+
+  void del() {
+    delFollow(userBasic.value.uid).then((value) => {
+      if (value.isOk())
+        {
+          getInfo(userBasic.value.uid),
+        }
+    });
+  }
   @override
   void onClose() {
     logger.i("onClose");

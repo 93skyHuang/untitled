@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:untitled/page/mine/avatar/video_verified_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
@@ -140,7 +141,7 @@ class VerifyCenterPage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Get.to(()=>AvatarVerifiedPage());
+                        Get.to(()=>VideoVerifiedPage());
                         showBottomOpen(context);
                       },
                       child: Container(

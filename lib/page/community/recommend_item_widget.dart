@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/comment/comment_page.dart';
 import 'package:untitled/page/login/add_basic_info.dart';
 import 'package:untitled/page/login/login_page.dart';
 import 'package:untitled/page/mine/info/edit_user_info.dart';
@@ -256,7 +257,7 @@ class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
           TextButton(
               //评论
               onPressed: () {
-                Get.to(AddBasicInfoPage());
+                Get.to(CommentPage(widget.info));
               },
               style: ButtonStyle(
                 minimumSize: MaterialStateProperty.all(const Size(0, 0)),

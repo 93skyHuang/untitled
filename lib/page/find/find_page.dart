@@ -7,6 +7,7 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/find/my_tab_bar_view.dart';
+import 'package:untitled/page/home_controller.dart';
 import 'package:untitled/utils/image_picker_util.dart';
 
 import 'find_controller.dart';

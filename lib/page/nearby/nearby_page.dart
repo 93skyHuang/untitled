@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
@@ -147,6 +150,11 @@ class _NearbyPageState extends State<NearbyPage>
               child: headImg(info.headImgUrl ?? ''),
               onTap: () {
                 logger.i('点击大头像');
+                bool isSvip = GetStorageUtils.getSvip();
+                showOpenSvipDialog(context);
+                if (!isSvip) {
+                  showOpenSvipDialog(context);
+                }
               },
             ),
             Padding(
@@ -267,6 +275,10 @@ class _NearbyPageState extends State<NearbyPage>
           radius: 8),
       onTap: () {
         logger.i(trendsImg);
+        bool isSvip = GetStorageUtils.getSvip();
+        if (!isSvip) {
+          showOpenSvipDialog(context);
+        }
       },
     );
   }

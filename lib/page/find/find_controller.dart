@@ -6,10 +6,11 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
 class FindController extends GetxController {
-  RxList<FindTabInfo> findTabList = [FindTabInfo(id: 0, title: '精选')].obs;
+  List<FindTabInfo> allFindTabList=[];
+  RxList<FindTabInfo> findTabList = <FindTabInfo>[].obs;
 
   void _getTabTitle() {
-    findTabList.value = GetStorageUtils.getFindTab() ?? findTabList.value;
+    findTabList.value = GetStorageUtils.getFindTab();
     getFindTab().then((value) => {
           if (value.isOk())
             {
@@ -22,6 +23,7 @@ class FindController extends GetxController {
   @override
   void onInit() {
     logger.i("onInit");
+    super.onInit();
     _getTabTitle();
   }
 

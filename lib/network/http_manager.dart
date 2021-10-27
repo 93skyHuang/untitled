@@ -155,6 +155,26 @@ Future<BasePageData<UserInfo?>> getUserInfo() async {
   return basePageData;
 }
 
+/// 获取他人用户信息 接口测试通过
+Future<BasePageData<UserInfo?>> getOtherUserInfo(int uid) async {
+  BasePageData<UserInfo?> basePageData;
+  try {
+    Response response =
+    await getDio().post('/index/User/getUserInfo', data: {'uid': uid});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(
+          baseResp.code, baseResp.msg, UserInfo.fromJson(baseResp.data));
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+    logger.i('$basePageData');
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
 /// 保存编辑个人信息
 // * uid [用户uid]
 // * phone [用户手机号码]
