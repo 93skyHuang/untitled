@@ -5,8 +5,9 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
+import '../home_controller.dart';
+
 class FindController extends GetxController {
-  List<FindTabInfo> allFindTabList=[];
   RxList<FindTabInfo> findTabList = <FindTabInfo>[].obs;
 
   void _getTabTitle() {

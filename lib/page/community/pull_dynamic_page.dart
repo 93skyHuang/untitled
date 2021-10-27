@@ -54,7 +54,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       child: Scaffold(
         appBar: AppBar(
             elevation: 0.5,
-            leading:  IconButton(
+            leading: IconButton(
                 icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
                 onPressed: () {
                   Navigator.maybePop(context);
@@ -648,6 +648,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       MyToast.show('您还没输入动态内容!');
       return;
     }
+
     List<String> urls = [];
     if (_type == 1) {
       urls.addAll(imageUrls);
@@ -716,6 +717,9 @@ class _Controller extends GetxController {
     bool hasPermission = await checkAndRequestPermission();
     if (hasPermission) {
       MyToast.show('正在获取您的位置...');
+      Future.delayed(Duration(seconds: 8)).then((value) => {
+            MyToast.show('定位失败'),
+          });
       Position position = await getPosition();
       logger.i(position);
       lon = position.longitude;

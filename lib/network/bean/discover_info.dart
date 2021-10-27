@@ -14,6 +14,7 @@ class DiscoverInfo {
 //  * userLabel [用户标签]0-没有标签，3-视频认证，2-身份认证，1-头像认证
 
   String? cname;
+  int uid=-1;
   int? height;
 
   String? constellation;

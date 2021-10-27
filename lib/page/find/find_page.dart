@@ -23,15 +23,16 @@ class FindPage extends StatefulWidget {
   }
 }
 
-class _FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin{
+class _FindPageState extends State<FindPage>
+    with AutomaticKeepAliveClientMixin {
   final FindController _findController = Get.put(FindController());
-
+  final HomeController _homeController = Get.find();
   @override
   Widget build(BuildContext context) {
     // 105324
     logger.i('FindPage');
     return Obx(() => DefaultTabController(
-          length: _findController.findTabList.length,
+          length:  _homeController.isSvip.value?_findController.findTabList.length:1,
           child: Scaffold(
             backgroundColor: MyColor.pageBgColor,
             appBar: AppBar(
@@ -39,13 +40,13 @@ class _FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin{
               title: Row(
                 children: [
                   Expanded(
-                    child: MyTabBar(),
+                    child: MyTabBar(isSvip:_homeController.isSvip.value,),
                   ),
                 ],
               ),
               backgroundColor: MyColor.pageBgColor,
             ),
-            body: MyTabBarView(),
+            body: MyTabBarView(isSvip:_homeController.isSvip.value,),
           ),
         ));
   }

@@ -9,6 +9,9 @@ import 'package:untitled/page/home_controller.dart';
 import 'find_controller.dart';
 
 class MyTabBar extends GetView<FindController> {
+  MyTabBar({Key? key, this.isSvip = false}) : super(key: key);
+  bool isSvip;
+
   @override
   Widget build(BuildContext context) {
     logger.i('MyTabBar');
@@ -16,8 +19,7 @@ class MyTabBar extends GetView<FindController> {
         labelColor: MyColor.blackColor,
         labelStyle: TextStyle(fontSize: ScreenUtil().setSp(20)),
         unselectedLabelColor: MyColor.grey8C8C8C,
-        unselectedLabelStyle:
-        TextStyle(fontSize: ScreenUtil().setSp(15)),
+        unselectedLabelStyle: TextStyle(fontSize: ScreenUtil().setSp(15)),
         indicatorWeight: 4,
         indicatorColor: MyColor.redFd4343,
         isScrollable: true,
@@ -27,7 +29,7 @@ class MyTabBar extends GetView<FindController> {
 
   List<Widget> getTabs() {
     List<Widget> list = [];
-    int length = controller.findTabList.length;
+    int length = isSvip ? controller.findTabList.length : 1;
     for (int i = 0; i < length; i++) {
       list.add(Tab(
         text: controller.findTabList[i].title,

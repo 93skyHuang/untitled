@@ -8,6 +8,10 @@ import 'my_find_list_widget.dart';
 
 ///发现页面content布局
 class MyTabBarView extends GetView<FindController> {
+  bool isSvip;
+
+  MyTabBarView({Key? key, this.isSvip = false}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     logger.i('MyTabBarView');
@@ -16,11 +20,10 @@ class MyTabBarView extends GetView<FindController> {
 
   List<Widget> _list() {
     List<Widget> list = [];
-    int length = controller.findTabList.length;
+    int length = isSvip ? controller.findTabList.length : 1;
     for (int i = 0; i < length; i++) {
       list.add(MyFindListWidget(
         controller.findTabList[i].id,
-        isNeedSvip: i != 0,
       ));
     }
     return list;

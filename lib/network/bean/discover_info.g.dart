@@ -10,6 +10,7 @@ DiscoverInfo _$DiscoverInfoFromJson(Map<String, dynamic> json) {
   return DiscoverInfo()
     ..cname = json['cname'] as String?
     ..height = json['height'] as int?
+    ..uid = json['uid'] as int
     ..constellation = json['constellation'] as String?
     ..headImgUrl = json['headImgUrl'] as String?
     ..loginTime = json['loginTime'] as String
