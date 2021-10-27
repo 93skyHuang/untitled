@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widget/trend_img.dart';
 
 import 'expandable_text.dart';
 
@@ -11,20 +12,21 @@ class ItemTrend extends StatelessWidget {
   VoidCallback onPressed;
   VoidCallback onDelete;
 
-  ItemTrend(
-      {
-        required this.trends,
-        required this.onPressed,
-        required this.onDelete,
-      }
-      );
+  ItemTrend({
+    required this.trends,
+    required this.onPressed,
+    required this.onDelete,
+  });
+
+  double contextWidth =
+      ScreenUtil().screenWidth - ScreenUtil().setWidth(70 + 32);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {},
         child: Container(
-          padding: EdgeInsets.only(top: 20, bottom: 16, left: 16,right: 16 ),
+          padding: EdgeInsets.only(top: 20, bottom: 16, left: 16, right: 16),
           decoration: BoxDecoration(
               border: Border(
                   bottom: BorderSide(
@@ -35,10 +37,12 @@ class ItemTrend extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomText(
-                text: '${trends.time}',
-                textStyle: TextStyle(fontSize: 14, color: Colors.black),
-                margin: EdgeInsets.only(right: 20),
+              Container(
+                width: 70,
+                child: CustomText(
+                  text: '${trends.time}',
+                  textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                ),
               ),
               Expanded(
                   child: Column(
@@ -48,6 +52,13 @@ class ItemTrend extends StatelessWidget {
                   TQExpandableText(
                     '${trends.content}',
                   ),
+                  if (trends.imgArr!.isNotEmpty)
+                    TrendImg(
+                      imgs: trends.imgArr ?? [],
+                      showAll: true,
+                      contextWidth: contextWidth,
+                      onClick: (String img) {},
+                    ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,

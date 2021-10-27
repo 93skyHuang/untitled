@@ -33,6 +33,23 @@ class UserHomeController extends GetxController {
     });
   }
 
+  void add() {
+    addFollow(userBasic.value.uid).then((value) => {
+      if (value.isOk())
+        {
+          getInfo(userBasic.value.uid),
+        }
+    });
+  }
+
+  void del() {
+    delFollow(userBasic.value.uid).then((value) => {
+      if (value.isOk())
+        {
+          getInfo(userBasic.value.uid),
+        }
+    });
+  }
   @override
   void onClose() {
     logger.i("onClose");

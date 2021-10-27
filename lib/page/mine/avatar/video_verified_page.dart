@@ -58,16 +58,28 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
             height: 130,
             color: Color(0x80000000),
           ),
-          Container(
-              margin: EdgeInsets.only(top: 100),
-              height: double.infinity,
-              decoration: BoxDecoration(
-                color: Color(0xff000000),
-                border: Border(),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0)),
-              )),
+          ShaderMask(
+            blendMode: BlendMode.srcOut,
+            shaderCallback: (bounds) {
+              return RadialGradient(
+                colors: [Colors.transparent, MyColor.mainColor],
+              ).createShader(bounds);
+            },
+            child: Align(child: Image(
+              color: MyColor.mainColor,
+              image: AssetImage("assets/images/icon_circle.png"),
+              alignment: Alignment.center,
+            ),)),
+          // Container(
+          //     margin: EdgeInsets.only(top: 100),
+          //     height: double.infinity,
+          //     decoration: BoxDecoration(
+          //       color: Color(0xff000000),
+          //       border: Border(),
+          //       borderRadius: BorderRadius.only(
+          //           topLeft: Radius.circular(30.0),
+          //           topRight: Radius.circular(30.0)),
+          //     )),
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[

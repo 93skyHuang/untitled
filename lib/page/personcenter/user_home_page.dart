@@ -10,12 +10,13 @@ import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
 
-import 'info_page.dart'; 
+import 'info_page.dart';
 
 //他人首页页面
 class UserHomePage extends StatefulWidget {
   int uid;
-  UserHomePage({required this.uid,Key? key}) : super(key: key);
+
+  UserHomePage({required this.uid, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,7 +27,9 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State with SingleTickerProviderStateMixin {
   final UserHomeController _userHomeController = Get.put(UserHomeController());
   int uid;
+
   _UserHomePageState(this.uid);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +151,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
         children: [
           Container(
             height: 365,
-            alignment: Alignment.topLeft,
+            alignment: Alignment.bottomRight,
             width: double.infinity,
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
@@ -161,9 +164,144 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 fit: BoxFit.fill,
               ),
             ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                    child: GestureDetector(
+                      onTap: () {
+                        if(_userHomeController.userBasic.value.isFollow==0){
+                          _userHomeController.add();
+                        }else{
+                          showBottomOpen(context);
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          if(_userHomeController.userBasic.value.isFollow==0)Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          CustomText(
+                            text:  _userHomeController.userBasic.value.isFollow==0?'关注':'已关注',
+                            textAlign: Alignment.center,
+                            margin: EdgeInsets.only(left: 3),
+                            textStyle:
+                                TextStyle(fontSize: 15, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                    margin: EdgeInsets.only(bottom:20 ),
+                    height: 35,
+                    padding: EdgeInsets.only(left: 15, right: 15,),
+                    decoration: new BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(23.0)),
+                      color: Color(0xff9943FD),
+                    )),
+                Container(
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.chat_outlined,
+                            color: Colors.black,
+                            size: 18,
+                          ),
+                          CustomText(
+                            text: '私聊',
+                            textAlign: Alignment.center,
+                            margin: EdgeInsets.only(left: 3),
+                            textStyle:
+                            TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                    margin: EdgeInsets.only(bottom:20,left:16,right: 16  ),
+                    height: 35,
+                    padding: EdgeInsets.only(left: 15, right: 15,),
+                    decoration: new BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(23.0)),
+                      color: Color(0xffF3CD8E),
+                    )),
+              ],
+            ),
           ),
         ],
       ),
     ));
+  }
+  void showBottomOpen(BuildContext context) {
+    showModalBottomSheet(
+        enableDrag: false,
+        elevation: 0,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      )),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(bottom: 20.0, top: 16),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0)),
+                        ),
+                        child: Column(children: <Widget>[
+                          CustomText(
+                              text: "操作",
+                              textAlign: Alignment.center,
+                              padding: EdgeInsets.only(bottom: 16),
+                              textStyle:
+                              TextStyle(fontSize: 17, color: Colors.black)),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                _userHomeController.del();
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "取消关注",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Colors.black))),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "取消",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Color(0xffFD4343)))),
+                        ]))
+                  ]));
+        });
   }
 }
