@@ -21,7 +21,7 @@ class EncryptionAndDecryptionInterceptors extends Interceptor {
     final random = getRandomOf8();
     const clientId = '85694257';
     String dataStr = json.encode(data);
-    logger.i(dataStr);
+    // logger.i(dataStr);
     String encryptedStr;
     rsaEncrypted(dataStr).then((dataEn) => {
           encryptedStr = '$clientId$dataEn$random',

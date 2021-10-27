@@ -12,7 +12,7 @@ class VipController extends GetxController {
   RxString imgurl = ''.obs;
   RxString name = ''.obs;
   List<MonthlyCard> monthlyCardList =
-      [MonthlyCard('oneWeekTrial', '30.00')].obs;
+      <MonthlyCard>[].obs;
 
   void closeIosConnection() async {
     await FlutterInappPurchase.instance.endConnection;
@@ -24,7 +24,7 @@ class VipController extends GetxController {
   }
 
   void pay() {
-    final card = monthlyCardList[0];
+    final card = monthlyCardList[3];
     if (Platform.isIOS) {
       _iosPay(card);
     } else if (Platform.isAndroid) {
@@ -33,6 +33,7 @@ class VipController extends GetxController {
   }
 
   void _iosPay(MonthlyCard card) async {
+    logger.i(card.iosKey);
     final create = await createOrder(card.iosKey);
     int orderid;
     if (create.isOk()) {
@@ -42,10 +43,16 @@ class VipController extends GetxController {
       return;
     }
     logger.i(card.iosKey);
-    List<IAPItem> items= await FlutterInappPurchase.instance.getProducts(['weeklyCard'  ,'seasonPassPurchase' ,'monthlyCardPurchase'  ,]);
+    List<String> key=[];
+    for(int i=0;i<monthlyCardList.length;i++){
+      key.add(monthlyCardList[i].iosKey);
+    }
+    // await _getPurchaseHistory();
+
+    List<IAPItem> items= await FlutterInappPurchase.instance.getProducts(key);
 
     for(int i=0;i<items.length;i++){
-      logger.i(items[i]);
+      logger.i('${items[i]} ${items[i].productId}  ');
     }
     logger.i('苹果支付开始 ${items.length}' );
     /// 初始化连接
@@ -55,25 +62,25 @@ class VipController extends GetxController {
     FlutterInappPurchase.connectionUpdated.listen((connected) {
       /// 调起苹果支付，这时候可以关闭toast
       ///
-      // onConnectAppStore?.call();
-      logger.i('$connected');
+      logger.i('链接状态监听$connected');
     });
 
     /// appStore购买状态监听
     FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
-      logger.i('$productItem');
+      logger.i('购买状态监听----$productItem');
       //自有服务器校验
       if (productItem != null) {
         String transactionId = productItem.transactionId ?? '';
         String receiptData = productItem.transactionReceipt ?? '';
-        await  verifyOrder(orderid,transactionId,receiptData);
+        final r=  await verifyOrder(orderid,receiptData,transactionId,);
+        logger.i('${r.isOk()}  ${r.msg}');
+        await clearTransaction();
       }
-      await clearTransaction();
     });
 
     /// 错误监听
     FlutterInappPurchase.purchaseError.listen((purchaseError) async{
-      print('purchase-error: $purchaseError');
+      print('监听到错误 purchase-error: $purchaseError');
       await clearTransaction();
       await FlutterInappPurchase.instance.endConnection;
 
@@ -81,12 +88,24 @@ class VipController extends GetxController {
 
     });
 
-     if(items.length>0){
+     if(items.isNotEmpty){
        /// 发起支付请求，传递iosProductId
-       FlutterInappPurchase.instance.requestPurchase('${items[0].productId}');
+       ///
+       logger.e('${items[3].productId}');
+       FlutterInappPurchase.instance.requestPurchase(card.iosKey);
      }else{
        logger.e('null items  IAPItem');
      }
+  }
+
+  Future _getPurchaseHistory() async {
+    List<PurchasedItem>? items =
+    await FlutterInappPurchase.instance.getPurchaseHistory();
+    logger.i('_getPurchaseHistory${items}');
+    int l=items?.length??0;
+    for(int i=0;i<l;i++){
+      logger.i('${items![i].toString()}');
+    }
   }
 
   void _andPay() {}
