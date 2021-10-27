@@ -7,7 +7,7 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
 class MineController extends GetxController {
-  Rx<UserBasic> userBasic = UserBasic().obs;
+  Rx<UserBasic>  userBasic=UserBasic().obs;
 
   @override
   void onInit() {

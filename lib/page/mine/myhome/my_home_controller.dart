@@ -9,6 +9,7 @@ import 'package:untitled/persistent/get_storage_utils.dart';
 class MyHomeController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
   RxList trends = [].obs;
+  RxList videoTrends = [].obs;
 
   @override
   void onInit() {
@@ -17,8 +18,19 @@ class MyHomeController extends GetxController {
   }
 
   void getInfo() {
-    getUserBasic().then((value) => {userBasic.value = value.data!,
-    trends.value=userBasic.value.trendsList!
+    getUserBasic().then((value) => {
+      if(value.isOk()){
+        trends.clear(),
+        videoTrends.clear(),
+        userBasic.value = value.data!,
+        for(int i=0;i<userBasic.value.trendsList!.length;i++){
+          if(userBasic.value.trendsList![i]!.type==2){
+            videoTrends.add(userBasic.value.trendsList![i])
+          }else{
+            trends.add(userBasic.value.trendsList![i])
+          }
+        }
+      }
     });
   }
 

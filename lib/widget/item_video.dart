@@ -6,12 +6,12 @@ import 'package:untitled/widget/custom_text.dart';
 
 import 'expandable_text.dart';
 
-class ItemTrend extends StatelessWidget {
+class ItemVideo extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
   VoidCallback onDelete;
 
-  ItemTrend(
+  ItemVideo(
       {
         required this.trends,
         required this.onPressed,
