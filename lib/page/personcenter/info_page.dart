@@ -14,26 +14,20 @@ import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_menu.dart';
 
-import 'info_controller.dart';
-import 'my_home_controller.dart';
 
 class InfoPage extends StatefulWidget {
-  final MyHomeController _myHomeController;
-
-  InfoPage(this._myHomeController);
+  int uid;
+  InfoPage(this.uid);
 
   @override
   State<StatefulWidget> createState() {
-    return _InfoPageState(_myHomeController);
+    return _InfoPageState(uid);
   }
 }
 
 class _InfoPageState extends State with SingleTickerProviderStateMixin {
-  _InfoPageState(this._myHomeController);
-
-  MyHomeController _myHomeController;
-
-  int uid = 0;
+  _InfoPageState(this.uid);
+  int uid;
   int? height = 0;
 
   String? constellation = '';
@@ -79,34 +73,6 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
                 textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                 margin: EdgeInsets.only(left: 18, top: 20, bottom: 10),
               ),
-              Container(
-                  margin: EdgeInsets.only(right: 18, top: 20),
-                  child: GestureDetector(
-                    onTap: () {
-                      Get.to(() => EditUser())!.then((value) {
-                        getInfo();
-                        _myHomeController.getInfo();
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Image(
-                          image: AssetImage("assets/images/icon_edit.png"),
-                        ),
-                        CustomText(
-                          text: '编辑资料',
-                          margin: EdgeInsets.only(left: 3),
-                          textStyle:
-                              TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  padding: EdgeInsets.only(left: 6, right: 6, bottom: 2),
-                  decoration: new BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    border: new Border.all(width: 1, color: Color(0xff8C8C8C)),
-                  ))
             ],
           ),
           Divider(
@@ -221,11 +187,10 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
 
   void getInfo() {
     UserInfo userInfo;
-    getUserInfo().then((value) => {
-          if (value.isOk()) {userInfo = value.data!, setInfo(userInfo)}
-        });
+    getOtherUserInfo(uid).then((value) => {
+      if (value.isOk()) {userInfo = value.data!, setInfo(userInfo)}
+    });
   }
-
   void setInfo(UserInfo userInfo) {
     expects.clear();
     details.clear();
