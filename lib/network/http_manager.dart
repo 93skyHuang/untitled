@@ -13,6 +13,7 @@ import 'package:untitled/network/bean/my_foot_info.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/bean/visitor_info.dart';
+import 'package:untitled/network/rsa_interceptors.dart';
 import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -1223,21 +1224,23 @@ Future<BasePageData<Order?>> createOrder(String productID) async {
   return basePageData;
 }
 
-/// 生成内购订单号
+/// 验证订单
 Future<BasePageData> verifyOrder(int orderId,String receiptData,String transactionID,) async {
   BasePageData basePageData;
   try {
     int uid = GetStorageUtils.getUID();
-    Response response = await getDio().post('/index/Pay/verifyOrder',
+    Dio _dio = Dio();
+    _dio.interceptors.add(EncryptionAndDecryptionInterceptors());
+    _dio.options = BaseOptions(
+        baseUrl: "http://www.sancun.vip",
+        connectTimeout: 20000,
+        receiveTimeout: 20000,);
+    Response response = await _dio.post('/index/Pay/verifyOrder',
         data: {'uid': uid, 'orderId': orderId,'receipt_data':receiptData,'transactionID':transactionID});
     BaseResp baseResp = BaseResp.fromJson(response.data);
-    if (baseResp.code == respCodeSuccess) {
-      basePageData = BasePageData(
-          baseResp.code, baseResp.msg, Order.fromJson(baseResp.data));
-    } else {
-      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-    }
-  } catch (error) {
+    basePageData = BasePageData(
+        baseResp.code, baseResp.msg, null);
+  } on DioError catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }

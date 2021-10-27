@@ -232,7 +232,7 @@ class _ChatPageState extends State<ChatPage> {
                 ],
               ),
             ),
-        ));
+        ]));
   }
 
   List<MessageBean> list = []; //列表要展示的数据

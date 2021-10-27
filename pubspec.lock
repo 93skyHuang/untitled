@@ -554,14 +554,14 @@ packages:
       name: nim_core_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.6"
+    version: "1.0.0-rc.7"
   nim_core_windows:
     dependency: transitive
     description:
       name: nim_core_windows
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-beta.10"
+    version: "1.0.0-beta.11"
   octo_image:
     dependency: transitive
     description:

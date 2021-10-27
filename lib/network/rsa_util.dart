@@ -24,7 +24,6 @@ Future<String> rsaEncrypted(String content) async {
     return '';
   }
   await loadKey();
-  logger.i('content==$content');
   var publicKey = RSAKeyParser().parse(publicKeyStr) as RSAPublicKey;
   // var privateKey = RSAKeyParser().parse(privateStr) as RSAPrivateKey;
   final enrcypter = Encrypter(RSA(publicKey: publicKey));
