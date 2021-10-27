@@ -22,6 +22,7 @@ class FindController extends GetxController {
   @override
   void onInit() {
     logger.i("onInit");
+    super.onInit();
     _getTabTitle();
   }
 

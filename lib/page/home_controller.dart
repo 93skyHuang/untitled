@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:nim_core/nim_core.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 
 class HomeController extends GetxController {
   late final StreamSubscription nimEventSubscription;
+
+  RxBool isSvip = GetStorageUtils.getSvip().obs;
 
   //unknown	未定义
   // unLogin	未登录/登录失败
@@ -24,6 +27,7 @@ class HomeController extends GetxController {
         NimCore.instance.authService.authStatus.listen((event) {
       if (event is NIMKickOutByOtherClientEvent) {
         logger.i('监听到被踢事件');
+
         /// 监听到被踢事件
       } else if (event is NIMAuthStatusEvent) {
         /// 监听到其他事件
@@ -34,6 +38,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
     logger.i("onInit");
   }
 

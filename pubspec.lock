@@ -120,6 +120,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.1"
+  camera:
+    dependency: "direct main"
+    description:
+      name: camera
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.9.4+3"
+  camera_platform_interface:
+    dependency: transitive
+    description:
+      name: camera_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.1"
+  camera_web:
+    dependency: transitive
+    description:
+      name: camera_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1+1"
   characters:
     dependency: transitive
     description:
@@ -554,14 +575,14 @@ packages:
       name: nim_core_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.6"
+    version: "1.0.0-rc.7"
   nim_core_windows:
     dependency: transitive
     description:
       name: nim_core_windows
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-beta.10"
+    version: "1.0.0-beta.11"
   octo_image:
     dependency: transitive
     description:
@@ -688,6 +709,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.1+1"
   rxdart:
     dependency: transitive
     description:

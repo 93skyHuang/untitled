@@ -17,7 +17,6 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
-import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
 import 'chat_controller.dart';
 
@@ -36,6 +35,9 @@ class _ChatPageState extends State<ChatPage> {
   TextEditingController textEditingController = TextEditingController();
   ScrollController _scrollController = ScrollController();
 
+  ///聊天单边显示区域
+  final contentWidth = ScreenUtil().screenWidth * 0.6;
+
   @override
   void initState() {
     super.initState();
@@ -50,13 +52,6 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
         backgroundColor: MyColor.pageBgColor,
         appBar: AppBar(
-          actions: [
-            TextButton(
-                onPressed: () {
-                  _controller.sendTextMessage('合同健康会2');
-                },
-                child: Text('test'))
-          ],
           elevation: 0.5,
           leading: new IconButton(
               icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
@@ -193,28 +188,39 @@ class _ChatPageState extends State<ChatPage> {
                                 )),
                         ),
                       ),
-                      TextButton(
-                          onPressed: () {
-                            sendTxt();
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              //背景
-                              color: Color(0xFFF3CD8E),
-                              //设置四周圆角 角度
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4)),
-                              //设置四周边框
-                              border: Border(),
-                            ),
-                            height: 40,
-                            width: 80,
-                            child: Text(
-                              '发送',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
+                      Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: TextButton(
+                            style: ButtonStyle(
+                                //去除点击效果
+                                // overlayColor: MaterialStateProperty.all(
+                                //     Colors.transparent),
+                                minimumSize:
+                                    MaterialStateProperty.all(const Size(0, 0)),
+                                visualDensity: VisualDensity.compact,
+                                padding:
+                                    MaterialStateProperty.all(EdgeInsets.zero),
+                                //圆角
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4))),
+                                //背景
+                                backgroundColor: MaterialStateProperty.all(
+                                    Color(0xFFF3CD8E))),
+                            onPressed: () {
+                              sendTxt();
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 60,
+                              height: 40,
+                              child: Text(
+                                '发送',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
                           )),
@@ -278,7 +284,7 @@ class _ChatPageState extends State<ChatPage> {
                           margin: EdgeInsets.fromLTRB(2, 16, 0, 0),
                         ),
                         Container(
-                          width: ScreenUtil().screenWidth * 0.6,
+                          width: contentWidth,
                           decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
@@ -292,13 +298,16 @@ class _ChatPageState extends State<ChatPage> {
                                   BorderRadius.all(Radius.circular(10))),
                           margin: EdgeInsets.only(left: 10),
                           padding: EdgeInsets.all(10),
-                          child: Text(
-                            '${item.content}',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
+                          child: item.messageType == NIMMessageType.text
+                              ? Text(
+                                  '${item.content}',
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 13,
+                                  ),
+                                )
+                              : _receiveVoiceItem(item),
                         ),
                       ],
                     ),
@@ -312,6 +321,34 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  Widget _receiveVoiceItem(NIMMessage item) {
+    NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
+    if (item.messageType == NIMMessageType.audio) {
+      NIMAudioAttachment nimAudioAttachment =
+          NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      int mill = nimAudioAttachment.duration ?? 0;
+      int second = mill ~/ 1000;
+      double width = second < 3
+          ? contentWidth / 4
+          : second < 6
+              ? contentWidth / 3
+              : contentWidth / 2;
+      return Container(
+        width: width,
+        child: Row(
+          children: [
+            Text(
+              '$second"',
+              style: TextStyle(fontSize: 12, color: Colors.black),
+            )
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
   Widget _renderRowSendByMe(BuildContext context, NIMMessage item) {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
@@ -323,6 +360,7 @@ class _ChatPageState extends State<ChatPage> {
             children: <Widget>[
               //头像
               Obx(() => cardNetworkImage2(_controller.headerUrl.value, 40, 40,
+                  margin: EdgeInsets.all(0),
                   errorWidget: Icon(
                     Icons.person,
                     size: 30,
@@ -352,36 +390,42 @@ class _ChatPageState extends State<ChatPage> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                               padding: EdgeInsets.all(10),
-                              child: Text(
-                                '${item.content}',
-                                softWrap: true,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                ),
-                              ),
+                              child: item.messageType == NIMMessageType.text
+                                  ? Text(
+                                      '${item.content}',
+                                      softWrap: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                      ),
+                                    )
+                                  : _sendVoiceItem(item),
                             ),
                             constraints: BoxConstraints(
-                              maxWidth: ScreenUtil().screenWidth * 0.6,
+                              maxWidth: contentWidth,
                             ),
                           ),
+                          ///发送消息状态
                           Container(
                               margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
                               child: item.status == NIMMessageStatus.sending
-                                  ? ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 10, maxHeight: 10),
-                                      child: Container(
-                                        width: 10,
-                                        height: 10,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.0,
-                                          valueColor:
-                                              new AlwaysStoppedAnimation<Color>(
-                                                  Colors.grey),
-                                        ),
-                                      ),
-                                    )
+                                  ? item.messageType ==
+                                          NIMMessageType.text //文字不需要加载图标
+                                      ? Container()
+                                      : ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                              maxWidth: 10, maxHeight: 10),
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.0,
+                                              valueColor:
+                                                  new AlwaysStoppedAnimation<
+                                                      Color>(Colors.grey),
+                                            ),
+                                          ),
+                                        )
                                   : item.status == NIMMessageStatus.fail
                                       ? Icon(
                                           Icons.error,
@@ -402,10 +446,48 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  /**
+   * 语音item
+   */
+  Widget _sendVoiceItem(NIMMessage item) {
+    NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
+    if (item.messageType == NIMMessageType.audio) {
+      NIMAudioAttachment nimAudioAttachment =
+          NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      int mill = nimAudioAttachment.duration ?? 0;
+      int second = mill ~/ 1000;
+      double width = second < 3
+          ? contentWidth / 4
+          : second < 6
+              ? contentWidth / 3
+              : contentWidth / 2;
+      return Container(
+        width: width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(Icons.pause),
+            Expanded(child: Align()),
+            Text(
+              '$second"',
+              style: TextStyle(fontSize: 12, color: Colors.black),
+            ),
+            SizedBox(
+              width: 10,
+            )
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
   sendTxt() {
     String s = textEditingController.text.toString();
     if (s.isNotEmpty) {
-      _controller.sendTextMessage(textEditingController.text.toString());
+      textEditingController.text = '';
+      _controller.sendTextMessage(s);
     }
   }
 

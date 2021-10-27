@@ -92,10 +92,15 @@ class GetStorageUtils {
 
   ///获取某个人的基本信息数据
   static UserBasic? getUserBasic(int uid) {
-    final userBasicMap = _commonStorage.read('$uid');
-    logger.i(userBasicMap);
+    try {
+      final userBasicMap = _commonStorage.read('$uid');
+      logger.i(userBasicMap);
+      return userBasicMap;
+    } catch (e) {
+      logger.e(e);
+    }
     // return userBasicMap == null ? null : UserBasic.fromJson(userBasicMap);
-    return userBasicMap;
+    return null;
   }
 
   static UserBasic? getMineUserBasic() {

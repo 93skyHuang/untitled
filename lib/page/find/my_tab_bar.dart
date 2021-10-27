@@ -1,12 +1,14 @@
 //
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/page/home_controller.dart';
 
 import 'find_controller.dart';
 
-class MyTabBar extends GetView<FindController>{
+class MyTabBar extends GetView<FindController> {
   @override
   Widget build(BuildContext context) {
     logger.i('MyTabBar');
@@ -24,10 +26,12 @@ class MyTabBar extends GetView<FindController>{
   }
 
   List<Widget> getTabs() {
-    List<Widget> list=[];
+    List<Widget> list = [];
     int length = controller.findTabList.length;
     for (int i = 0; i < length; i++) {
-      list.add(Tab(text: controller.findTabList[i].title,));
+      list.add(Tab(
+        text: controller.findTabList[i].title,
+      ));
     }
     return list;
   }

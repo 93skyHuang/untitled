@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -23,10 +24,11 @@ class ChatController extends GetxController {
   late UserBasic hisBasic;
   UserBasic? mineBasic = GetStorageUtils.getMineUserBasic();
 
-  List<NIMMessage> nimMessageList = <NIMMessage>[].obs;
+  RxList<NIMMessage> nimMessageList = <NIMMessage>[].obs;
 
   void setUserBasic(UserBasic hisBasic) {
     this.hisBasic = hisBasic;
+    this.hisBasic.uid = 105324;
     isFollow.value = hisBasic.isFollow == 1;
     headerUrl.value = hisBasic.headImgUrl ?? '';
     mineHeaderUrl.value = '${mineBasic?.headImgUrl}';
@@ -103,18 +105,35 @@ class ChatController extends GetxController {
       MyToast.show(r.msg);
       return;
     }
+    NimCore.instance.messageService.onMessageStatus.listen((event) {
+      logger.i('消息状态${event.status} ${event.content}');
+      if (event.status == NIMMessageStatus.fail) {
+        changeTagMsg(event);
+      }
+    });
     final result =
         await _nimNetworkManager.createTextMsg(content, hisBasic.uid);
     logger.i('${result.isSuccess} ${result.errorDetails} ${result.code}');
     if (result.isSuccess) {
-      nimMessageList.add(result.data!);
+      nimMessageList.insert(0,result.data!);
+    }
+  }
+
+  void changeTagMsg(NIMMessage msg) {
+    if (nimMessageList.isNotEmpty) {
+      for (int i = 0; i < nimMessageList.length; i++) {
+        if (nimMessageList[i].messageId == msg.messageId) {
+          nimMessageList[i] = msg;
+          break;
+        }
+      }
     }
   }
 
   void messageReceive() {
     NimCore.instance.messageService.onMessage.listen((List<NIMMessage> list) {
       // 处理新收到的消息，为了上传处理方便，SDK 保证参数 messages 全部来自同一个聊天对象。
-      nimMessageList.addAll(list);
+      nimMessageList.insertAll(0,list);
     });
   }
 
@@ -159,13 +178,17 @@ class ChatController extends GetxController {
       if (r.isSuccess) {
         nimMessageList.add(r.data!);
       }
+      NimCore.instance.messageService.onMessageStatus.listen((event) {
+        logger.i('_sendAudio 消息状态${event.status}');
+        changeTagMsg(event);
+      });
     }
   }
 
   @override
   void onInit() {
+    super.onInit();
     logger.i("onInit");
-    queryHistoryMsg();
   }
 
   @override
@@ -176,5 +199,6 @@ class ChatController extends GetxController {
   @override
   void onReady() {
     logger.i("onReady");
+    queryHistoryMsg();
   }
 }
