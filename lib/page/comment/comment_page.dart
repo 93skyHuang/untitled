@@ -310,7 +310,7 @@ class _CommentPageState extends State<CommentPage>
         context: context,
         builder: (context) => AlertDialog(
               actions: <Widget>[
-                Container(child: normalNetWorkImage(img ?? ''))
+                Container(child: normalNetWorkImage(img))
               ],
             ));
   }

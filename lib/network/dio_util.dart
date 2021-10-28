@@ -10,8 +10,8 @@ Dio getDio() {
     _dio.interceptors.add(EncryptionAndDecryptionInterceptors());
     _dio.options = BaseOptions(
       baseUrl: "http://www.sancun.vip",
-      connectTimeout: 5000,
-      receiveTimeout: 3000,
+      connectTimeout: 8000,
+      receiveTimeout: 8000,
     );
   }
   return _dio;
@@ -24,7 +24,7 @@ Dio getNoEncryptionDio() {
     _noEncryptionDio.interceptors.add(DecryptionInterceptors());
     _noEncryptionDio.options = BaseOptions(
       baseUrl: "http://www.sancun.vip",
-      connectTimeout: 10000,
+      connectTimeout: 30000,
       sendTimeout: 50000,
       receiveTimeout: 8000,
     );

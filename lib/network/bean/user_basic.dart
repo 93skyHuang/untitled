@@ -38,7 +38,7 @@ class UserBasic {
   int? pasDaySum = 0;
   int? trendsSum = 0;
   UserData? userdata ;
-  int? isVideo;
+  int? isVideo; ///视频认证等同于真人认证
   int? isHead;
   int? isCard;
   int? isFollow;

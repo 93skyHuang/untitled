@@ -59,7 +59,7 @@ class VerifyCenterPage extends StatelessWidget {
                       children: [
                         ItemMenu(
                           text: '认证标识',
-                          img: "assets/images/icon_verified_name.png",
+                          img: "assets/images/icon_verified_avatar.png",
                           onPressed: () {},
                         ),
                         ItemMenu(
@@ -110,7 +110,7 @@ class VerifyCenterPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('视频认证',
+                    Text('真人认证',
                         style: TextStyle(fontSize: 16, color: Colors.black)),
                     CustomText(
                       text: '迅速提升吸引力，更容易被人喜欢',
@@ -124,7 +124,7 @@ class VerifyCenterPage extends StatelessWidget {
                       children: [
                         ItemMenu(
                           text: '认证标识',
-                          img: "assets/images/icon_verified_name.png",
+                          img: "assets/images/ic_verified_person1.png",
                           onPressed: () {},
                         ),
                         ItemMenu(
@@ -141,7 +141,6 @@ class VerifyCenterPage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(()=>VideoVerifiedPage());
                         showBottomOpen(context);
                       },
                       child: Container(
@@ -234,7 +233,7 @@ class VerifyCenterPage extends StatelessWidget {
                           GestureDetector(
                             onTap: (){
                               Navigator.pop(context);
-                              showCamera(context);
+                              Get.to(()=>VideoVerifiedPage());
                             },
                             child: Container(
                               height: 40,
@@ -261,86 +260,6 @@ class VerifyCenterPage extends StatelessWidget {
                             child: CustomText(
                               textAlign: Alignment.center,
                                 text: "知道了",
-                                padding: EdgeInsets.only(top:20),
-                                textStyle: TextStyle(
-                                    fontSize: 12, color: Color(0xff8C8C8C))),
-                          ),
-                        ]))
-                  ]));
-        });
-  }
-  void showCamera(BuildContext context) {
-    showModalBottomSheet(
-        enableDrag: false,
-        elevation: 0,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return Container(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      )),
-                    ),
-                    Container(
-                        padding: EdgeInsets.only(
-                            bottom: 20.0, left: 40, right: 40, top: 101),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30.0),
-                              topRight: Radius.circular(30.0)),
-                        ),
-                        child: Column(children: <Widget>[
-                          Image(
-                            image:
-                            AssetImage("assets/images/icon_circle.png"),
-                          ),
-                          CustomText(
-                              text: "把脸移入圈内",
-                              textAlign: Alignment.center,
-                              margin: EdgeInsets.only(top: 30),
-                              textStyle: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                          CustomText(
-                              text: "拍摄真实信息，获取“真人”标签",
-                              margin: EdgeInsets.only(top: 20, bottom: 50),
-                              textAlign: Alignment.center,
-                              textStyle: TextStyle(
-                                  fontSize: 15, color: Colors.white)),
-                          Container(
-                              height: 40,
-                              alignment: Alignment.center,
-                              width: 214,
-                              decoration: new BoxDecoration(
-                                color: Color(0xffF3CD8E),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(40.0)),
-                              ),
-                              child: Text(
-                                "立即认证",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.black,
-                                ),
-                              )),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: CustomText(
-                                textAlign: Alignment.center,
-                                text: "取消认证",
                                 padding: EdgeInsets.only(top:20),
                                 textStyle: TextStyle(
                                     fontSize: 12, color: Color(0xff8C8C8C))),

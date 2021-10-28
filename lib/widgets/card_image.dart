@@ -7,7 +7,10 @@ import 'package:untitled/basic/include.dart';
 
 //带圆角的网络图片
 Widget cardNetworkImage(String url, double widget, double height,
-    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4,String errorImagesUrl='assets/images/image_load_failed.png'}) {
+    {ShapeBorder? shape,
+    EdgeInsetsGeometry? margin,
+    double radius = 4,
+    String errorImagesUrl = 'assets/images/image_default.png'}) {
   return Card(
     margin: margin ?? EdgeInsets.all(4),
     shape: shape ??
@@ -21,19 +24,24 @@ Widget cardNetworkImage(String url, double widget, double height,
         child: CachedNetworkImage(
           fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
           imageUrl: url,
-          placeholder: (context, url) => const CircularProgressIndicator(),
+          placeholder: (context, url) => Container(
+            width: widget / 2,
+            height: height / 2,
+            child: CircularProgressIndicator(),
+          ),
           errorWidget: (context, url, error) => Image.asset(
             errorImagesUrl,
-            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
           ),
         )),
   );
 }
 
-
 //带圆角的网络图片
 Widget cardNetworkImage2(String url, double widget, double height,
-    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4,Widget errorWidget=const Icon(
+    {ShapeBorder? shape,
+    EdgeInsetsGeometry? margin,
+    double radius = 4,
+    Widget errorWidget = const Icon(
       Icons.error_outline,
       color: Colors.red,
     )}) {
@@ -99,13 +107,15 @@ Widget radiusContainer(Widget child,
 
 //带圆角的网络图片
 Widget customNetworkImage(String url, double width, double height,
-    {ShapeBorder? shape, EdgeInsetsGeometry? margin,BorderRadius? radius,
-      String errorImagesUrl='assets/images/image_load_failed.png'}) {
+    {ShapeBorder? shape,
+    EdgeInsetsGeometry? margin,
+    BorderRadius? radius,
+    String errorImagesUrl = 'assets/images/image_load_failed.png'}) {
   return Card(
     margin: margin ?? EdgeInsets.all(4),
     shape: shape ??
         RoundedRectangleBorder(
-            borderRadius: radius??BorderRadius.circular(8)),
+            borderRadius: radius ?? BorderRadius.circular(8)),
     clipBehavior: Clip.antiAlias,
     color: Colors.white,
     child: SizedBox(
@@ -122,9 +132,13 @@ Widget customNetworkImage(String url, double width, double height,
         )),
   );
 }
+
 //带圆角的网络图片
 Widget circleAvatar(String url, double widget, double height,
-    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4,String errorImagesUrl='assets/images/user_icon.png'}) {
+    {ShapeBorder? shape,
+    EdgeInsetsGeometry? margin,
+    double radius = 4,
+    String errorImagesUrl = 'assets/images/user_icon.png'}) {
   return Card(
     margin: margin ?? EdgeInsets.all(4),
     shape: CircleBorder(),

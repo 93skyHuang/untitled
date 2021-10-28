@@ -8,7 +8,6 @@ import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/page/mine/visitor/visitor_page.dart';
-import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
@@ -33,92 +32,7 @@ class MinePage extends StatefulWidget {
 
 class _MinePageState extends State<MinePage> {
   final MineController _mineController = Get.put(MineController());
-  List<Widget> _menuItem = [
-    ItemMenu(
-      text: '我的动态',
-      img: "assets/images/mine_move.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
-    ),
-    ItemMenu(
-      text: '认证中心',
-      img: "assets/images/mine_verify.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => VerifyCenterPage());
-      },
-    ),
-    ItemMenu(
-      text: '我的访客',
-      img: "assets/images/mine_visitor.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => VisitorPage());
-      },
-    ),
-    ItemMenu(
-      text: '我喜欢的',
-      img: "assets/images/mine_like.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => ReportPage());
-      },
-    ),
-    ItemMenu(
-      text: '我的粉丝',
-      img: "assets/images/mine_fans.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => FanPage());
-      },
-    ),
-    ItemMenu(
-      text: '我的关注',
-      img: "assets/images/mine_focus.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => FollowPage());
-      },
-    ),
-    ItemMenu(
-      text: '我的足迹',
-      img: "assets/images/mine_history.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => HistoryPage());
-      },
-    ),
-    ItemMenu(
-      text: '喜欢我的',
-      img: "assets/images/mine_follows.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => BelikedPage());
-      },
-    ),
-    ItemMenu(
-      text: '安全中心',
-      img: "assets/images/mine_safe.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {},
-    ),
-    ItemMenu(
-      text: '设置',
-      img: "assets/images/mine_setting.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => SettingPage());
-      },
-    ),
-    ItemMenu(
-      text: '我的主页',
-      img: "assets/images/mine_page.png",
-      textStyle: TextStyle(fontSize: 12, color: Colors.black),
-      onPressed: () {
-        Get.to(() => MyHomePage());
-      },
-    ),
-  ];
+  List<Widget> _menuItem = [];
 
   @override
   Widget build(BuildContext context) {
@@ -290,16 +204,16 @@ class _MinePageState extends State<MinePage> {
                     ],
                   ),
                 ),
-                if (_mineController.userBasic.value.isVideo == 1 ||
-                    _mineController.userBasic.value.isHead == 1)
+                // if (_mineController.userBasic.value.isVideo == 1 ||
+                //     _mineController.userBasic.value.isHead == 1)
                   CustomText(
                     text: '认证信息',
                     textStyle:
                         TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                     margin: EdgeInsets.only(left: 16),
                   ),
-                if (_mineController.userBasic.value.isVideo == 1 ||
-                    _mineController.userBasic.value.isHead == 1)
+                // if (_mineController.userBasic.value.isVideo == 1 ||
+                //     _mineController.userBasic.value.isHead == 1)
                   Container(
                       height: 84,
                       width: double.infinity,
@@ -313,20 +227,30 @@ class _MinePageState extends State<MinePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          if (_mineController.userBasic.value.isHead == 1)
-                            ItemMenu(
-                              margin: EdgeInsets.only(left: 20),
-                              text: '头像认证',
-                              img: "assets/images/icon_verified_avatar.png",
-                              onPressed: () {},
-                            ),
-                          if (_mineController.userBasic.value.isVideo == 1)
-                            ItemMenu(
-                              margin: EdgeInsets.only(left: 20),
-                              text: '视频认证',
-                              img: "assets/images/icon_verified_person.png",
-                              onPressed: () {},
-                            ),
+                          ItemMenu(
+                            margin: EdgeInsets.only(left: 20),
+                            text: '头像认证',
+                            img: _mineController.userBasic.value.isHead == 1
+                                ? "assets/images/icon_verified_avatar.png"
+                                : "assets/images/icon_un_verified_avatar.png",
+                            onPressed: () {
+
+                            },
+                          ),
+                          ItemMenu(
+                            margin: EdgeInsets.only(left: 20),
+                            text: '真人认证',
+                            img: _mineController.userBasic.value.isVideo == 1
+                                ? "assets/images/ic_unverified_person.png"
+                                : "assets/images/ic_verified_person1.png",
+                            onPressed: () {},
+                          ),
+                          ItemMenu(
+                            margin: EdgeInsets.only(left: 20),
+                            text: '手机认证',
+                            img: "assets/images/icon_verified_phone.png",
+                            onPressed: () {},
+                          ),
                         ],
                       )),
                 Container(

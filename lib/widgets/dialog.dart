@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/page/mine/avatar/video_verified_page.dart';
+import 'package:untitled/page/mine/vip/vip_page.dart';
 
 showOpenSvipDialog(BuildContext context) {
   //设置按钮
@@ -16,26 +17,23 @@ showOpenSvipDialog(BuildContext context) {
   );
   Widget continueButton = TextButton(
     style: ButtonStyle(
-      //去除点击效果
-      // overlayColor: MaterialStateProperty.all(Colors.transparent),
+        //去除点击效果
+        // overlayColor: MaterialStateProperty.all(Colors.transparent),
         minimumSize: MaterialStateProperty.all(const Size(0, 0)),
         visualDensity: VisualDensity.compact,
-        padding: MaterialStateProperty.all(EdgeInsets.only(left: 6,right: 6)),
+        padding: MaterialStateProperty.all(EdgeInsets.only(left: 6, right: 6)),
         //圆角
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4))),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
         //背景
         backgroundColor: MaterialStateProperty.all(MyColor.mainColor)),
     child: Text(
       "立即开通",
-      style: TextStyle(
-          fontSize: 16,
-          color: Colors.white
-      ),
+      style: TextStyle(fontSize: 16, color: Colors.white),
     ),
     onPressed: () {
       Navigator.pop(context);
-      Get.to(VideoVerifiedPage());
+      Get.to(VipPage());
       // Get.to();
     },
   );

@@ -1,7 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/route_config.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widgets/toast.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -12,6 +16,8 @@ class VideoVerifiedPage extends StatefulWidget {
 
 class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
   CameraController? controller;
+  bool isRecodeVideo = false;
+  final Controller _controller = Get.put(Controller());
 
   @override
   void initState() {
@@ -49,7 +55,23 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
     return Container(
       child: Stack(
         children: [
-          controller == null ? Container() : CameraPreview(controller!),
+          ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return RadialGradient(
+                radius: .6,
+                colors: <Color>[
+                  Colors.transparent,
+                  Colors.transparent,
+                  Colors.black,
+                  Colors.black
+                ],
+                stops: [0, .5, .5, .1],
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.srcATop,
+            child:
+                controller == null ? Container() : CameraPreview(controller!),
+          ),
           Container(
             height: 130,
             color: Color(0xffffffff),
@@ -58,28 +80,6 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
             height: 130,
             color: Color(0x80000000),
           ),
-          ShaderMask(
-            blendMode: BlendMode.srcOut,
-            shaderCallback: (bounds) {
-              return RadialGradient(
-                colors: [Colors.transparent, MyColor.mainColor],
-              ).createShader(bounds);
-            },
-            child: Align(child: Image(
-              color: MyColor.mainColor,
-              image: AssetImage("assets/images/icon_circle.png"),
-              alignment: Alignment.center,
-            ),)),
-          // Container(
-          //     margin: EdgeInsets.only(top: 100),
-          //     height: double.infinity,
-          //     decoration: BoxDecoration(
-          //       color: Color(0xff000000),
-          //       border: Border(),
-          //       borderRadius: BorderRadius.only(
-          //           topLeft: Radius.circular(30.0),
-          //           topRight: Radius.circular(30.0)),
-          //     )),
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -88,6 +88,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                   textAlign: Alignment.center,
                   margin: EdgeInsets.only(top: 30),
                   textStyle: TextStyle(
+                      decoration: TextDecoration.none,
                       fontSize: 30,
                       color: Colors.white,
                       fontWeight: FontWeight.bold)),
@@ -95,25 +96,54 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                   text: "拍摄真实信息，获取“真人”标签",
                   margin: EdgeInsets.only(top: 20, bottom: 50),
                   textAlign: Alignment.center,
-                  textStyle: TextStyle(fontSize: 15, color: Colors.white)),
-              Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  width: 214,
-                  decoration: new BoxDecoration(
-                    color: Color(0xffF3CD8E),
-                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                  ),
-                  child: Text(
-                    "立即认证",
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
+                  textStyle: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    decoration: TextDecoration.none,
                   )),
+              GestureDetector(
+                  onTap: () {
+                    startVideoRecording();
+                  },
+                  child: Container(
+                      height: 40,
+                      alignment: Alignment.center,
+                      width: 214,
+                      decoration: new BoxDecoration(
+                        color: Color(0xffF3CD8E),
+                        borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                      ),
+                      child: Obx(() => Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _controller.btnStatus == 1
+                                    ? "录制中"
+                                    : _controller.btnStatus == 2
+                                        ? "上传认证"
+                                        : _controller.btnStatus == 3
+                                            ? "上传中"
+                                            : "立即认证",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  decoration: TextDecoration.none,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              _controller.btnStatus == 1 ||
+                                      _controller.btnStatus == 3
+                                  ? Container(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Container()
+                            ],
+                          )))),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Get.until((route) => Get.currentRoute == homePName);
                 },
                 child: CustomText(
                     textAlign: Alignment.center,
@@ -133,100 +163,99 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
   }
 
   void startVideoRecording() async {
-    try {
-      showCamera(context);
-      controller?.startVideoRecording();
-    } on CameraException catch (e) {
-      logger.e(e);
+    if (!isRecodeVideo) {
+      try {
+        isRecodeVideo = true;
+        path = null;
+        await controller?.startVideoRecording();
+        _controller.btnStatus.value = 1;
+        Future.delayed(Duration(seconds: 3)).then((value) => {
+              if (_controller.btnStatus.value == 1)
+                {_controller.btnStatus.value = 2}
+            });
+        Future.delayed(Duration(seconds: 10)).then((value) => {
+              if (_controller.btnStatus.value == 2 && isRecodeVideo)
+                {
+                  MyToast.show('已到录制最长时间'),
+                  //停止录制
+                  stopVideoRecording()
+                }
+            });
+      } on CameraException catch (e) {
+        logger.e(e);
+        error();
+      }
+    } else if ( _controller.btnStatus.value == 2) {
+      if(isRecodeVideo){
+        //主动停止录制
+       await stopVideoRecording();
+      }
+      if (path != null) {
+        _controller.btnStatus.value = 3;
+        _controller.uploadVideo(path!);
+      } else {
+        error();
+      }
     }
   }
 
-  void stopVideoRecording() async {
+  String? path;
+
+  Future stopVideoRecording() async {
     try {
       final file = await controller?.stopVideoRecording();
+      isRecodeVideo = false;
       logger.i(file?.path);
+      path = file?.path;
+      if (path == null) {
+        error();
+      }
     } on CameraException catch (e) {
+      error();
       logger.e(e);
     }
   }
 
-  void showCamera(BuildContext context) {
-    showModalBottomSheet(
-        enableDrag: false,
-        elevation: 0,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) {
-          return Container(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      )),
-                    ),
-                    Container(
-                        padding: EdgeInsets.only(
-                            bottom: 20.0, left: 40, right: 40, top: 101),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30.0),
-                              topRight: Radius.circular(30.0)),
-                        ),
-                        child: Column(children: <Widget>[
-                          Image(
-                            image: AssetImage("assets/images/icon_circle.png"),
-                          ),
-                          CustomText(
-                              text: "把脸移入圈内",
-                              textAlign: Alignment.center,
-                              margin: EdgeInsets.only(top: 30),
-                              textStyle: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                          CustomText(
-                              text: "拍摄真实信息，获取“真人”标签",
-                              margin: EdgeInsets.only(top: 20, bottom: 50),
-                              textAlign: Alignment.center,
-                              textStyle:
-                                  TextStyle(fontSize: 15, color: Colors.white)),
-                          Container(
-                              height: 40,
-                              alignment: Alignment.center,
-                              width: 214,
-                              decoration: new BoxDecoration(
-                                color: Color(0xffF3CD8E),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(40.0)),
-                              ),
-                              child: Text(
-                                "立即认证",
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.black,
-                                ),
-                              )),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: CustomText(
-                                textAlign: Alignment.center,
-                                text: "取消认证",
-                                padding: EdgeInsets.only(top: 20),
-                                textStyle: TextStyle(
-                                    fontSize: 12, color: Color(0xff8C8C8C))),
-                          ),
-                        ]))
-                  ]));
-        });
+  void error() {
+    isRecodeVideo = false;
+    _controller.btnStatus.value = 0;
+    MyToast.show('录制失败');
+  }
+}
+
+class Controller extends GetxController {
+  RxInt btnStatus = 0.obs; //0 立即认证 1 录制中... 2 上传认证 3 上传中
+
+  void uploadVideo(String path) async {
+    final r = await fileUpload(path);
+    if (r.isOk()) {
+      final r2 = await addCertification(1, files: [r.data ?? ""]);
+      btnStatus.value = 0;
+      if (r2.isOk()) {
+        MyToast.show('恭喜您认证成功！');
+        Get.until((route) => Get.currentRoute == homePName);
+      } else {
+        MyToast.show(r2.msg);
+      }
+    } else {
+      btnStatus.value = 0;
+      MyToast.show(r.msg);
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    logger.i("Controller");
+  }
+
+  @override
+  void onClose() {
+    logger.i("onClose");
+  }
+
+  @override
+  void onReady() {
+    logger.i("onReady");
   }
 }
