@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled/widgets/card_image.dart';
 
 class ItemVisitor extends StatelessWidget {
   String name;
@@ -20,20 +22,15 @@ class ItemVisitor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isSvip?onPressed:null,
+      onTap: isSvip ? onPressed : null,
       child: Container(
         height: 64,
         padding: EdgeInsets.only(left: 16, right: 20),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                img,
-                width: 44,
-                height: 44,
-              ),
-            ),
+            cardNetworkImage(
+                img, ScreenUtil().setWidth(44), ScreenUtil().setHeight(44),
+                radius: 8),
             Expanded(
                 child: Container(
                     margin: EdgeInsets.only(left: 10, right: 10),
@@ -52,11 +49,12 @@ class ItemVisitor extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if(!isSvip)Image(
-                  image: AssetImage('assets/images/icon_lock.png'),
-                  width: 9,
-                  height:12,
-                ),
+                if (!isSvip)
+                  Image(
+                    image: AssetImage('assets/images/icon_lock.png'),
+                    width: 9,
+                    height: 12,
+                  ),
                 Text(time,
                     style: TextStyle(fontSize: 10, color: Color(0xFF8C8C8C))),
               ],

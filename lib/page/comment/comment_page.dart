@@ -177,10 +177,10 @@ class _CommentPageState extends State<CommentPage>
   void sendComment() {
     Loading.show(context);
     addComment(info.trendsId, _controllerInfo.text).then((value) => {
+      Loading.dismiss(context),
           if (value.isOk())
             {
               _controllerInfo.text = '',
-              Loading.dismiss(context),
               MyToast.show('已发送'),
               _onRefresh(),
               FocusScope.of(context).requestFocus(FocusNode()),
@@ -229,7 +229,13 @@ class _CommentPageState extends State<CommentPage>
       for (int i = 0; i < comments.length; i++) {
         CommentInfo commentBean = comments[i];
         list.add(ItemComment(
-          onPressed: () {},
+          onPressed: () {
+            if(commentBean.isFabulous==1){
+              delCommentFab(commentBean.id??0);
+            }else{
+              addCommentFab(commentBean.id??0);
+            }
+          },
           comment: commentBean,
         ));
       }
@@ -277,6 +283,26 @@ class _CommentPageState extends State<CommentPage>
                   : _refreshController.refreshFailed()
             }
         });
+  }
+  void addCommentFab(int commentId) {
+    Loading.show(context);
+    addCommentFabulous(commentId).then((value) => {
+      Loading.dismiss(context),
+      if (value.isOk())
+        {
+          getCommentsInfo(),
+        }
+    });
+  }
+  void delCommentFab(int commentId) {
+    Loading.show(context);
+    deleteCommentFabulous(commentId).then((value) => {
+      Loading.dismiss(context),
+      if (value.isOk())
+        {
+          getCommentsInfo(),
+        }
+    });
   }
 
   void showImg(String img) {

@@ -39,9 +39,7 @@ class VisitorPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 return new ItemVisitor(
                   name: '${_visitorController.visitors[index].cname}',
-                  img: _visitorController.visitors[index].headImgUrl == null
-                      ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
-                      : _visitorController.visitors[index].headImgUrl,
+                  img:_visitorController.visitors[index].headImgUrl,
                   info:'${_visitorController.visitors[index].region}，${_visitorController.visitors[index].age}，${_visitorController.visitors[index].constellation}',
                   onPressed: () {
                     Get.to(() => UserHomePage(uid:_visitorController.visitors[index].uid));

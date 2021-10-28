@@ -121,6 +121,8 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                                   )
                                 : Image.network(
                                     "$headerImgUrl",
+                          fit:
+                          Platform.isIOS ? BoxFit.cover : BoxFit.fill,
                                   ))
                             : Image.file(
                                 File('$headerImgUrlLocal'),

@@ -89,13 +89,6 @@ class ItemTrend extends StatelessWidget {
                         margin: EdgeInsets.only(
                             right: 20, top: 16, bottom: 2, left: 5),
                       ),
-                      Expanded(
-                          child: CustomText(
-                        textAlign: Alignment.centerRight,
-                        text: '删除',
-                        textStyle: TextStyle(fontSize: 12, color: Colors.black),
-                        margin: EdgeInsets.only(right: 5, top: 13, bottom: 2),
-                      )),
                     ],
                   ),
                 ],

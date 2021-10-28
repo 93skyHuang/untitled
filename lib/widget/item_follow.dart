@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled/widgets/card_image.dart';
 
 class ItemFollow extends StatelessWidget {
   String name;
@@ -25,14 +27,9 @@ class ItemFollow extends StatelessWidget {
         padding: EdgeInsets.only(left: 16, right: 10),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                img,
-                width: 44,
-                height: 44,
-              ),
-            ),
+            cardNetworkImage(
+                img, ScreenUtil().setWidth(44), ScreenUtil().setHeight(44),
+                radius: 8),
             Expanded(
                 child: Container(
                   margin: EdgeInsets.only(left: 10,right: 10),

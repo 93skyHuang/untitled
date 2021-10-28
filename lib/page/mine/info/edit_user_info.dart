@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:city_pickers/city_pickers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -8,6 +11,7 @@ import 'package:untitled/utils/picker_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_arrow.dart';
+import 'package:untitled/widgets/card_image.dart';
 import '../edit_basic_info.dart';
 import 'edit_user_info_controller.dart';
 
@@ -69,16 +73,11 @@ class _EditUserState extends State<EditUser> {
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: 30, bottom: 20),
-                  child: ClipOval(
-                    child: _editUserInfoController.userInfo.value.headImgUrl == null||_editUserInfoController.userInfo.value.headImgUrl==''
-                        ? Image.asset(
-                      'assets/images/user_icon.png',
-                    )
-                        : Image.network(
-                      "${_editUserInfoController.userInfo.value.headImgUrl}",
-                      height:110,
-                      width:110,
-                    ),
+                  child:
+                  circleAvatar(
+                    _editUserInfoController.userInfo.value.headImgUrl ?? '',
+                    ScreenUtil().setWidth(90),
+                    ScreenUtil().setHeight(90),
                   ),
                 ),
                 Container(

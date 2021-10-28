@@ -12,6 +12,7 @@ import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_menu.dart';
+import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/dialog.dart';
 import 'beliked/beliked_page.dart';
 import 'edit_basic_info.dart';
@@ -60,14 +61,16 @@ class _MinePageState extends State<MinePage> {
       img: "assets/images/mine_like.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(() => ReportPage());},
+        Get.to(() => ReportPage());
+      },
     ),
     ItemMenu(
       text: '我的粉丝',
       img: "assets/images/mine_fans.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(() => FanPage());},
+        Get.to(() => FanPage());
+      },
     ),
     ItemMenu(
       text: '我的关注',
@@ -82,14 +85,16 @@ class _MinePageState extends State<MinePage> {
       img: "assets/images/mine_history.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(() => HistoryPage());},
+        Get.to(() => HistoryPage());
+      },
     ),
     ItemMenu(
       text: '喜欢我的',
       img: "assets/images/mine_follows.png",
       textStyle: TextStyle(fontSize: 12, color: Colors.black),
       onPressed: () {
-        Get.to(() => BelikedPage());},
+        Get.to(() => BelikedPage());
+      },
     ),
     ItemMenu(
       text: '安全中心',
@@ -137,19 +142,10 @@ class _MinePageState extends State<MinePage> {
                       EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 16),
                   child: Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child:_mineController.userBasic.value.headImgUrl == null||_mineController.userBasic.value.headImgUrl==''
-                            ? Image.asset(
-                          'assets/images/user_icon.png',
-                          height:60,
-                          width:60,
-                        )
-                            : Image.network(
-                          "${_mineController.userBasic.value.headImgUrl}",
-                          height:60,
-                          width:60,
-                        ),
+                      cardNetworkImage(
+                        _mineController.userBasic.value.headImgUrl ?? '',
+                        ScreenUtil().setWidth(60),
+                        ScreenUtil().setHeight(60),
                       ),
                       Expanded(
                         child: Column(
@@ -158,13 +154,16 @@ class _MinePageState extends State<MinePage> {
                             Row(
                               children: [
                                 CustomText(
-                                  text: '${_mineController.userBasic.value.cname}' ,
+                                  text:
+                                      '${_mineController.userBasic.value.cname}',
                                   margin: EdgeInsets.only(left: 10, right: 10),
                                 ),
-                                _mineController.userBasic.value.svip==1? Image(
-                                  image:
-                                      AssetImage("assets/images/icon_vip.png"),
-                                ):Container(),
+                                _mineController.userBasic.value.svip == 1
+                                    ? Image(
+                                        image: AssetImage(
+                                            "assets/images/icon_vip.png"),
+                                      )
+                                    : Container(),
                               ],
                             ),
                             CustomText(
@@ -179,7 +178,9 @@ class _MinePageState extends State<MinePage> {
                       Container(
                           child: GestureDetector(
                             onTap: () {
-                              Get.to(() => EditUser())!.then((value) => _mineController.getInfo());},
+                              Get.to(() => EditUser())!
+                                  .then((value) => _mineController.getInfo());
+                            },
                             child: Row(
                               children: [
                                 Image(
@@ -215,7 +216,8 @@ class _MinePageState extends State<MinePage> {
                       margin: EdgeInsets.only(left: 16),
                     ),
                     CustomText(
-                      text: '${_mineController.userBasic.value.trendsList!.length}',
+                      text:
+                          '${_mineController.userBasic.value.trendsList!.length}',
                       textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     CustomText(
@@ -265,17 +267,17 @@ class _MinePageState extends State<MinePage> {
                         ],
                       ),
                       GestureDetector(
-                        onTap: (){
-                          Get.to(EditBasicInfoPage())!.then((value) => _mineController.getInfo());
+                        onTap: () {
+                          Get.to(EditBasicInfoPage())!
+                              .then((value) => _mineController.getInfo());
                         },
-                        child:
-                        Container(
+                        child: Container(
                             padding: EdgeInsets.only(
                                 left: 12, right: 12, bottom: 5, top: 3),
                             decoration: new BoxDecoration(
                               color: Colors.white,
                               borderRadius:
-                              BorderRadius.all(Radius.circular(16.0)),
+                                  BorderRadius.all(Radius.circular(16.0)),
                             ),
                             child: Text(
                               "去完善",
@@ -288,38 +290,45 @@ class _MinePageState extends State<MinePage> {
                     ],
                   ),
                 ),
-                if(_mineController.userBasic.value.isVideo==1||_mineController.userBasic.value.isHead==1)CustomText(
-                  text: '认证信息',
-                  textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                  margin: EdgeInsets.only(left: 16),
-                ),
-                if(_mineController.userBasic.value.isVideo==1||_mineController.userBasic.value.isHead==1)Container(
-                    height: 84,
-                    width: double.infinity,
-                    alignment: Alignment.bottomCenter,
-                    margin: EdgeInsets.only(
-                        left: 16, right: 16, top: 10, bottom: 16),
-                    decoration: new BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                    if(_mineController.userBasic.value.isHead==1)ItemMenu(
-                          margin: EdgeInsets.only(left: 20),
-                          text: '头像认证',
-                          img: "assets/images/icon_verified_avatar.png",
-                          onPressed: () {},
-                        ),
-                        if(_mineController.userBasic.value.isVideo==1)ItemMenu(
-                          margin: EdgeInsets.only(left: 20),
-                          text: '视频认证',
-                          img: "assets/images/icon_verified_person.png",
-                          onPressed: () {},
-                        ),
-                      ],
-                    )),
+                if (_mineController.userBasic.value.isVideo == 1 ||
+                    _mineController.userBasic.value.isHead == 1)
+                  CustomText(
+                    text: '认证信息',
+                    textStyle:
+                        TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                    margin: EdgeInsets.only(left: 16),
+                  ),
+                if (_mineController.userBasic.value.isVideo == 1 ||
+                    _mineController.userBasic.value.isHead == 1)
+                  Container(
+                      height: 84,
+                      width: double.infinity,
+                      alignment: Alignment.bottomCenter,
+                      margin: EdgeInsets.only(
+                          left: 16, right: 16, top: 10, bottom: 16),
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          if (_mineController.userBasic.value.isHead == 1)
+                            ItemMenu(
+                              margin: EdgeInsets.only(left: 20),
+                              text: '头像认证',
+                              img: "assets/images/icon_verified_avatar.png",
+                              onPressed: () {},
+                            ),
+                          if (_mineController.userBasic.value.isVideo == 1)
+                            ItemMenu(
+                              margin: EdgeInsets.only(left: 20),
+                              text: '视频认证',
+                              img: "assets/images/icon_verified_person.png",
+                              onPressed: () {},
+                            ),
+                        ],
+                      )),
                 Container(
                   height: 70,
                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),

@@ -122,3 +122,25 @@ Widget customNetworkImage(String url, double width, double height,
         )),
   );
 }
+//带圆角的网络图片
+Widget circleAvatar(String url, double widget, double height,
+    {ShapeBorder? shape, EdgeInsetsGeometry? margin,double radius=4,String errorImagesUrl='assets/images/user_icon.png'}) {
+  return Card(
+    margin: margin ?? EdgeInsets.all(4),
+    shape: CircleBorder(),
+    clipBehavior: Clip.antiAlias,
+    color: Colors.white,
+    child: SizedBox(
+        width: widget,
+        height: height,
+        child: CachedNetworkImage(
+          fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          imageUrl: url,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Image.asset(
+            errorImagesUrl,
+            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          ),
+        )),
+  );
+}

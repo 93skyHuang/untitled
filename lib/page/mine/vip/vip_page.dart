@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -61,6 +63,7 @@ class _VipPageState extends State<VipPage> {
                         _vipController.imgurl.value,
                         width: 60,
                         height: 60,
+                        fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
                       )),
                     ),
                     Row(

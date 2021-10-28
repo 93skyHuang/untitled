@@ -1289,3 +1289,51 @@ Future<BasePageData<String?>> fileUpload(String filePath) async {
   }
   return basePageData;
 }
+
+/// 评论点赞
+//* 请求参数
+//* uid [用户uid]
+//* commentId [评论ID]
+Future<BasePageData> addCommentFabulous(
+    int commentId,
+    ) async {
+  BasePageData basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response =
+    await getDio().post('/index/Trends/addCommentFabulous', data: {
+      'uid': uid,
+      'commentId': commentId,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+///删除动态点赞
+/// * 请求参数
+//      * uid [用户uid]
+//      * commentId [评论ID]
+Future<BasePageData> deleteCommentFabulous(
+    int commentId,
+    ) async {
+  BasePageData basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response =
+    await getDio().post('/index/Trends/deleteCommentFabulous', data: {
+      'uid': uid,
+      'commentId': commentId,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
