@@ -6,6 +6,7 @@ import 'package:untitled/page/mine/visitor/visitor_controller.dart';
 import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/item_visitor.dart';
+import 'package:untitled/widget/loading.dart';
 
 
 class VisitorPage extends StatelessWidget {

@@ -12,6 +12,7 @@ CommentInfo _$CommentInfoFromJson(Map<String, dynamic> json) {
     ..uid = json['uid'] as int?
     ..content = json['content'] as String?
     ..cname = json['cname'] as String?
+    ..headImgUrl = json['headImgUrl'] as String?
     ..fabulousSum = json['fabulousSum'] as int?
     ..replySum = json['replySum'] as int?
     ..isFabulous = json['isFabulous'] as int?;
@@ -26,4 +27,5 @@ Map<String, dynamic> _$CommentInfoToJson(CommentInfo instance) =>
       'fabulousSum': instance.fabulousSum,
       'replySum': instance.replySum,
       'isFabulous': instance.isFabulous,
+      'headImgUrl': instance.headImgUrl,
     };

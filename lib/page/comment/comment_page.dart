@@ -1,15 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/network/bean/comment_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/community/recommend_item_widget.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_comment.dart';
+import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widget/trend_img.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
+import 'package:untitled/widgets/my_classic.dart';
+import 'package:untitled/widgets/toast.dart';
 
 class CommentPage extends StatefulWidget {
   NewTrendsInfo info;
@@ -20,13 +25,22 @@ class CommentPage extends StatefulWidget {
   State<CommentPage> createState() => _CommentPageState(this.info);
 }
 
-class _CommentPageState extends State<CommentPage> {
+class _CommentPageState extends State<CommentPage>
+    with AutomaticKeepAliveClientMixin {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   NewTrendsInfo info;
 
   _CommentPageState(this.info);
 
   double contextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(50 + 32 + 16);
+
+  @override
+  void initState() {
+    super.initState();
+    getCommentsInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,60 +60,75 @@ class _CommentPageState extends State<CommentPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      cardNetworkImage(info.headImgUrl ?? '',
-                          ScreenUtil().setWidth(44), ScreenUtil().setWidth(44),
-                          margin: EdgeInsets.only(right: 16)),
-                      Expanded(
-                          child: Column(
+          RefreshConfiguration(
+            // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
+            hideFooterWhenNotFull: true,
+            child: SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: const MyClassicHeader(),
+              footer: const MyClassicFooter(),
+              // 配置默认底部指示器
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              onLoading: _onLoading,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                              child: Row(
+                          cardNetworkImage(
+                              info.headImgUrl ?? '',
+                              ScreenUtil().setWidth(44),
+                              ScreenUtil().setWidth(44),
+                              margin: EdgeInsets.only(right: 16)),
+                          Expanded(
+                              child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _itemName(info),
-                              const Flexible(child: Align()),
-                              FocusOnBtn(info),
+                              Container(
+                                  child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _itemName(info),
+                                  const Flexible(child: Align()),
+                                  FocusOnBtn(info),
+                                ],
+                              )),
+                              CustomText(
+                                text: "${info.content}",
+                                margin: EdgeInsets.only(top: 5),
+                                textStyle: TextStyle(
+                                    color: MyColor.grey8C8C8C,
+                                    fontSize: ScreenUtil().setSp(14)),
+                              ),
+                              if (info.imgArr.isNotEmpty)
+                                TrendImg(
+                                  imgs: info.imgArr,
+                                  showAll: true,
+                                  contextWidth: contextWidth,
+                                  onClick: (String img) {
+                                    showImg(img);
+                                  },
+                                ),
+                              _itemLable(info),
                             ],
                           )),
-                          CustomText(
-                            text: "${info.content}",
-                            margin: EdgeInsets.only(top: 5),
-                            textStyle: TextStyle(
-                                color: MyColor.grey8C8C8C,
-                                fontSize: ScreenUtil().setSp(14)),
-                          ),
-                          if (info.imgArr.isNotEmpty)
-                            TrendImg(
-                              imgs: info.imgArr,
-                              showAll: true,
-                              contextWidth: contextWidth,
-                              onClick: (String img) {
-                                showImg(img);
-                              },
-                            ),
-                          _itemLable(info),
                         ],
-                      )),
-                    ],
-                  ),
+                      ),
+                    ),
+                    HDivider(
+                      height: 8,
+                    ),
+                    getComments(),
+                  ],
                 ),
-                HDivider(
-                  height: 8,
-                ),
-                getComments(info),
-                Container(height: 50,)
-              ],
+              ),
             ),
           ),
           Positioned(
@@ -144,11 +173,21 @@ class _CommentPageState extends State<CommentPage> {
       ),
     );
   }
-  void sendComment(){
-    addComment(info.trendsId,_controllerInfo.text).then((value) => {
-      print("888888888888888")
-    });
+
+  void sendComment() {
+    Loading.show(context);
+    addComment(info.trendsId, _controllerInfo.text).then((value) => {
+          if (value.isOk())
+            {
+              _controllerInfo.text = '',
+              Loading.dismiss(context),
+              MyToast.show('已发送'),
+              _onRefresh(),
+              FocusScope.of(context).requestFocus(FocusNode()),
+            }
+        });
   }
+
   final TextEditingController _controllerInfo = TextEditingController();
 
   Widget _textField() {
@@ -162,7 +201,8 @@ class _CommentPageState extends State<CommentPage> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 10),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
         counterText: '',
         //此处控制最大字符是否显示
         alignLabelWithHint: true,
@@ -183,12 +223,11 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  Widget getComments(NewTrendsInfo info) {
+  Widget getComments() {
     List<Widget> list = [];
-    int commentLength = info.commentList.length;
-    if (commentLength > 0) {
-      for (int i = 0; i < commentLength; i++) {
-        CommentBean? commentBean = info.commentList[i];
+    if (comments.isNotEmpty) {
+      for (int i = 0; i < comments.length; i++) {
+        CommentInfo commentBean = comments[i];
         list.add(ItemComment(
           onPressed: () {},
           comment: commentBean,
@@ -198,6 +237,46 @@ class _CommentPageState extends State<CommentPage> {
     return Column(
       children: list,
     );
+  }
+
+  void _onRefresh() async {
+    pageNo = 1;
+    getCommentsInfo();
+  }
+
+  // 上拉加载更多
+  void _onLoading() async {
+    pageNo++;
+    getCommentsInfo(isLoad: true);
+  }
+
+  int pageNo = 1;
+  List<CommentInfo> comments = [];
+
+  void getCommentsInfo({bool isLoad = false}) {
+    getTrendsCommentList(pageNo, info.trendsId).then((value) => {
+          if (value.isOk())
+            {
+              if (isLoad)
+                {
+                  _refreshController.loadComplete(),
+                  comments.addAll(value.data ?? []),
+                  setState(() {}),
+                }
+              else
+                {
+                  _refreshController.refreshCompleted(),
+                  comments = value.data ?? [],
+                  setState(() {}),
+                }
+            }
+          else
+            {
+              isLoad
+                  ? _refreshController.loadFailed()
+                  : _refreshController.refreshFailed()
+            }
+        });
   }
 
   void showImg(String img) {
@@ -304,95 +383,6 @@ class _CommentPageState extends State<CommentPage> {
     ));
   }
 
-  Widget _comment(NewTrendsInfo info) {
-    return info.commentList.isEmpty
-        ? Container(
-            width: 0,
-            height: 0,
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '精选评论',
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(12),
-                  color: MyColor.grey8C8C8C,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: ScreenUtil().setWidth(10),
-                  bottom: ScreenUtil().setWidth(10),
-                ),
-                child: _getComment(info),
-              )
-            ],
-          );
-  }
-
-  Widget _getComment(NewTrendsInfo info) {
-    List<Widget> list = [];
-    int commentLength = info.commentList.length;
-    if (commentLength > 0) {
-      if (commentLength == 1) {
-        CommentBean? commentBean = info.commentList[0];
-        list.add(_getSingleComment(
-            '${commentBean?.cname}', '${commentBean?.content}'));
-      } else {
-        CommentBean? commentBean = info.commentList[0];
-        list.add(_getSingleComment(
-            '${commentBean?.cname}', '${commentBean?.content}'));
-        list.add(Padding(
-          padding: EdgeInsets.only(
-            top: ScreenUtil().setWidth(5),
-          ),
-        ));
-        CommentBean? commentBean1 = info.commentList[1];
-        list.add(_getSingleComment(
-            '${commentBean1?.cname}', '${commentBean1?.content}'));
-      }
-    }
-    return Column(
-      children: list,
-    );
-  }
-
-  Widget _getSingleComment(String user, String content) {
-    return SizedBox(
-        child: Row(
-      children: [
-        ConstrainedBox(
-            constraints: BoxConstraints(),
-            child: Text(
-              user,
-              maxLines: 1,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: MyColor.blackColor, fontSize: ScreenUtil().setSp(12)),
-            )),
-        Text(
-          ':\t',
-          maxLines: 1,
-          textAlign: TextAlign.left,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-              color: MyColor.blackColor, fontSize: ScreenUtil().setSp(12)),
-        ),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 100 * 2 / 3 - 15),
-          child: Text(
-            content,
-            maxLines: 1,
-            textAlign: TextAlign.left,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-                color: MyColor.grey8C8C8C, fontSize: ScreenUtil().setSp(12)),
-          ),
-        )
-      ],
-    ));
-  }
+  @override
+  bool get wantKeepAlive => true;
 }

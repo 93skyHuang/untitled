@@ -19,6 +19,8 @@ class CommentInfo {
   int? fabulousSum;
   int? replySum;
   int? isFabulous;
+  String? headImgUrl = '';
+
 
   CommentInfo();
 
