@@ -75,6 +75,7 @@ class MessagesController extends GetxController {
       msgPageBean.heardUrl = '${userBasic?.headImgUrl}';
       msgPageBean.nickName = '${userBasic?.cname}';
       msgPageBean.age = userBasic?.age;
+      msgPageBean.uid = userBasic?.uid??-1;
       msgPageBean.height = userBasic?.height;
       msgPageBean.region = userBasic?.region;
       listBean.add(msgPageBean);

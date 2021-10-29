@@ -20,12 +20,14 @@ class MyTabBarView extends GetView<FindController> {
 
   List<Widget> _list() {
     List<Widget> list = [];
-    int length = isSvip ? controller.findTabList.length : 1;
-    for (int i = 0; i < length; i++) {
-      list.add(MyFindListWidget(
-        controller.findTabList[i].id,
-        isSvip: isSvip,
-      ));
+    if(controller.findTabList.isNotEmpty){
+      int length = isSvip ? controller.findTabList.length : 1;
+      for (int i = 0; i < length; i++) {
+        list.add(MyFindListWidget(
+          controller.findTabList[i].id,
+          isSvip: isSvip,
+        ));
+      }
     }
     return list;
   }

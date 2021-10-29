@@ -15,20 +15,24 @@ import 'info_page.dart';
 //他人首页页面
 class UserHomePage extends StatefulWidget {
   int uid;
+  int initialIndex;
 
-  UserHomePage({required this.uid, Key? key}) : super(key: key);
+  UserHomePage({required this.uid, Key? key, this.initialIndex = 0})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _UserHomePageState(this.uid);
+    return _UserHomePageState(this.uid, this.initialIndex);
   }
 }
 
 class _UserHomePageState extends State with SingleTickerProviderStateMixin {
+  _UserHomePageState(this.uid, this.initialIndex);
   final UserHomeController _userHomeController = Get.put(UserHomeController());
   int uid;
+  int initialIndex;
 
-  _UserHomePageState(this.uid);
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +86,8 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _userHomeController.getInfo(uid);
-    tabController = new TabController(length: 3, vsync: this);
+    tabController =
+        new TabController(length: 3, vsync: this, initialIndex: initialIndex);
   }
 
   TabBarView buildTabBarView() {
@@ -113,7 +118,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
             itemCount: _userHomeController.videoTrends.value.length,
           ),
         ),
-        InfoPage(_userHomeController.userBasic.value.uid),
+        InfoPage(uid),
       ],
     );
   }
@@ -170,21 +175,26 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 Container(
                     child: GestureDetector(
                       onTap: () {
-                        if(_userHomeController.userBasic.value.isFollow==0){
+                        if (_userHomeController.userBasic.value.isFollow == 0) {
                           _userHomeController.add();
-                        }else{
+                        } else {
                           showBottomOpen(context);
                         }
                       },
                       child: Row(
                         children: [
-                          if(_userHomeController.userBasic.value.isFollow==0)Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 18,
-                          ),
+                          if (_userHomeController.userBasic.value.isFollow == 0)
+                            Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                           CustomText(
-                            text:  _userHomeController.userBasic.value.isFollow==0?'关注':'已关注',
+                            text:
+                                _userHomeController.userBasic.value.isFollow ==
+                                        0
+                                    ? '关注'
+                                    : '已关注',
                             textAlign: Alignment.center,
                             margin: EdgeInsets.only(left: 3),
                             textStyle:
@@ -193,9 +203,12 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    margin: EdgeInsets.only(bottom:20 ),
+                    margin: EdgeInsets.only(bottom: 20),
                     height: 35,
-                    padding: EdgeInsets.only(left: 15, right: 15,),
+                    padding: EdgeInsets.only(
+                      left: 15,
+                      right: 15,
+                    ),
                     decoration: new BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(23.0)),
                       color: Color(0xff9943FD),
@@ -215,14 +228,17 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                             textAlign: Alignment.center,
                             margin: EdgeInsets.only(left: 3),
                             textStyle:
-                            TextStyle(fontSize: 15, color: Colors.black),
+                                TextStyle(fontSize: 15, color: Colors.black),
                           ),
                         ],
                       ),
                     ),
-                    margin: EdgeInsets.only(bottom:20,left:16,right: 16  ),
+                    margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
                     height: 35,
-                    padding: EdgeInsets.only(left: 15, right: 15,),
+                    padding: EdgeInsets.only(
+                      left: 15,
+                      right: 15,
+                    ),
                     decoration: new BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(23.0)),
                       color: Color(0xffF3CD8E),
@@ -234,6 +250,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
       ),
     ));
   }
+
   void showBottomOpen(BuildContext context) {
     showModalBottomSheet(
         enableDrag: false,
@@ -270,7 +287,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                               textAlign: Alignment.center,
                               padding: EdgeInsets.only(bottom: 16),
                               textStyle:
-                              TextStyle(fontSize: 17, color: Colors.black)),
+                                  TextStyle(fontSize: 17, color: Colors.black)),
                           Divider(
                             height: 1,
                             color: Color(0xffE6E6E6),

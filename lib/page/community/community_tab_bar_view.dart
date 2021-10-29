@@ -7,7 +7,7 @@ import 'package:untitled/page/community/video_page.dart';
 import 'package:untitled/page/home_controller.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
 
-import 'focus_on_widget.dart';
+import 'focus_on_page.dart';
 
 ///社区页面content布局
 class CommunityTabBarView extends StatelessWidget {

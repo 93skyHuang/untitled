@@ -24,11 +24,11 @@ Widget cardNetworkImage(String url, double widget, double height,
         child: CachedNetworkImage(
           fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
           imageUrl: url,
-          placeholder: (context, url) => Container(
-            width: widget / 2,
-            height: height / 2,
-            child: CircularProgressIndicator(),
-          ),
+          // placeholder: (context, url) => Container(
+          //   width: 30,
+          //   height: 30,
+          //   child: CircularProgressIndicator(),
+          // ),
           errorWidget: (context, url, error) => Image.asset(
             errorImagesUrl,
           ),

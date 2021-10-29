@@ -13,6 +13,7 @@ NearbyInfo _$NearbyInfoFromJson(Map<String, dynamic> json) {
     ..headImgUrl = json['headImgUrl'] as String?
     ..distance = json['distance'] as String?
     ..height = json['height'] as int?
+    ..uid = json['uid'] as int
     ..region = json['region'] as String?
     ..autograph = json['autograph'] as String?
     ..constellation = json['constellation'] as String?

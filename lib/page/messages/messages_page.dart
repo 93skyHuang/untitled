@@ -12,8 +12,11 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/chat/chat_page.dart';
 import 'package:untitled/page/messages/messages_page_bean.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/card_image.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
@@ -60,18 +63,6 @@ class _MessagesPageState extends State<MessagesPage>
           centerTitle: true,
           backgroundColor: MyColor.pageBgColor,
           elevation: 0.5,
-          // actions: [
-          //   TextButton(
-          //       onPressed: () {
-          //         _controller.querySystemMsg();
-          //       },
-          //       child: Text('test')),
-          //   TextButton(
-          //       onPressed: () {
-          //         _onRefresh();
-          //       },
-          //       child: Text('test2'))
-          // ],
           title: Text(
             '消息',
             style: TextStyle(
@@ -197,7 +188,12 @@ class _MessagesPageState extends State<MessagesPage>
             visualDensity: VisualDensity.compact,
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
-          logger.i("itemclick");
+          bool isSvip = GetStorageUtils.getSvip();
+          if (!isSvip) {
+            showOpenSvipDialog(context);
+          } else {
+            _goToChatPage(info.uid);
+          }
         },
         child: Column(
           children: [
@@ -258,8 +254,8 @@ class _MessagesPageState extends State<MessagesPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Obx(() => _controller.isCanChat.value
-                            ? Image.asset('assets/images/lock.png')
-                            : Text('')),
+                            ? Text('')
+                            : Image.asset('assets/images/lock.png')),
                         singeLineText(
                             info.time,
                             _textContextWidth,
@@ -300,5 +296,18 @@ class _MessagesPageState extends State<MessagesPage>
             ),
           )),
     );
+  }
+
+  void _goToChatPage(int uid) async {
+    final u = GetStorageUtils.getUserBasic(uid);
+    if (u == null) {
+      final value = await getHomeUserData(uid);
+      if (value.isOk()) {
+        GetStorageUtils.saveUserBasic(value.data!);
+        Get.to(ChatPage(), arguments: value.data);
+      }
+    } else {
+      Get.to(ChatPage(), arguments: u);
+    }
   }
 }

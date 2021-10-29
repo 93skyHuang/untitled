@@ -9,6 +9,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
@@ -151,9 +152,10 @@ class _NearbyPageState extends State<NearbyPage>
               onTap: () {
                 logger.i('点击大头像');
                 bool isSvip = GetStorageUtils.getSvip();
-                showOpenSvipDialog(context);
                 if (!isSvip) {
                   showOpenSvipDialog(context);
+                }else {
+                  Get.to(() => UserHomePage(uid:info.uid,initialIndex: 2,));
                 }
               },
             ),
@@ -278,6 +280,8 @@ class _NearbyPageState extends State<NearbyPage>
         bool isSvip = GetStorageUtils.getSvip();
         if (!isSvip) {
           showOpenSvipDialog(context);
+        }else{
+          // Get.to(() => UserHomePage(uid:info.uid,initialIndex: 2,));
         }
       },
     );

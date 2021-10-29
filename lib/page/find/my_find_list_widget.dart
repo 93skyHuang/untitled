@@ -107,9 +107,16 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
-                _list.addAll(value.data ?? []),
-                updatePage(),
+                if (value.data == null)
+                  {
+                    _refreshController.loadNoData(),
+                  }
+                else
+                  {
+                    _refreshController.loadComplete(),
+                    _list.addAll(value.data ?? []),
+                    updatePage(),
+                  }
               }
             else
               {
@@ -208,8 +215,6 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
                 child: CachedNetworkImage(
                   fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
                   imageUrl: discoverInfo.headImgUrl ?? '',
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Image.asset(
                     'assets/images/image_load_failed.png',
                     fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,

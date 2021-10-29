@@ -40,7 +40,7 @@ class _FocusOnBtnState extends State<FocusOnBtn> {
         ),
         // 设置 child 居中
         alignment: const Alignment(0, 0),
-        child: InkWell(
+        child: GestureDetector(
             onTap: () {
               showBottomOpen(context);
             },
@@ -71,7 +71,7 @@ class _FocusOnBtnState extends State<FocusOnBtn> {
         ),
         // 设置 child 居中
         alignment: const Alignment(0, 0),
-        child: InkWell(
+        child: GestureDetector(
             onTap: () {
               add();
             },
@@ -234,6 +234,7 @@ class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
                 _focusClick();
               },
               style: ButtonStyle(
+                overlayColor: MaterialStateProperty.all(Colors.transparent),
                 minimumSize: MaterialStateProperty.all(const Size(0, 0)),
                 visualDensity: VisualDensity.compact,
                 padding: MaterialStateProperty.all(EdgeInsets.zero),

@@ -1,7 +1,10 @@
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/find_tab_info.dart';
 import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/page/home_controller.dart';
+import 'package:untitled/page/mine/vip/vip_controller.dart';
 
 class GetStorageUtils {
   //
@@ -53,6 +56,12 @@ class GetStorageUtils {
   ///
   static void saveSvip(bool svip) {
     _accountStorage.write('svip', svip);
+    try {
+      final HomeController _homeController = Get.find<HomeController>();
+      _homeController.isSvip.value = svip;
+    } catch (e) {
+      logger.e(e);
+    }
   }
 
   static bool getIsHead() {

@@ -13,43 +13,47 @@ class UserHomeController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
     logger.i("UserHomeController");
   }
 
   void getInfo(int uid) {
     getHomeUserData(uid).then((value) => {
-      if(value.isOk()){
-        trends.clear(),
-        videoTrends.clear(),
-        userBasic.value = value.data!,
-        for(int i=0;i<userBasic.value.trendsList!.length;i++){
-          if(userBasic.value.trendsList![i]!.type==2){
-            videoTrends.add(userBasic.value.trendsList![i])
-          }else{
-            trends.add(userBasic.value.trendsList![i])
-          }
-        }
-      }
-    });
+          if (value.isOk())
+            {
+              GetStorageUtils.saveUserBasic(value.data!),
+              trends.clear(),
+              videoTrends.clear(),
+              userBasic.value = value.data!,
+              for (int i = 0; i < userBasic.value.trendsList!.length; i++)
+                {
+                  if (userBasic.value.trendsList![i]!.type == 2)
+                    {videoTrends.add(userBasic.value.trendsList![i])}
+                  else
+                    {trends.add(userBasic.value.trendsList![i])}
+                }
+            }
+        });
   }
 
   void add() {
     addFollow(userBasic.value.uid).then((value) => {
-      if (value.isOk())
-        {
-          getInfo(userBasic.value.uid),
-        }
-    });
+          if (value.isOk())
+            {
+              getInfo(userBasic.value.uid),
+            }
+        });
   }
 
   void del() {
     delFollow(userBasic.value.uid).then((value) => {
-      if (value.isOk())
-        {
-          getInfo(userBasic.value.uid),
-        }
-    });
+          if (value.isOk())
+            {
+              getInfo(userBasic.value.uid),
+            }
+        });
   }
+
   @override
   void onClose() {
     logger.i("onClose");

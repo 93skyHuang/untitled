@@ -897,17 +897,18 @@ Future<BasePageData<List<NearbyInfo>?>> getNearbyList(int page) async {
 ///动态-关注列表 接口通了，没有数据
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
-Future<BasePageData<List<TrendsLikeInfo>?>> getTrendsLike(
-    int page, int sex) async {
-  BasePageData<List<TrendsLikeInfo>?> basePageData;
+Future<BasePageData<List<NewTrendsInfo>?>> getTrendsLike(
+    int page) async {
+  BasePageData<List<NewTrendsInfo>?> basePageData;
   try {
     int uid = GetStorageUtils.getUID();
+    int sex = GetStorageUtils.getSex();
     Response response = await getDio().post('/index/Trends/trendsLike',
         data: {'uid': uid, 'page': page, 'sex': sex});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
-      List<TrendsLikeInfo>? data = (baseResp.data as List<dynamic>?)
-          ?.map((e) => TrendsLikeInfo.fromJson(e as Map<String, dynamic>))
+      List<NewTrendsInfo>? data = (baseResp.data as List<dynamic>?)
+          ?.map((e) => NewTrendsInfo.fromJson(e as Map<String, dynamic>))
           .toList();
       basePageData = BasePageData(baseResp.code, baseResp.msg, data);
     } else {

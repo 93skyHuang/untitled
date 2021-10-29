@@ -22,6 +22,7 @@ class NearbyInfo {
   String? headImgUrl;
   String? distance;
   int? height ;
+  int uid=-1 ;
   String? region;
   String? autograph;
   String? constellation;
