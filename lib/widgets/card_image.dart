@@ -66,7 +66,7 @@ Widget cardNetworkImage2(String url, double widget, double height,
 Widget normalNetWorkImage(String url) {
   return CachedNetworkImage(
     imageUrl: url,
-    placeholder: (context, url) => const CircularProgressIndicator(),
+    // placeholder: (context, url) => const CircularProgressIndicator(),
     errorWidget: (context, url, error) => Image.asset(
       'assets/images/image_load_failed.png',
     ),

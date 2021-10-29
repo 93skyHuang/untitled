@@ -53,12 +53,14 @@ class _SettingPageState extends State<SettingPage> {
             ),
             ItemArrow(
               onPressed: () {
-                Get.toNamed(webViewPName,arguments: {'url':'http://www.sancun.vip/index/Index/ysxy','title':'用户协议'});},
+                Get.toNamed(webViewPName,
+                    arguments: {'url': 'http://www.sancun.vip/yhxy', 'title': '用户协议'});},
               text: '用户协议',
               padding: EdgeInsets.only(left: 16,right: 16),
             ),
             ItemArrow(
-              onPressed: () {},
+              onPressed: () { Get.toNamed(webViewPName,
+                  arguments: {'url': 'http://www.sancun.vip/ysxy', 'title': '隐私声明'});},
               text: '隐私条款',
               showDivider: false,
               padding: EdgeInsets.only(left: 16,right: 16),

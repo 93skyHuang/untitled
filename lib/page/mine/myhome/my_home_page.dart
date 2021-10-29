@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -14,16 +17,22 @@ import 'my_home_controller.dart';
 
 //个人首页页面
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  ///进来显示的信息 0动态、1、视频 2、个人信息
+  int initIndex = 0;
+
+  MyHomePage({Key? key, this.initIndex = 0}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _MyHomePageState();
+    return _MyHomePageState(initIndex);
   }
 }
 
 class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   final MyHomeController _myHomeController = Get.put(MyHomeController());
+  int initIndex = 0;
+
+  _MyHomePageState(this.initIndex);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +85,8 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    tabController = new TabController(length: 3, vsync: this);
+    tabController =
+        new TabController(length: 3, vsync: this, initialIndex: initIndex);
   }
 
   TabBarView buildTabBarView() {
@@ -152,7 +162,8 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
             ),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
+                image:
+                NetworkImage(
                   "${_myHomeController.userBasic.value.headImgUrl ?? ''}",
                 ),
                 fit: BoxFit.fill,

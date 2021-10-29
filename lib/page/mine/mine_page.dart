@@ -340,7 +340,9 @@ class _MinePageState extends State<MinePage> {
           text: '我的动态',
           img: "assets/images/mine_move.png",
           textStyle: TextStyle(fontSize: 12, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Get.to(() => MyHomePage());
+          },
         ),
         ItemMenu(
           text: '认证中心',
@@ -447,7 +449,7 @@ class _MinePageState extends State<MinePage> {
           img: "assets/images/mine_page.png",
           textStyle: TextStyle(fontSize: 12, color: Colors.black),
           onPressed: () {
-            Get.to(() => MyHomePage());
+            Get.to(() => MyHomePage(initIndex: 2,));
           },
         ),
       ];
