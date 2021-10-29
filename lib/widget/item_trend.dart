@@ -10,12 +10,10 @@ import 'expandable_text.dart';
 class ItemTrend extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
-  VoidCallback onDelete;
 
   ItemTrend({
     required this.trends,
     required this.onPressed,
-    required this.onDelete,
   });
 
   double contextWidth =

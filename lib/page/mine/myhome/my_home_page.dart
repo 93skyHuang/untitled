@@ -99,7 +99,6 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               return ItemTrend(
                 trends: _myHomeController.trends.value[index],
                 onPressed: () {},
-                onDelete: () {},
               );
             },
             itemCount: _myHomeController.trends.value.length,
@@ -111,7 +110,6 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               return ItemVideo(
                 trends: _myHomeController.videoTrends.value[index],
                 onPressed: () {},
-                onDelete: () {},
               );
             },
             itemCount: _myHomeController.videoTrends.value.length,

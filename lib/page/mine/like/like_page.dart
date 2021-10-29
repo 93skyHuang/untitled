@@ -1,57 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:untitled/network/bean/send_fabulous_msg.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_follow.dart';
+import 'package:untitled/widgets/my_classic.dart';
 
-import 'like_controller.dart';
-
-class LikePage extends StatelessWidget {
+class LikePage extends StatefulWidget {
   LikePage();
 
-  LikeController _likeController = new LikeController();
+  @override
+  State<StatefulWidget> createState() {
+    return _LikePageState();
+  }
+}
+
+class _LikePageState extends State<LikePage>
+    with AutomaticKeepAliveClientMixin {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    _onRefresh();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _likeController.getList();
     return Scaffold(
+      backgroundColor: Color(0xFFF5F5F5),
+      appBar: AppBar(
+        elevation: 0.5,
+        leading: new IconButton(
+            icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+            onPressed: () {
+              Navigator.maybePop(context);
+            }),
+        title:
+            Text("我喜欢的", style: TextStyle(fontSize: 17, color: Colors.black)),
         backgroundColor: Color(0xFFF5F5F5),
-        appBar: AppBar(
-          elevation: 0.5,
-          leading: new IconButton(
-              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
-              onPressed: () {
-                Navigator.maybePop(context);
-              }),
-          title:
-              Text("我喜欢的", style: TextStyle(fontSize: 17, color: Colors.black)),
-          backgroundColor: Color(0xFFF5F5F5),
-          centerTitle: true,
-        ),
-        body: Container(
-          height: double.infinity,
-          child: Obx(
-            () => ListView.builder(
+        centerTitle: true,
+      ),
+      body: RefreshConfiguration(
+          // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
+          hideFooterWhenNotFull: true,
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            header: const MyClassicHeader(),
+            footer: const MyClassicFooter(),
+            // 配置默认底部指示器
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: ListView.builder(
               itemBuilder: (context, index) {
-                return new ItemFollow(
-                  name: '${_likeController.likes[index].cname}',
-                  img: _likeController.likes[index].headImgUrl == null
-                      ? "https://tva1.sinaimg.cn/large/006y8mN6gy1g7aa03bmfpj3069069mx8.jpg"
-                      : _likeController.likes[index].headImgUrl,
+                return ItemFollow(
+                  name: '${likes[index].cname}',
+                  img: likes[index].headImgUrl ?? "",
                   info:
-                      '${_likeController.likes[index].distance}，${_likeController.likes[index].age}，${_likeController.likes[index].constellation}',
-                  onPressed: () {},
+                      '${likes[index].region}，${likes[index].age}，${likes[index].constellation}',
+                  onPressed: () {
+                    Get.to(() => UserHomePage(uid: likes[index].id ?? 0));},
                   onMorePressed: () {
-                    showBottomOpen(context,_likeController.likes[index].uid);
+                    showBottomOpen(context, likes[index].trendsId ?? 0);
                   },
                 );
               },
-              itemCount: _likeController.likes.length,
+              itemCount: likes.length,
             ),
-          ),
-        ));
+          )),
+    );
   }
 
-  void showBottomOpen(BuildContext context,int uid) {
+  void showBottomOpen(BuildContext context, int uid) {
     showModalBottomSheet(
         enableDrag: false,
         elevation: 0,
@@ -94,7 +123,7 @@ class LikePage extends StatelessWidget {
                           ),
                           TextButton(
                               onPressed: () {
-                                _likeController.del(uid);
+                                del(uid);
                                 Navigator.pop(context);
                               },
                               child: CustomText(
@@ -119,6 +148,54 @@ class LikePage extends StatelessWidget {
                                       fontSize: 17, color: Color(0xffFD4343)))),
                         ]))
                   ]));
+        });
+  }
+
+  int pageNo = 1;
+  List<SendFabulousMsg> likes = [];
+
+  void _onRefresh() async {
+    pageNo = 1;
+    getList();
+  }
+
+  // 上拉加载更多
+  void _onLoading() async {
+    pageNo++;
+    getList(isLoad: true);
+  }
+
+  void getList({bool isLoad = false}) {
+    getSendFabulousList(pageNo).then((value) => {
+          if (value.isOk())
+            if (isLoad)
+              {
+                _refreshController.loadComplete(),
+                likes.addAll(value.data ?? []),
+                updatePage(),
+              }
+            else
+              {
+                _refreshController.refreshCompleted(),
+                likes = value.data ?? [],
+                updatePage(),
+              }
+          else
+            {
+              isLoad
+                  ? _refreshController.loadFailed()
+                  : _refreshController.refreshFailed()
+            }
+        });
+  }
+
+  void updatePage() {
+    setState(() {});
+  }
+
+  void del(int trendId) {
+    deleteTrendsFabulous(trendId).then((value) => {
+          if (value.isOk()) {_onRefresh()}
         });
   }
 }

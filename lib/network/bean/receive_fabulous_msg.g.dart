@@ -15,6 +15,10 @@ ReceiveFabulousMsg _$ReceiveFabulousMsgFromJson(Map<String, dynamic> json) {
     ..cname = json['cname'] as String?
     ..trendsContent = json['trendsContent'] as String?
     ..date = json['date'] as String?
+    ..age = json['age'] as int?
+    ..constellation = json['constellation'] as String?
+    ..region = json['region'] as String?
+    ..time = json['time'] as String?
     ..thisContent = json['thisContent'] == null
         ? null
         : DynamicContent.fromJson(json['thisContent'] as Map<String, dynamic>);
@@ -30,4 +34,8 @@ Map<String, dynamic> _$ReceiveFabulousMsgToJson(ReceiveFabulousMsg instance) =>
       'trendsContent': instance.trendsContent,
       'date': instance.date,
       'thisContent': instance.thisContent,
+      'date': instance.date,
+      'time': instance.time,
+      'constellation': instance.constellation,
+      'region': instance.region,
     };

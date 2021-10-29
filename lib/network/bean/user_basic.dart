@@ -24,6 +24,7 @@ class UserBasic {
   // * trendsList [动态列表]列表内容参照动态列表
   // * commentList [评论列表]
   // * time [发布时间]
+  //* dataPerfection资料完整度
   String? headImgUrl = '';
   String? cname = '';
   int? sex = 1;
@@ -37,6 +38,7 @@ class UserBasic {
   int? followSum = 0;
   int? pasDaySum = 0;
   int? trendsSum = 0;
+  int? dataPerfection = 0;
   UserData? userdata ;
   int? isVideo; ///视频认证等同于真人认证
   int? isHead;

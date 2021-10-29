@@ -23,7 +23,10 @@ class SendFabulousMsg {
   String? cname ;
   String? trendsContent ;
   String? date;
-  DynamicContent? thisContent;
+  int? age = 1;
+  String? constellation = '';
+  String? region = '';
+  // DynamicContent? thisContent;
 
 
   SendFabulousMsg();

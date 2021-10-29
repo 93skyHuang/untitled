@@ -14,9 +14,9 @@ import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/custom_text_15radius.dart';
 import 'package:untitled/widget/item_menu.dart';
 
-
 class InfoPage extends StatefulWidget {
   int uid;
+
   InfoPage(this.uid);
 
   @override
@@ -27,6 +27,7 @@ class InfoPage extends StatefulWidget {
 
 class _InfoPageState extends State with SingleTickerProviderStateMixin {
   _InfoPageState(this.uid);
+
   int uid;
   int? height = 0;
 
@@ -157,11 +158,12 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
                 children: expects,
               ),
             ),
-              if (expects.isNotEmpty)Container(
-            height: 0.5,
-            margin: EdgeInsets.only(top: 18),
-            color: Color(0xffE6E6E6),
-          ),
+          if (expects.isNotEmpty)
+            Container(
+              height: 0.5,
+              margin: EdgeInsets.only(top: 18),
+              color: Color(0xffE6E6E6),
+            ),
           if (hobbies.isNotEmpty)
             CustomText(
               text: '兴趣爱好',
@@ -171,7 +173,7 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
           if (hobbies.isNotEmpty)
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 16,top: 10),
+              margin: EdgeInsets.only(left: 16, top: 10),
               child: Wrap(
                   children: List.generate(hobbies.length, (index) {
                 return CustomTextRadius(
@@ -188,14 +190,20 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
   void getInfo() {
     UserInfo userInfo;
     getOtherUserInfo(uid).then((value) => {
-      if (value.isOk()) {userInfo = value.data!, setInfo(userInfo)}
-    });
+          if (value.isOk()) {userInfo = value.data!, setInfo(userInfo)}
+        });
   }
+
   void setInfo(UserInfo userInfo) {
     expects.clear();
     details.clear();
     hobbies.clear();
-    hobbies = userInfo.hobby!;
+    if (userInfo.hobby!.isNotEmpty) {
+      if (userInfo.hobby!.length == 1 && userInfo.hobby![0] == '') {
+      } else {
+        hobbies = userInfo.hobby!;
+      }
+    }
     uid = userInfo.uid;
     sex = userInfo.sex;
     details.add(CustomTextRadius(

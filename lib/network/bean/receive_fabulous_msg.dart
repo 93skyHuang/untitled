@@ -24,6 +24,10 @@ class ReceiveFabulousMsg {
   String? trendsContent ;
   String? date;
   DynamicContent? thisContent;
+  int? age = 1;
+  String? constellation = '';
+  String? region = '';
+  String? time;
 
 
   ReceiveFabulousMsg();

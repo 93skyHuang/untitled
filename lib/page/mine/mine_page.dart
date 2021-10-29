@@ -81,7 +81,7 @@ class _MinePageState extends State<MinePage> {
                               ],
                             ),
                             CustomText(
-                              text: '资料完整度32%',
+                              text: '资料完整度${_mineController.userBasic.value.dataPerfection}%',
                               textStyle: TextStyle(
                                   fontSize: 12, color: Color(0xff8C8C8C)),
                               margin: EdgeInsets.only(left: 10),
@@ -204,16 +204,12 @@ class _MinePageState extends State<MinePage> {
                     ],
                   ),
                 ),
-                // if (_mineController.userBasic.value.isVideo == 1 ||
-                //     _mineController.userBasic.value.isHead == 1)
                   CustomText(
                     text: '认证信息',
                     textStyle:
                         TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                     margin: EdgeInsets.only(left: 16),
                   ),
-                // if (_mineController.userBasic.value.isVideo == 1 ||
-                //     _mineController.userBasic.value.isHead == 1)
                   Container(
                       height: 84,
                       width: double.infinity,

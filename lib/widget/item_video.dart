@@ -10,7 +10,6 @@ import 'expandable_text.dart';
 class ItemVideo extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
-  VoidCallback onDelete;
 
 
   double contextWidth =
@@ -19,7 +18,6 @@ class ItemVideo extends StatelessWidget {
       {
         required this.trends,
         required this.onPressed,
-        required this.onDelete,
       }
       );
 
