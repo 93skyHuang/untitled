@@ -96,6 +96,8 @@ dependencies:
   #  视频相关类
   video_player: ^2.2.5
   flutter_sound_lite: ^8.4.1
+  just_audio: ^0.9.11
+
   path_provider: ^2.0.04
 
   #iOS内购
@@ -103,6 +105,9 @@ dependencies:
 
   #相机
   camera: ^0.9.4+3
+
+  #权限处理
+  permission_handler: ^8.2.5
 
 dev_dependencies:
   flutter_test:

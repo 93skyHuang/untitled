@@ -8,6 +8,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/video_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -167,7 +168,7 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                           TextStyle(color: Color(0xffffffff), fontSize: 14))),
                       SizedBox(height: 40),
                       GestureDetector(
-                          onTap: () {},
+                          onTap: () {Get.to(ReportPage(_controller.info.uid));},
                           child: Column(
                             children: [
                               Image.asset('assets/images/report.png'),

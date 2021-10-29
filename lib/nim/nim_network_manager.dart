@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:just_audio/just_audio.dart';
 import 'package:nim_core/nim_core.dart';
 import 'package:untitled/network/logger.dart';
 
@@ -130,7 +131,7 @@ class NimNetworkManager {
     return result;
   }
 
-  Future<NIMResult<NIMMessage>> sendAudioMessage(
+  Future<NIMResult<NIMMessage>> sendCustomAudioMessage(
       String filePath, int uid) async {
     // 该帐号为示例
     String account = 'll$uid';
@@ -145,6 +146,31 @@ class NimNetworkManager {
             filePath: file.path,
             fileSize: file.lengthSync(),
             duration: 2000)
+        .then((value) => value.isSuccess
+            ? NimCore.instance.messageService
+                .sendMessage(message: value.data!, resend: false)
+            : Future.value(value));
+    return result;
+  }
+
+  Future<NIMResult<NIMMessage>> sendAudioMessage(
+      String filePath, int uid) async {
+    // 该帐号为示例
+    String account = 'll$uid';
+// 以单聊类型为例
+    NIMSessionType sessionType = NIMSessionType.p2p;
+// 示例音频，需要开发者在相应目录下有文件
+    File file = File(filePath);
+    final player = AudioPlayer();
+    var duration = await player.setFilePath(filePath);
+    logger.i(duration);
+// 发送语音消息
+    Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
+            sessionId: account,
+            sessionType: sessionType,
+            filePath: file.path,
+            fileSize: file.lengthSync(),
+            duration: duration?.inMilliseconds ?? 0)
         .then((value) => value.isSuccess
             ? NimCore.instance.messageService
                 .sendMessage(message: value.data!, resend: false)

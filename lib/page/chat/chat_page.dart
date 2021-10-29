@@ -3,17 +3,14 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:nim_core/nim_core.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
-import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/bean/user_basic.dart';
-import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
@@ -34,6 +31,9 @@ class _ChatPageState extends State<ChatPage> {
   final ChatController _controller = Get.put(ChatController());
   TextEditingController textEditingController = TextEditingController();
   ScrollController _scrollController = ScrollController();
+  double start = 0.0;
+  double offset = 0.0;
+  bool isUpCancel = false;
 
   ///聊天单边显示区域
   final contentWidth = ScreenUtil().screenWidth * 0.6;
@@ -53,7 +53,7 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: MyColor.pageBgColor,
         appBar: AppBar(
           elevation: 0.5,
-          leading: new IconButton(
+          leading: IconButton(
               icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
               onPressed: () {
                 Navigator.maybePop(context);
@@ -74,6 +74,7 @@ class _ChatPageState extends State<ChatPage> {
             color: Color(0xFFF0F0F0),
             child: Column(
               children: <Widget>[
+                _userCard(),
                 Expanded(
                   flex: 1,
                   child: Container(
@@ -152,18 +153,40 @@ class _ChatPageState extends State<ChatPage> {
                                   BorderRadius.all(Radius.circular(2))),
                           child: Obx(() => _controller.isShowRecodingBtn.value
                               ? GestureDetector(
-                                  onTapDown: (tapDown) {
+                                  onVerticalDragStart: (details) {
+                                    logger.i("onVerticalDragStart");
+                                    isUpCancel = false;
+                                    start = details.globalPosition.dy;
                                     _controller.startRecoding();
+                                    _controller.cancelRecodeText.value =
+                                        "松开发送，上滑取消";
                                   },
-                                  onTapUp: (tapUp) {
-                                    _controller.stopRecoding();
+                                  onVerticalDragEnd: (details) {
+                                    logger.i("onVerticalDragEnd $isUpCancel");
+                                    if (isUpCancel) {
+                                      _controller.cancelRecoding();
+                                    } else {
+                                      _controller.stopRecodingAndStartSend();
+                                    }
+                                  },
+                                  onVerticalDragUpdate: (details) {
+                                    logger.i(
+                                        "onVerticalDragUpdate $start  $offset");
+                                    offset = details.globalPosition.dy;
+                                    isUpCancel =
+                                        start - offset > 70 ? true : false;
+                                    if (isUpCancel) {
+                                      _controller.cancelRecodeText.value =
+                                          "松开取消发送";
+                                    } else {
+                                      _controller.cancelRecodeText.value =
+                                          "松开发送，上滑取消";
+                                    }
                                   },
                                   child: Container(
                                     width: double.infinity,
                                     child: Text(
-                                      _controller.isRecoding.value
-                                          ? '松开结束'
-                                          : '按住说话',
+                                      _controller.recodeBtnText.value,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: MyColor.mainColor,
@@ -230,6 +253,43 @@ class _ChatPageState extends State<ChatPage> {
               ],
             ),
           ),
+
+          ///语音录制动画
+          Obx(() => _controller.isRecoding.value
+              ? Center(
+                  child: Opacity(
+                    opacity: 0.5,
+                    child: Container(
+                      width: 160,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        color: Color(0xff77797A),
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            child: Image.asset(
+                              "assets/images/voice_volume_7.png",
+                              width: 100,
+                              height: 100,
+                            ),
+                          ),
+                          Container(
+                            padding:
+                                EdgeInsets.only(right: 10, left: 10, top: 0),
+                            child: Text(
+                              _controller.cancelRecodeText.value,
+                              style: TextStyle(color: Colors.white,fontSize: 12),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : Container()),
         ]));
   }
 
@@ -321,6 +381,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  ///接收到的语音消息
   Widget _receiveVoiceItem(NIMMessage item) {
     NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
     if (item.messageType == NIMMessageType.audio) {
@@ -349,6 +410,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  ///发出去的消息
   Widget _renderRowSendByMe(BuildContext context, NIMMessage item) {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
@@ -405,6 +467,7 @@ class _ChatPageState extends State<ChatPage> {
                               maxWidth: contentWidth,
                             ),
                           ),
+
                           ///发送消息状态
                           Container(
                               margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
@@ -421,7 +484,7 @@ class _ChatPageState extends State<ChatPage> {
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2.0,
                                               valueColor:
-                                                  new AlwaysStoppedAnimation<
+                                                  AlwaysStoppedAnimation<
                                                       Color>(Colors.grey),
                                             ),
                                           ),
@@ -447,13 +510,14 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   /**
-   * 语音item
+   * 发出去的语音
    */
   Widget _sendVoiceItem(NIMMessage item) {
     NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
     if (item.messageType == NIMMessageType.audio) {
       NIMAudioAttachment nimAudioAttachment =
           NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      logger.i(nimAudioAttachment.duration);
       int mill = nimAudioAttachment.duration ?? 0;
       int second = mill ~/ 1000;
       double width = second < 3
@@ -461,21 +525,26 @@ class _ChatPageState extends State<ChatPage> {
           : second < 6
               ? contentWidth / 3
               : contentWidth / 2;
-      return Container(
-        width: width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Icon(Icons.pause),
-            Expanded(child: Align()),
-            Text(
-              '$second"',
-              style: TextStyle(fontSize: 12, color: Colors.black),
-            ),
-            SizedBox(
-              width: 10,
-            )
-          ],
+      return GestureDetector(
+        onTap: () {
+          _controller.playVoice("${nimAudioAttachment.path}");
+        },
+        child: Container(
+          width: width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                '$second"',
+                style: TextStyle(fontSize: 12, color: Colors.black),
+              ),
+              Expanded(child: Align()),
+              Icon(Icons.pause),
+              SizedBox(
+                width: 10,
+              )
+            ],
+          ),
         ),
       );
     } else {
@@ -493,10 +562,9 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _userCard() {
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: EdgeInsets.fromLTRB(4, 10, 4, 0),
       width: double.infinity,
-      height:
-          ScreenUtil().setHeight(_controller.trendsLength() > 0 ? 235 : 130),
+      height: ScreenUtil().setHeight(_controller.trendsLength() > 0 ? 235 : 90),
       decoration: BoxDecoration(
         //背景
         color: Colors.white,
@@ -518,7 +586,10 @@ class _ChatPageState extends State<ChatPage> {
               GestureDetector(
                 child: _headImg(_controller.hisBasic.headImgUrl ?? ''),
                 onTap: () {
-                  logger.i('点击头像');
+                  Get.to(UserHomePage(
+                    uid: _controller.hisBasic.uid,
+                    initialIndex: 2,
+                  ));
                 },
               ),
               Padding(
@@ -533,7 +604,9 @@ class _ChatPageState extends State<ChatPage> {
                         TextStyle(
                             color: MyColor.blackColor,
                             fontSize: ScreenUtil().setSp(14))),
-                    _info2(), //信息
+                    Padding(
+                        padding: EdgeInsets.only(top: 4, bottom: 6),
+                        child: _info2()), //信息
                     _info3(), //认证
                   ],
                 ),
@@ -600,25 +673,22 @@ class _ChatPageState extends State<ChatPage> {
   Widget _info3() {
     return Row(
       children: [
-        _controller.hisBasic.isVideo == 1
-            ? Container(
-                margin: EdgeInsets.only(right: 10),
-                child: Image.asset('assets/images/icon_verified_person.png'),
-              )
-            : Container(),
-        _controller.hisBasic.isHead == 1
-            ? Container(
-                margin: EdgeInsets.only(right: 10),
-                child: Image.asset('assets/images/icon_verified_avatar.png'),
-              )
-            : Container(),
-        _controller.hisBasic.isCard == 1
-            ? Container(
-                margin: EdgeInsets.only(right: 10),
-                child: Image.asset('assets/images/icon_verified_name'),
-              )
-            : Container(),
-        Image.asset('assets/images/icon_verified_phone.png')
+        Container(
+          margin: EdgeInsets.only(right: 10),
+          child: Image.asset(_controller.hisBasic.isHead == 1
+              ? "assets/images/icon_verified_avatar.png"
+              : "assets/images/icon_un_verified_avatar.png"),
+        ),
+        Container(
+          margin: EdgeInsets.only(right: 10),
+          child: Image.asset(_controller.hisBasic.isVideo == 1
+              ? "assets/images/ic_unverified_person.png"
+              : "assets/images/ic_verified_person1.png"),
+        ),
+        Container(
+          margin: EdgeInsets.only(right: 10),
+          child: Image.asset("assets/images/icon_verified_phone.png"),
+        ),
       ],
     );
   }
@@ -718,6 +788,7 @@ class _ChatPageState extends State<ChatPage> {
     return length == 0
         ? Container()
         : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               singeLineText(
@@ -744,7 +815,9 @@ class _ChatPageState extends State<ChatPage> {
                 url, ScreenUtil().setWidth(100), ScreenUtil().setWidth(100),
                 radius: 8),
             onTap: () {
-              logger.i(trendsImg);
+              Get.to(UserHomePage(
+                uid: _controller.hisBasic.uid,
+              ));
             },
           );
   }

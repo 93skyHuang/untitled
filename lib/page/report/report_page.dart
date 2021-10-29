@@ -13,7 +13,9 @@ import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/toast.dart';
 
 class ReportPage extends StatefulWidget {
-  const ReportPage();
+  int uid;
+
+  ReportPage(this.uid);
 
   @override
   State<ReportPage> createState() => _ReportPageState();

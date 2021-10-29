@@ -73,7 +73,7 @@ class _BelikedPageState extends State<BelikedPage>
                                 info:
                                     '${belikes[index].region}，${belikes[index].age}，${belikes[index].constellation}',
                                 onPressed: () {
-                                  Get.to(() => UserHomePage(uid: belikes[index].id ?? 0));},
+                                  Get.to(() => UserHomePage(uid: belikes[index].id));},
                                 time: '${belikes[index].time}',
                               );
                             },

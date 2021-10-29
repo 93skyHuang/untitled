@@ -97,6 +97,7 @@ class MessagesController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
     logger.i("onInit");
     newSystemMessageOnReceiver();
   }
@@ -109,5 +110,6 @@ class MessagesController extends GetxController {
   @override
   void onReady() {
     logger.i("onReady");
+    querySystemMsg();
   }
 }
