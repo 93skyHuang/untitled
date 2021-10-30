@@ -161,7 +161,7 @@ Future<BasePageData<UserInfo?>> getOtherUserInfo(int uid) async {
   BasePageData<UserInfo?> basePageData;
   try {
     Response response =
-    await getDio().post('/index/User/getUserInfo', data: {'uid': uid});
+        await getDio().post('/index/User/getUserInfo', data: {'uid': uid});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(
@@ -176,6 +176,7 @@ Future<BasePageData<UserInfo?>> getOtherUserInfo(int uid) async {
   }
   return basePageData;
 }
+
 /// 保存编辑个人信息
 // * uid [用户uid]
 // * phone [用户手机号码]
@@ -935,8 +936,7 @@ Future<BasePageData<List<NearbyInfo>?>> getNearbyList(int page) async {
 ///动态-关注列表 接口通了，没有数据
 //      * uid [请求者自己的uid]
 //      * sex [请求者自己的性别]
-Future<BasePageData<List<NewTrendsInfo>?>> getTrendsLike(
-    int page) async {
+Future<BasePageData<List<NewTrendsInfo>?>> getTrendsLike(int page) async {
   BasePageData<List<NewTrendsInfo>?> basePageData;
   try {
     int uid = GetStorageUtils.getUID();
@@ -1116,6 +1116,31 @@ Future<BasePageData> addTrends(
   return basePageData;
 }
 
+//* 删除动态
+//      * index/Trends/deleteTrends
+//      * 请求内容：
+//      * uid [发布者UID]
+//      * id [动态ID]
+//      * 返回信息
+//      * 无
+Future<BasePageData> delTrends(int trendsId) async {
+  BasePageData basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response =
+        await getDio().post('/index/Trends/deleteTrends', data: {
+      'uid': uid,
+      'id': trendsId,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
 /// 动态详情
 Future<BasePageData<TrendsDetails?>> trendsDetails(int trendsId) async {
   BasePageData<TrendsDetails?> basePageData;
@@ -1284,21 +1309,29 @@ Future<BasePageData<Order?>> createOrder(String productID) async {
 }
 
 /// 验证订单
-Future<BasePageData> verifyOrder(int orderId,String receiptData,String transactionID,) async {
+Future<BasePageData> verifyOrder(
+  int orderId,
+  String receiptData,
+  String transactionID,
+) async {
   BasePageData basePageData;
   try {
     int uid = GetStorageUtils.getUID();
     Dio _dio = Dio();
     _dio.interceptors.add(EncryptionAndDecryptionInterceptors());
     _dio.options = BaseOptions(
-        baseUrl: "http://www.sancun.vip",
-        connectTimeout: 20000,
-        receiveTimeout: 20000,);
-    Response response = await _dio.post('/index/Pay/verifyOrder',
-        data: {'uid': uid, 'orderId': orderId,'receipt_data':receiptData,'transactionID':transactionID});
+      baseUrl: "http://www.sancun.vip",
+      connectTimeout: 20000,
+      receiveTimeout: 20000,
+    );
+    Response response = await _dio.post('/index/Pay/verifyOrder', data: {
+      'uid': uid,
+      'orderId': orderId,
+      'receipt_data': receiptData,
+      'transactionID': transactionID
+    });
     BaseResp baseResp = BaseResp.fromJson(response.data);
-    basePageData = BasePageData(
-        baseResp.code, baseResp.msg, null);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
   } on DioError catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
@@ -1334,13 +1367,13 @@ Future<BasePageData<String?>> fileUpload(String filePath) async {
 //* uid [用户uid]
 //* commentId [评论ID]
 Future<BasePageData> addCommentFabulous(
-    int commentId,
-    ) async {
+  int commentId,
+) async {
   BasePageData basePageData;
   try {
     int uid = GetStorageUtils.getUID();
     Response response =
-    await getDio().post('/index/Trends/addCommentFabulous', data: {
+        await getDio().post('/index/Trends/addCommentFabulous', data: {
       'uid': uid,
       'commentId': commentId,
     });
@@ -1358,13 +1391,13 @@ Future<BasePageData> addCommentFabulous(
 //      * uid [用户uid]
 //      * commentId [评论ID]
 Future<BasePageData> deleteCommentFabulous(
-    int commentId,
-    ) async {
+  int commentId,
+) async {
   BasePageData basePageData;
   try {
     int uid = GetStorageUtils.getUID();
     Response response =
-    await getDio().post('/index/Trends/deleteCommentFabulous', data: {
+        await getDio().post('/index/Trends/deleteCommentFabulous', data: {
       'uid': uid,
       'commentId': commentId,
     });

@@ -14,7 +14,7 @@ class MyTabBar extends GetView<FindController> {
 
   @override
   Widget build(BuildContext context) {
-    logger.i('MyTabBar');
+    logger.i('MyTabBar $isSvip');
     return TabBar(
         labelColor: MyColor.blackColor,
         labelStyle: TextStyle(fontSize: ScreenUtil().setSp(20)),

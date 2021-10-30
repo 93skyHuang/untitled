@@ -64,6 +64,15 @@ class GetStorageUtils {
     }
   }
 
+  static bool getIsShowVerifiedTipsInHomePage() {
+    return _accountStorage.read('isShowVerifiedTips') ?? false;
+  }
+
+  ///
+  static void saveIsShowVerifiedTipsInHomePage(bool isShowVerifiedTips) {
+    _accountStorage.write('isShowVerifiedTips', isShowVerifiedTips);
+  }
+
   static bool getIsHead() {
     return _accountStorage.read('isHead') ?? false;
   }

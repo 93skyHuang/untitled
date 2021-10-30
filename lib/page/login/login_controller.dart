@@ -28,7 +28,10 @@ class LoginController extends GetxController {
           if (value.isOk())
             {
               if (value.data?.isNewUser == 1)
-                Get.offNamed(addBasicInfoPName)
+                {
+                  Get.offNamed(addBasicInfoPName),
+                  GetStorageUtils.saveIsShowVerifiedTipsInHomePage(true)
+                }
               else
                 Get.offNamed(homePName)
             }
@@ -41,8 +44,8 @@ class LoginController extends GetxController {
     isSendSmsCode.value = true;
     Future.delayed(const Duration(seconds: 30)).then((value) => {
           logger.i('delayed message $isClose'),
-      if(!isClose)
-          if (isSendSmsCode.value) {isSendSmsCode.value = false}
+          if (!isClose)
+            if (isSendSmsCode.value) {isSendSmsCode.value = false}
         });
   }
 
@@ -51,10 +54,11 @@ class LoginController extends GetxController {
     logger.i("onInit");
   }
 
-  bool isClose=false;
+  bool isClose = false;
+
   @override
   void onClose() {
-    isClose=true;
+    isClose = true;
     logger.i("onClose");
   }
 

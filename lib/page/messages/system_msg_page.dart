@@ -14,7 +14,6 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/page/chat/chat_page.dart';
 import 'package:untitled/page/messages/messages_page_bean.dart';
-import 'package:untitled/page/messages/system_msg_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/dialog.dart';
@@ -26,22 +25,22 @@ import 'package:untitled/widgets/null_list_widget.dart';
 import 'messages_controller.dart';
 
 //消息页面
-class MessagesPage extends StatefulWidget {
-  const MessagesPage({Key? key}) : super(key: key);
+class SystemMsgPage extends StatefulWidget {
+  const SystemMsgPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _MessagesPageState();
+    return _SystemMsgPageState();
   }
 }
 
-class _MessagesPageState extends State<MessagesPage>
+class _SystemMsgPageState extends State<SystemMsgPage>
     with AutomaticKeepAliveClientMixin {
   final MessagesController _controller = Get.put(MessagesController());
 
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  List<MsgPageBean> _list = [];
+  List<SystemMessage> _list = [];
   final double _textContextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(180);
 
@@ -60,12 +59,18 @@ class _MessagesPageState extends State<MessagesPage>
     super.build(context);
     return Scaffold(
         backgroundColor: MyColor.pageBgColor,
+
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: MyColor.pageBgColor,
+          leading: new IconButton(
+              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+              onPressed: () {
+                Navigator.maybePop(context);
+              }),
           elevation: 0.5,
           title: Text(
-            '消息',
+            '系统消息',
             style: TextStyle(
                 color: MyColor.blackColor, fontSize: ScreenUtil().setSp(18)),
           ),
@@ -86,16 +91,15 @@ class _MessagesPageState extends State<MessagesPage>
 
   void _onRefresh() async {
     logger.i("_onRefresh");
-    _list = await _controller.querySessionList();
     _refreshController.refreshCompleted();
     setState(() {});
   }
 
   Widget _getListView() {
     int length = _list.length;
-    List<Widget> listView = [_systemItem()];
+    List<Widget> listView = [];
     for (int i = 0; i < length; i++) {
-      listView.add(_chatItemView(_list[i]));
+      listView.add(_systemItem());
     }
     return ListView(
       children: listView,
@@ -109,7 +113,7 @@ class _MessagesPageState extends State<MessagesPage>
             visualDensity: VisualDensity.compact,
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
-          Get.to(SystemMsgPage());
+          logger.i("itemclick");
         },
         child: Column(
           children: [
@@ -180,135 +184,5 @@ class _MessagesPageState extends State<MessagesPage>
             ),
           ],
         ));
-  }
-
-  Widget _chatItemView(MsgPageBean info) {
-    return TextButton(
-        style: ButtonStyle(
-            minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-            visualDensity: VisualDensity.compact,
-            padding: MaterialStateProperty.all(EdgeInsets.zero)),
-        onPressed: () {
-          bool isSvip = GetStorageUtils.getSvip();
-          if (!isSvip) {
-            showOpenSvipDialog(context);
-          } else {
-            _goToChatPage(info.uid);
-          }
-        },
-        child: Column(
-          children: [
-            Container(
-              height: ScreenUtil().setHeight(76),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(12, 16, 16, 16),
-                child: Row(
-                  children: [
-                    Stack(
-                      alignment: AlignmentDirectional.topEnd,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 4, right: 2),
-                          child: cardNetworkImage(
-                              info.heardUrl,
-                              ScreenUtil().setWidth(44),
-                              ScreenUtil().setWidth(44),
-                              errorImagesUrl: 'assets/images/user_icon.png'),
-                        ),
-                        info.unreadMsgNum > 0
-                            ? Container(
-                                alignment: Alignment.center,
-                                width: ScreenUtil().setWidth(14),
-                                height: ScreenUtil().setWidth(14),
-                                child: Text(
-                                    '${info.unreadMsgNum > 99 ? 99 : info.unreadMsgNum}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: ScreenUtil().setSp(8))),
-                                decoration: BoxDecoration(
-                                    color: Color(0xffFD4343),
-                                    borderRadius: BorderRadius.circular(8)))
-                            : Container()
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        singeLineText(
-                            '${info.nickName}',
-                            _textContextWidth,
-                            TextStyle(
-                                color: Color(0xff000014),
-                                fontSize: ScreenUtil().setSp(14))),
-                        singeLineText(
-                            '${info.getInfo()}',
-                            _textContextWidth,
-                            TextStyle(
-                                color: Color(0xff8C8C8C),
-                                fontSize: ScreenUtil().setSp(12))),
-                      ],
-                    ),
-                    Expanded(child: Align()),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Obx(() => _controller.isCanChat.value
-                            ? Text('')
-                            : Image.asset('assets/images/lock.png')),
-                        singeLineText(
-                            info.time,
-                            _textContextWidth,
-                            TextStyle(
-                                color: Color(0xff8C8C8C),
-                                fontSize: ScreenUtil().setSp(12))),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            HDivider(
-              padding: EdgeInsets.only(left: 16),
-              width: double.infinity,
-              height: 1,
-            ),
-          ],
-        ));
-  }
-
-  Widget headImg(String imaUrl) {
-    return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusDirectional.circular(4)),
-      clipBehavior: Clip.antiAlias,
-      color: Colors.white,
-      child: SizedBox(
-          width: ScreenUtil().setWidth(100),
-          height: ScreenUtil().setWidth(114),
-          child: CachedNetworkImage(
-            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-            imageUrl: imaUrl,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Image.asset(
-              'assets/images/image_load_failed.png',
-              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-            ),
-          )),
-    );
-  }
-
-  void _goToChatPage(int uid) async {
-    final u = GetStorageUtils.getUserBasic(uid);
-    if (u == null) {
-      final value = await getHomeUserData(uid);
-      if (value.isOk()) {
-        GetStorageUtils.saveUserBasic(value.data!);
-        Get.to(ChatPage(), arguments: value.data);
-      }
-    } else {
-      Get.to(ChatPage(), arguments: u);
-    }
   }
 }
