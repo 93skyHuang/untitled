@@ -1,9 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:untitled/network/bean/base_page_data.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widget/loading.dart';
+import 'package:untitled/widgets/toast.dart';
 
 class AvatarVerifiedPage extends StatefulWidget {
   const AvatarVerifiedPage();
@@ -40,19 +46,19 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
               onTap: () {
                 showBottomOpen(context);
               },
-              child:  Container(
+              child: Container(
                 width: 110,
                 height: 110,
                 margin: EdgeInsets.only(top: 60),
                 child: ClipOval(
-                child: headerImgUrlLocal == null
-                      ?  Image.asset(
-                    'assets/images/user_icon.png',
-                  ) : Image.file(
-                    File('$headerImgUrlLocal'),
-                    fit:
-                    Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                  ),
+                  child: headerImgUrlLocal == null
+                      ? Image.asset(
+                          'assets/images/user_icon.png',
+                        )
+                      : Image.file(
+                          File('$headerImgUrlLocal'),
+                          fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                        ),
                 ),
               ),
             ),
@@ -67,42 +73,58 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
               margin: EdgeInsets.only(top: 10, bottom: 20),
               textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
             ),
-            if(headerImgUrlLocal==null||headerImgUrlLocal=='')GestureDetector(
-              onTap: () {
-                showBottomOpen(context);
-              },
-              child: Container(
-                width: 214,
-                height: 40,
-                alignment: Alignment.center,
-                decoration: new BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                  border: new Border.all(width: 1, color: Color(0xff8C8C8C)),
+            if (headerImgUrlLocal == null || headerImgUrlLocal == '')
+              GestureDetector(
+                child: Container(
+                  width: 214,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: new BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                    border: new Border.all(width: 1, color: Color(0xff8C8C8C)),
+                  ),
+                  child: Text('提交认证',
+                      style: TextStyle(color: Color(0xff8C8C8C), fontSize: 17)),
                 ),
-                child: Text('提交认证',
-                    style: TextStyle(color: Color(0xff8C8C8C), fontSize: 17)),
               ),
-            ),
-            if(headerImgUrlLocal!=null&&headerImgUrlLocal!='')GestureDetector(
-              onTap: () {
-              },
-              child: Container(
-                width: 214,
-                height: 40,
-                alignment: Alignment.center,
-                decoration: new BoxDecoration(
-                  color: Color(0xffF3CD8E),
-                  borderRadius:
-                  BorderRadius.all(Radius.circular(40.0)),
+            if (headerImgUrlLocal != null && headerImgUrlLocal != '')
+              GestureDetector(
+                onTap: () {
+                  addFeed();
+                },
+                child: Container(
+                  width: 214,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: new BoxDecoration(
+                    color: Color(0xffF3CD8E),
+                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                  ),
+                  child: Text('提交认证',
+                      style: TextStyle(color: Colors.black, fontSize: 17)),
                 ),
-                child: Text('提交认证',
-                    style: TextStyle(color: Colors.black, fontSize: 17)),
-              ),
-            )
+              )
           ],
         ),
       ),
     );
+  }
+
+  void addFeed() async {
+    Loading.show(context);
+    List<String> urlOSS = [];
+    if (headerImgUrlLocal != null && headerImgUrlLocal != '') {
+      BasePageData<String?> data = await fileUpload(headerImgUrlLocal!);
+      if (data.isOk()) {
+        if (data.data != null) {
+          urlOSS.add(data.data ?? "");
+        }
+      }
+    }
+    addCertification(3, files: urlOSS).then((value) => {
+          Loading.dismiss(context),
+          if (value.isOk()) {MyToast.show('提交成功'), Get.back()}
+        });
   }
 
   void showBottomOpen(BuildContext context) {
@@ -267,14 +289,16 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                         child: Container(
                           width: 214,
                           height: 40,
-                          margin: EdgeInsets.only(top: 30,bottom: 16),
+                          margin: EdgeInsets.only(top: 30, bottom: 16),
                           decoration: new BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
                             color: Color(0xffF3CD8E),
                           ),
                           alignment: Alignment.center,
                           child: Text('从相册选择',
-                              style: TextStyle(color: Colors.black, fontSize: 17)),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 17)),
                         ),
                       ),
                       GestureDetector(
@@ -286,11 +310,14 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                           height: 40,
                           alignment: Alignment.center,
                           decoration: new BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                            border: new Border.all(width: 1, color: Color(0xff8C8C8C)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0)),
+                            border: new Border.all(
+                                width: 1, color: Color(0xff8C8C8C)),
                           ),
                           child: Text('取消',
-                              style: TextStyle(color: Color(0xff8C8C8C), fontSize: 17)),
+                              style: TextStyle(
+                                  color: Color(0xff8C8C8C), fontSize: 17)),
                         ),
                       )
                     ]),
