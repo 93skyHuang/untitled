@@ -108,6 +108,8 @@ dependencies:
 
   #权限处理
   permission_handler: ^8.2.5
+  device_info: ^2.0.2
+  url_launcher: ^6.0.12
 
 dev_dependencies:
   flutter_test:

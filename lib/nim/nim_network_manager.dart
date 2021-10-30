@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:just_audio/just_audio.dart';
 import 'package:nim_core/nim_core.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 
 /**
  * 云信网络接口管理
@@ -35,6 +36,12 @@ class NimNetworkManager {
   }
 
   void logout() {
+    GetStorageUtils.saveUid(0);
+    GetStorageUtils.saveNimToken('');
+    GetStorageUtils.saveSex(1);
+    GetStorageUtils.saveSvip(false);
+    GetStorageUtils.saveIsHead(false);
+    GetStorageUtils.saveIsVideo(false);
     NimCore.instance.authService.logout().then((result) {
       if (result.isSuccess) {
         /// 成功

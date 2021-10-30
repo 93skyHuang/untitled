@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/constant/error_code.dart';
@@ -461,12 +462,72 @@ Future<BasePageData> delFollow(int userid) async {
 
 /// 举报
 /// userid 对方用户id 接口测试通过
-Future<BasePageData> addAccusation(int userid, String content) async {
+Future<BasePageData> addAccusation(int userid, String content,List<String> localUrls) async {
   BasePageData basePageData;
   try {
+    List<String> urlOSS = [];
+    if (localUrls.isNotEmpty) {
+      //选中需要上传的文件
+      int length = localUrls.length;
+      for (int i = 0; i < length; i++) {
+        BasePageData<String?> data = await fileUpload(localUrls[i]);
+        if (data.isOk()) {
+          if (data.data != null) {
+            urlOSS.add(data.data ?? "");
+          }
+        }
+      }
+    }
     int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addAccusation',
-        data: {'uid': uid, 'userid': userid, 'content': content});
+        data: {'uid': uid, 'userid': userid, 'content': content,'img':urlOSS});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+/// 意见反馈
+///  * uid [反馈人的UID]
+//      * content [反馈内容]
+//      * img [图片附件]
+//      * userModel [用户机型]
+Future<BasePageData> addFeedback(String content,List<String> localUrls) async {
+  BasePageData basePageData;
+  try {
+    List<String> urlOSS = [];
+    if (localUrls.isNotEmpty) {
+      //选中需要上传的文件
+      int length = localUrls.length;
+      for (int i = 0; i < length; i++) {
+        BasePageData<String?> data = await fileUpload(localUrls[i]);
+        if (data.isOk()) {
+          if (data.data != null) {
+            urlOSS.add(data.data ?? "");
+          }
+        }
+      }
+    }
+    String userModel="";
+    DeviceInfoPlugin deviceInfo = new DeviceInfoPlugin();
+    if(Platform.isIOS){
+      print('IOS设备：');
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      userModel=iosInfo.model;
+    }else if(Platform.isAndroid){
+      print('Android设备');
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      userModel=androidInfo.model;
+    }
+    int uid = GetStorageUtils.getUID();
+    Response response = await getDio().post('/index/share/addFeedback',
+        data: {'uid': uid, 'userModel': userModel, 'content': content,'img':urlOSS});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -625,29 +686,6 @@ Future<BasePageData<List<CoverFollowInfo>?>> getCoverFollowList(
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i(basePageData);
-  } catch (error) {
-    logger.e(error);
-    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
-  }
-  return basePageData;
-}
-
-/// 反馈  oss接口返回的图片路径 img  接口测试通过 img未测试
-Future<BasePageData> addFeedback(
-  String content,
-  String img,
-) async {
-  BasePageData basePageData;
-  try {
-    int uid = GetStorageUtils.getUID();
-    Response response = await getDio().post('/index/share/addFeedback',
-        data: {'uid': uid, 'content': content, 'img': img});
-    BaseResp baseResp = BaseResp.fromJson(response.data);
-    if (baseResp.code == respCodeSuccess) {
-      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-    } else {
-      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
-    }
   } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);

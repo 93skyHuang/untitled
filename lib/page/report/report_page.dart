@@ -7,21 +7,27 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/toast.dart';
 
 class ReportPage extends StatefulWidget {
   int uid;
+  bool isFeedback;
 
-  ReportPage(this.uid);
+  ReportPage(this.uid,{this.isFeedback=false});
 
   @override
-  State<ReportPage> createState() => _ReportPageState();
+  State<ReportPage> createState() => _ReportPageState(uid,isFeedback);
 }
 
 class _ReportPageState extends State<ReportPage> {
+  bool isFeedback;
+  int uid;
+  _ReportPageState(this.uid,this.isFeedback);
   final TextEditingController _controllerInfo = TextEditingController();
 
   List<String> imageUrls = [];
@@ -37,12 +43,17 @@ class _ReportPageState extends State<ReportPage> {
                 Navigator.maybePop(context);
               }),
           title:
-              Text("举报用户", style: TextStyle(fontSize: 17, color: Colors.black)),
+              Text(isFeedback?"意见反馈":"举报用户", style: TextStyle(fontSize: 17, color: Colors.black)),
           backgroundColor: Color(0xFFF5F5F5),
           centerTitle: true,
           actions: <Widget>[
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                if(isFeedback){
+                  addFeed();
+                }else{
+                  addReport();
+                }},
               child: Container(
                   alignment: Alignment.center,
                   child: Container(
@@ -125,7 +136,7 @@ class _ReportPageState extends State<ReportPage> {
         counterText: '',
         //此处控制最大字符是否显示
         alignLabelWithHint: true,
-        hintText: '请填写举报理由和上传截图',
+        hintText: isFeedback?'请填写反馈理由和上传截图':'请填写举报理由和上传截图',
         hintStyle: TextStyle(
           fontSize: ScreenUtil().setSp(15),
           color: MyColor.grey8C8C8C,
@@ -205,5 +216,29 @@ class _ReportPageState extends State<ReportPage> {
       imageUrls.add(f.path);
       setState(() {});
     }
+  }
+ void addReport() async {
+   Loading.show(context);
+    addAccusation(uid,_controllerInfo.text,imageUrls)
+        .then((value) => {
+      Loading.dismiss(context),
+      if (value.isOk())
+        {
+          MyToast.show('提交成功'),
+          Get.back()
+        }
+    });
+  }
+  void addFeed() async {
+    Loading.show(context);
+    addFeedback(_controllerInfo.text,imageUrls)
+        .then((value) => {
+      Loading.dismiss(context),
+      if (value.isOk())
+        {
+          MyToast.show('提交成功'),
+          Get.back()
+        }
+    });
   }
 }

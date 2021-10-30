@@ -3,8 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/network/bean/app_version_info.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/nim/nim_network_manager.dart';
+import 'package:untitled/page/login/login_page.dart';
+import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/widget/item_arrow.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:untitled/widget/loading.dart';
+import 'package:untitled/widgets/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../route_config.dart';
 
 class SettingPage extends StatefulWidget {
@@ -70,14 +79,16 @@ class _SettingPageState extends State<SettingPage> {
               color: Color(0xffE6E6E6),
             ),
             ItemArrow(
-              onPressed: () {},
-              text: '关于我们',
+              onPressed: () {
+                Get.to(() => ReportPage(-1,isFeedback: true));
+              },
+              text: '意见反馈',
               padding: EdgeInsets.only(left: 16,right: 16),
             ),
             ItemArrow(
-              onPressed: () {},
+              onPressed: () {update();},
               text: '软件版本',
-              value: 'V0.1',
+              value: 'V1.0.0',
               showArrow: false,
               padding: EdgeInsets.only(left: 16,right: 16),
             ),
@@ -91,7 +102,11 @@ class _SettingPageState extends State<SettingPage> {
                 color: Colors.white
               ),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  NimNetworkManager.instance.logout();
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                      LoginPage()), (Route<dynamic> route) => false);
+                },
                 child: Text('退出',
                     style: TextStyle(color: Color(0xffFD4343), fontSize: 17)),
               ),
@@ -100,6 +115,72 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
     );
+  }
+  AppVersionInfo appVersionInfo=new AppVersionInfo();
+  void update() async {
+    Loading.show(context);
+    checkAppVersion(1,'1.0.0')
+        .then((value) => {
+      Loading.dismiss(context),
+      if (value.isOk())
+        {
+          appVersionInfo=value.data!,
+          if(appVersionInfo!=null&&appVersionInfo.versionIsUp==0){
+            MyToast.show('已是最新版本'),
+          }else{
+            showUpdateDialog(),
+          }
+        }
+    });
+  }
+
+  showUpdateDialog() {
+    Widget cancelButton = TextButton(
+      child: Text(
+        "暂不升级",
+        style: TextStyle(color: MyColor.grey8C8C8C),
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      style: ButtonStyle(
+          minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+          visualDensity: VisualDensity.compact,
+          padding: MaterialStateProperty.all(EdgeInsets.only(left: 6, right: 6)),
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+          backgroundColor: MaterialStateProperty.all(MyColor.mainColor)),
+      child: Text(
+        "立即升级",
+        style: TextStyle(fontSize: 16, color: Colors.white),
+      ),
+      onPressed: () {
+        _launchUrl('${appVersionInfo.versionUrl}');
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: Text("版本升级"),
+      content: Text("${appVersionInfo.versionDescription}"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      MyToast.show('升级失败');
+    }
   }
   static Future<double> getTotalSizeOfFilesInDir(
       final FileSystemEntity file) async {
