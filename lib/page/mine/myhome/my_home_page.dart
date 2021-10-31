@@ -104,7 +104,8 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                 onPressed: () {},
                 clickLike: () {},
                 deleteTrend: () {
-                  del(index,_myHomeController.trends.value[index]);
+                  showOpenDelDialog(
+                      context, _myHomeController.trends.value[index]);
                 },
               );
             },
@@ -117,6 +118,10 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               return ItemVideo(
                 trends: _myHomeController.videoTrends.value[index],
                 onPressed: () {},
+                deleteTrend: () {
+                  showOpenDelDialog(
+                      context, _myHomeController.videoTrends.value[index]);
+                },
               );
             },
             itemCount: _myHomeController.videoTrends.value.length,
@@ -179,10 +184,69 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
     ));
   }
 
-  void del(int index,Trends trends) async {
-    final result = await deleteTrendsFabulous(trends.id);
+  showOpenDelDialog(BuildContext context, Trends trends) {
+    //设置按钮
+    Widget cancelButton = TextButton(
+      child: Text(
+        "取消",
+        style: TextStyle(color: MyColor.grey8C8C8C),
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      style: ButtonStyle(
+          //去除点击效果
+          // overlayColor: MaterialStateProperty.all(Colors.transparent),
+          minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+          visualDensity: VisualDensity.compact,
+          padding:
+              MaterialStateProperty.all(EdgeInsets.only(left: 6, right: 6)),
+          //圆角
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+          //背景
+          backgroundColor: MaterialStateProperty.all(MyColor.mainColor)),
+      child: Text(
+        "确定",
+        style: TextStyle(fontSize: 16, color: Colors.white),
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+        // Get.to();
+        del(trends);
+      },
+    );
+
+    //设置对话框
+    AlertDialog alert = AlertDialog(
+      title: Text("删除动态"),
+      content: Text("您确定要删除这条动态？删除后将无法恢复相关信息。"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    //显示对话框
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  void del(Trends trends) async {
+    final result = await delTrends(trends.id);
     if (result.isOk()) {
-      _myHomeController.trends.remove(index);
+      if (trends.type == 2) {
+        _myHomeController.videoTrends.value.remove(trends);
+      } else {
+        _myHomeController.trends.value.remove(trends);
+      }
+      setState(() {});
     } else {
       MyToast.show(result.msg);
     }

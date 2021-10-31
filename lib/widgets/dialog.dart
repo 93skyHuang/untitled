@@ -15,29 +15,17 @@ showOpenSvipDialog(BuildContext context) {
       Navigator.pop(context);
     },
   );
-  Widget continueButton = TextButton(
-    style: ButtonStyle(
-        //去除点击效果
-        // overlayColor: MaterialStateProperty.all(Colors.transparent),
-        minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-        visualDensity: VisualDensity.compact,
-        padding: MaterialStateProperty.all(EdgeInsets.only(left: 6, right: 6)),
-        //圆角
-        shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
-        //背景
-        backgroundColor: MaterialStateProperty.all(MyColor.mainColor)),
+  Widget continueButton =
+  TextButton(
     child: Text(
       "立即开通",
-      style: TextStyle(fontSize: 16, color: Colors.white),
+      style: TextStyle(color: MyColor.grey8C8C8C),
     ),
     onPressed: () {
       Navigator.pop(context);
       Get.to(VipPage());
-      // Get.to();
     },
   );
-
   //设置对话框
   AlertDialog alert = AlertDialog(
     title: Text("开通SVIP"),
@@ -56,3 +44,5 @@ showOpenSvipDialog(BuildContext context) {
     },
   );
 }
+
+

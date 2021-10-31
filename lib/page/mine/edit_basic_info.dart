@@ -139,8 +139,8 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                     style: TextStyle(fontSize: 15, color: Colors.black)),
               ),
               _inputNickName(),
-              Divider(
-                height: 2.0,
+              Container(
+                height: 1.0,
                 color: Color(0xffE6E6E6),
               ),
               CustomText(
@@ -161,14 +161,6 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
                   _choiceCity();
-                },
-              ),
-              _itemArrow(
-                '性别',
-                '$sex',
-                () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  _choiceSex();
                 },
               ),
               _itemArrow(
@@ -230,7 +222,9 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
         color: MyColor.blackColor,
       ),
       decoration: InputDecoration(
-        filled: false,
+        // 设置背景色
+        fillColor: Colors.white,
+        filled: true,
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
         enabledBorder: const OutlineInputBorder(
@@ -310,8 +304,8 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
             ),
           ),
         ),
-        Divider(
-          height: 2.0,
+        Container(
+          height: 1.0,
           color: Color(0xffE6E6E6),
         ),
       ],
@@ -342,10 +336,10 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               color: MyColor.grey8C8C8C,
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white, width: 0),
+              borderSide: BorderSide(color: Colors.transparent, width: 0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white, width: 0),
+              borderSide: BorderSide(color: Colors.transparent, width: 0),
             ),
           ),
           onChanged: (value) {},
@@ -394,7 +388,14 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
   }
 
   void _choiceBirthday() async {
-    showMyDataPicker(context,
+    List<String> date=birthday!.split('-');
+    DateTime dateTime;
+    if(date!=null&&date.length==3){
+      dateTime=new DateTime(int.parse(date[0]),int.parse(date[1]),int.parse(date[2]));
+    }else{
+      dateTime=DateTime.now();
+    }
+    showMyDataPicker(context,value: dateTime,
         clickCallBack: (String selectDateStr, DateTime selectData) {
       logger.i('selectDateStr$selectDateStr selectData$selectData');
       birthday = selectDateStr;

@@ -231,9 +231,9 @@ class _CommentPageState extends State<CommentPage>
         list.add(ItemComment(
           onPressed: () {
             if(commentBean.isFabulous==1){
-              delCommentFab(commentBean.id??0);
+              delCommentFab(commentBean.id??0,i);
             }else{
-              addCommentFab(commentBean.id??0);
+              addCommentFab(commentBean.id??0,i);
             }
           },
           comment: commentBean,
@@ -284,23 +284,27 @@ class _CommentPageState extends State<CommentPage>
             }
         });
   }
-  void addCommentFab(int commentId) {
+  void addCommentFab(int commentId,int index) {
     Loading.show(context);
     addCommentFabulous(commentId).then((value) => {
       Loading.dismiss(context),
       if (value.isOk())
         {
-          getCommentsInfo(),
+        comments[index].isFabulous=1,
+          comments[index].fabulousSum=(comments[index].fabulousSum!+1)!,
+        setState(() {}),
         }
     });
   }
-  void delCommentFab(int commentId) {
+  void delCommentFab(int commentId,int index) {
     Loading.show(context);
     deleteCommentFabulous(commentId).then((value) => {
       Loading.dismiss(context),
       if (value.isOk())
         {
-          getCommentsInfo(),
+          comments[index].isFabulous=0,
+          comments[index].fabulousSum=(comments[index].fabulousSum!-1)!,
+          setState(() {}),
         }
     });
   }

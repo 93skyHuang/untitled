@@ -50,8 +50,8 @@ class ItemArrowState extends State<ItemArrow> {
           ),
         ),
         if (this.widget.showDivider)
-          Divider(
-            height: 2.0,
+          Container(
+            height: 1.0,
             color: Color(0xffE6E6E6),
           ),
       ],

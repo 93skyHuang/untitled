@@ -174,6 +174,7 @@ class _RecommendWidgetState extends State<RecommendWidget>
                               padding: EdgeInsets.only(
                             bottom: ScreenUtil().setWidth(10),
                           )),
+                          if (info.imgArr.isNotEmpty)
                           TrendImg(
                             imgs: info.imgArr,
                             contextWidth: _textContextWidth,
