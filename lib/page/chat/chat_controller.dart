@@ -32,7 +32,6 @@ class ChatController extends GetxController {
 
   void setUserBasic(UserBasic hisBasic) {
     this.hisBasic = hisBasic;
-    this.hisBasic.uid = 162984;
     isFollow.value = hisBasic.isFollow == 1;
     headerUrl.value = hisBasic.headImgUrl ?? '';
     mineHeaderUrl.value = '${mineBasic?.headImgUrl}';

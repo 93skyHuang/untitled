@@ -15,7 +15,8 @@ class MyTabBarView extends GetView<FindController> {
   @override
   Widget build(BuildContext context) {
     logger.i('MyTabBarView $isSvip');
-    return TabBarView(children: _list());
+    return TabBarView(
+        children: _list());
   }
 
   List<Widget> _list() {
