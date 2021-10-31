@@ -75,7 +75,7 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: '陌声ID： ${uid}\n${region}｜${sex == 1 ? '男' : '女'}｜${age}岁',
+                text: 'ID： ${uid}\n${region}｜${sex == 1 ? '男' : '女'}｜${age}岁',
                 textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                 margin: EdgeInsets.only(left: 18, top: 20, bottom: 10),
               ),

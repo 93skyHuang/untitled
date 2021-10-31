@@ -10,7 +10,7 @@ import 'expandable_text.dart';
 class ItemVideo extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
-
+  VoidCallback? deleteTrend;
 
   double contextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(70 + 32);
@@ -18,6 +18,7 @@ class ItemVideo extends StatelessWidget {
       {
         required this.trends,
         required this.onPressed,
+        this.deleteTrend,
       }
       );
 
@@ -89,6 +90,22 @@ class ItemVideo extends StatelessWidget {
                         margin: EdgeInsets.only(
                             right: 20, top: 16, bottom: 2, left: 5),
                       ),
+                      deleteTrend == null
+                          ? Container()
+                          : Expanded(
+                        child: GestureDetector(
+                            onTap: () {
+                              deleteTrend?.call();
+                            },
+                            child: CustomText(
+                              textAlign: Alignment.centerRight,
+                              text: '删除',
+                              textStyle: TextStyle(
+                                  fontSize: 12, color: Colors.black),
+                              margin: EdgeInsets.only(
+                                  right: 5, top: 13, bottom: 2),
+                            )),
+                      )
                     ],
                   ),
                 ],

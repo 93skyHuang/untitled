@@ -5,12 +5,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/pay_list.dart';
 import 'package:untitled/page/mine/vip/vip_controller.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widgets/card_image.dart';
+
+import '../../../route_config.dart';
 
 class VipPage extends StatefulWidget {
   VipPage();
@@ -138,7 +141,12 @@ class _VipPageState extends State<VipPage> {
                             text: "《会员服务协议》",
                             style: TextStyle(color: Colors.white),
                             recognizer: _registProtocolRecognizer
-                              ..onTap = () {},
+                              ..onTap = () {
+                                Get.toNamed(webViewPName, arguments: {
+                                  'url': ' http://www.sancun.vip/service',
+                                  'title': '会员服务协议'
+                                });
+                              },
                           ),
                           TextSpan(
                             text: "及",
@@ -149,7 +157,12 @@ class _VipPageState extends State<VipPage> {
                             style: TextStyle(color: Colors.white),
                             //点击事件
                             recognizer: _privacyProtocolRecognizer
-                              ..onTap = () {},
+                              ..onTap = () {
+                                Get.toNamed(webViewPName, arguments: {
+                                  'url': 'http://www.sancun.vip/yhxy',
+                                  'title': '自动续费协议'
+                                });
+                              },
                           ),
                         ],
                       ),
