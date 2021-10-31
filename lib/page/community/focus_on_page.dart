@@ -401,7 +401,7 @@ class _FocusOnPageState extends State<FocusOnPage>
           },
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(
-              '已关注',
+              '取消关注',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: ScreenUtil().setSp(12),

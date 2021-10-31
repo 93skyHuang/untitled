@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class Loading extends StatelessWidget {
-
-
-  static void show(BuildContext context) {
-
+  static void show(BuildContext context, {bool isAutoDismiss = true}) {
+    if (isAutoDismiss) {
+      Future.delayed(Duration(seconds: 10)).then((value) => {
+            dismiss(context),
+          });
+    }
     showDialog(
       context: context,
-      barrierDismissible: false,//点击外部遮罩区域是否可以关闭dialog
+      barrierDismissible: false, //点击外部遮罩区域是否可以关闭dialog
       builder: (context) {
         return WillPopScope(
-          onWillPop: () async => false,//关键代码
+          onWillPop: () async => false, //关键代码
           child: Dialog(
             backgroundColor: Colors.transparent,
             insetPadding: EdgeInsets.zero,
@@ -22,7 +24,9 @@ class Loading extends StatelessWidget {
   }
 
   static void dismiss(context) {
-    Navigator.pop(context);
+    if (context != null) {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -38,7 +42,7 @@ class Loading extends StatelessWidget {
           width: 60,
           height: 60,
           alignment: Alignment.center,
-          child:  CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );

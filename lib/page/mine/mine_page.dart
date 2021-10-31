@@ -81,7 +81,8 @@ class _MinePageState extends State<MinePage> {
                               ],
                             ),
                             CustomText(
-                              text: '资料完整度${_mineController.userBasic.value.dataPerfection}%',
+                              text:
+                                  '资料完整度${_mineController.userBasic.value.dataPerfection}%',
                               textStyle: TextStyle(
                                   fontSize: 12, color: Color(0xff8C8C8C)),
                               margin: EdgeInsets.only(left: 10),
@@ -131,7 +132,7 @@ class _MinePageState extends State<MinePage> {
                     ),
                     CustomText(
                       text:
-                          '${_mineController.userBasic.value.trendsList!.length}',
+                          '${_mineController.userBasic.value.trendsList?.length}',
                       textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     CustomText(
@@ -204,53 +205,51 @@ class _MinePageState extends State<MinePage> {
                     ],
                   ),
                 ),
-                  CustomText(
-                    text: '认证信息',
-                    textStyle:
-                        TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                    margin: EdgeInsets.only(left: 16),
-                  ),
-                  Container(
-                      height: 84,
-                      width: double.infinity,
-                      alignment: Alignment.bottomCenter,
-                      margin: EdgeInsets.only(
-                          left: 16, right: 16, top: 10, bottom: 16),
-                      decoration: new BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          ItemMenu(
-                            margin: EdgeInsets.only(left: 20),
-                            text: '头像认证',
-                            img: _mineController.userBasic.value.isHead == 1
-                                ? "assets/images/icon_verified_avatar.png"
-                                : "assets/images/icon_un_verified_avatar.png",
-                            onPressed: () {
-
-                            },
-                          ),
-                          ItemMenu(
-                            margin: EdgeInsets.only(left: 20),
-                            text: '真人认证',
-                            img: _mineController.userBasic.value.isVideo == 1
-                                ? "assets/images/ic_unverified_person.png"
-                                : "assets/images/ic_verified_person1.png",
-                            onPressed: () {},
-                          ),
-                          ItemMenu(
-                            margin: EdgeInsets.only(left: 20),
-                            text: '手机认证',
-                            img: "assets/images/icon_verified_phone.png",
-                            onPressed: () {},
-                          ),
-                        ],
-                      )),
+                CustomText(
+                  text: '认证信息',
+                  textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                  margin: EdgeInsets.only(left: 16),
+                ),
                 Container(
-                  height: 70,
+                    height: 84,
+                    width: double.infinity,
+                    alignment: Alignment.bottomCenter,
+                    margin: EdgeInsets.only(
+                        left: 16, right: 16, top: 10, bottom: 16),
+                    decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ItemMenu(
+                          margin: EdgeInsets.only(left: 20),
+                          text: '头像认证',
+                          img: _mineController.userBasic.value.isHead == 1
+                              ? "assets/images/icon_verified_avatar.png"
+                              : "assets/images/icon_un_verified_avatar.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          margin: EdgeInsets.only(left: 20),
+                          text: '真人认证',
+                          img: _mineController.userBasic.value.isVideo == 1
+                              ? "assets/images/ic_unverified_person.png"
+                              : "assets/images/ic_verified_person1.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          margin: EdgeInsets.only(left: 20),
+                          text: '手机认证',
+                          img: "assets/images/icon_verified_phone.png",
+                          onPressed: () {},
+                        ),
+                      ],
+                    )),
+                Container(
+                  height:  _mineController.isSvip.value
+                      ? 50:70,
                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   padding: EdgeInsets.only(
                     left: 10,
@@ -263,22 +262,30 @@ class _MinePageState extends State<MinePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomText(
-                            text: '开通SVIP会员',
-                            textStyle: TextStyle(
-                                fontSize: 15, color: Color(0xffF3CD8E)),
-                          ),
-                          CustomText(
-                            text: '尊享10项专属特权，提高交友成功率',
-                            textStyle: TextStyle(
-                                fontSize: 10, color: Color(0xffE6E6E6)),
-                          ),
-                        ],
-                      ),
+                      _mineController.isSvip.value
+                          ? CustomText(
+                              textAlign: Alignment.center,
+                              text:
+                                  '会员有效期：${_mineController.svipEndTime.value}',
+                              textStyle: TextStyle(
+                                  fontSize: 18, color: Color(0xffF3CD8E)),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(
+                                  text: '开通SVIP会员',
+                                  textStyle: TextStyle(
+                                      fontSize: 15, color: Color(0xffF3CD8E)),
+                                ),
+                                CustomText(
+                                  text: '尊享10项专属特权，提高交友成功率',
+                                  textStyle: TextStyle(
+                                      fontSize: 10, color: Color(0xffE6E6E6)),
+                                ),
+                              ],
+                            ),
                       GestureDetector(
                         onTap: () {
                           Get.to(() => VipPage());
@@ -292,7 +299,7 @@ class _MinePageState extends State<MinePage> {
                                   BorderRadius.all(Radius.circular(16.0)),
                             ),
                             child: Text(
-                              "立即开通",
+                              _mineController.isSvip.value ? "继续购买" : "立即开通",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.black,
@@ -445,7 +452,9 @@ class _MinePageState extends State<MinePage> {
           img: "assets/images/mine_page.png",
           textStyle: TextStyle(fontSize: 12, color: Colors.black),
           onPressed: () {
-            Get.to(() => MyHomePage(initIndex: 2,));
+            Get.to(() => MyHomePage(
+                  initIndex: 2,
+                ));
           },
         ),
       ];

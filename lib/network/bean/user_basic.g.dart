@@ -69,6 +69,7 @@ Map<String, dynamic> _$UserBasicToJson(UserBasic instance) => <String, dynamic>{
 Trends _$TrendsFromJson(Map<String, dynamic> json) {
   return Trends()
     ..id = json['id'] as int
+    ..isTrendsFabulous = json['isTrendsFabulous'] as int?
     ..type = json['type'] as int
     ..fabulousSum = json['fabulousSum'] as int
     ..beClickedSum = json['beClickedSum'] as int

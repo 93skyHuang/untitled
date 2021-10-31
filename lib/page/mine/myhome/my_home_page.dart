@@ -7,10 +7,13 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
+import 'package:untitled/widgets/toast.dart';
 
 import 'info_page.dart';
 import 'my_home_controller.dart';
@@ -99,6 +102,10 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               return ItemTrend(
                 trends: _myHomeController.trends.value[index],
                 onPressed: () {},
+                clickLike: () {},
+                deleteTrend: () {
+                  del(index,_myHomeController.trends.value[index]);
+                },
               );
             },
             itemCount: _myHomeController.trends.value.length,
@@ -160,8 +167,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
             ),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image:
-                NetworkImage(
+                image: NetworkImage(
                   "${_myHomeController.userBasic.value.headImgUrl ?? ''}",
                 ),
                 fit: BoxFit.fill,
@@ -171,5 +177,14 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
         ],
       ),
     ));
+  }
+
+  void del(int index,Trends trends) async {
+    final result = await deleteTrendsFabulous(trends.id);
+    if (result.isOk()) {
+      _myHomeController.trends.remove(index);
+    } else {
+      MyToast.show(result.msg);
+    }
   }
 }

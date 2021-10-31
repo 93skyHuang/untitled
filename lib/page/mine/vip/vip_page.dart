@@ -369,13 +369,13 @@ class _VipPageState extends State<VipPage> {
                                 topLeft: Radius.circular(30.0),
                                 bottomLeft: Radius.circular(30.0)),
                           ),
-                          child: Text(
-                            "30",
-                            style: TextStyle(
-                              fontSize: 17,
-                              color: Color(0xffF3CD8E),
-                            ),
-                          ))),
+                          child: Obx(() => Text(
+                                _vipController.money.value,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Color(0xffF3CD8E),
+                                ),
+                              )))),
                   Expanded(
                       child: GestureDetector(
                     onTap: () {
@@ -417,7 +417,7 @@ class _VipPageState extends State<VipPage> {
   Widget vipCard(MonthlyCard card, int index) {
     return GestureDetector(
       onTap: () {
-        _vipController.selectedIndex.value = index;
+        _vipController.setSelectedCard(index);
       },
       child: Obx(() => Container(
             margin: EdgeInsets.only(left: 16),

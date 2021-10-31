@@ -70,12 +70,12 @@ class MessagesController extends GetxController {
       msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
       msgPageBean.unreadMsgNum = session.unreadCount;
       int uid = int.parse(
-          session.sessionId.substring(session.sessionId.lastIndexOf('l')+1));
+          session.sessionId.substring(session.sessionId.lastIndexOf('l') + 1));
       UserBasic? userBasic = await getUserInfo(uid);
       msgPageBean.heardUrl = '${userBasic?.headImgUrl}';
       msgPageBean.nickName = '${userBasic?.cname}';
       msgPageBean.age = userBasic?.age;
-      msgPageBean.uid = userBasic?.uid??-1;
+      msgPageBean.uid = userBasic?.uid ?? -1;
       msgPageBean.height = userBasic?.height;
       msgPageBean.region = userBasic?.region;
       listBean.add(msgPageBean);
@@ -111,5 +111,6 @@ class MessagesController extends GetxController {
   void onReady() {
     logger.i("onReady");
     querySystemMsg();
+    isCanChat.value = GetStorageUtils.getSvip();
   }
 }

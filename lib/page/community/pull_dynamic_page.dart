@@ -14,6 +14,7 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/my_text_button.dart';
@@ -641,7 +642,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
     }
   }
 
-  void _pull() {
+  void _pull() async {
     if (_textFieldController.text.isEmpty &&
         imageUrls.isEmpty &&
         videoUrls == null) {
@@ -660,7 +661,10 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
         _type = 0;
       }
     }
-    _controller.pullTrends(_type, _textFieldController.text, localUrl: urls);
+    Loading.show(context);
+    await _controller.pullTrends(_type, _textFieldController.text,
+        localUrl: urls);
+    Loading.dismiss(context);
   }
 }
 
@@ -686,20 +690,17 @@ class _Controller extends GetxController {
     }
   }
 
-  pullTrends(int type, String content,
+  Future<void> pullTrends(int type, String content,
       {List<String> localUrl = const []}) async {
-    addTrends(type,
-            content: content,
-            localUrls: localUrl,
-            topicId: _choiceTopic?.id,
-            topicName: _choiceTopic?.title)
-        .then((value) => {
-              if (value.isOk())
-                {
-                  //发布成功
-                  Get.back()
-                }
-            });
+    final r = await addTrends(type,
+        content: content,
+        localUrls: localUrl,
+        topicId: _choiceTopic?.id,
+        topicName: _choiceTopic?.title);
+    if (r.isOk()) {
+      //发布成功
+      Get.back();
+    }
   }
 
   Future<List<TrendsTopicTypeInfo>> getTopicList() async {
@@ -732,5 +733,7 @@ class _Controller extends GetxController {
   }
 
   @override
-  void onInit() {}
+  void onInit() {
+    super.onInit();
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/trend_img.dart';
 
@@ -10,10 +12,14 @@ import 'expandable_text.dart';
 class ItemTrend extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
+  VoidCallback clickLike;
+  VoidCallback? deleteTrend;
 
   ItemTrend({
     required this.trends,
     required this.onPressed,
+    required this.clickLike,
+    required this.deleteTrend,
   });
 
   double contextWidth =
@@ -63,10 +69,15 @@ class ItemTrend extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       GestureDetector(
-                          onTap: () {},
+
+                          //点赞
+                          onTap: () {
+                            clickLike.call();
+                          },
                           child: Image(
-                            image:
-                                AssetImage("assets/images/icon_heart_grey.png"),
+                            image: AssetImage(trends.isTrendsFabulous == 1
+                                ? "assets/images/like_checked.png"
+                                : "assets/images/icon_heart_grey.png"),
                           )),
                       CustomText(
                         text: '${trends.fabulousSum}',
@@ -87,6 +98,22 @@ class ItemTrend extends StatelessWidget {
                         margin: EdgeInsets.only(
                             right: 20, top: 16, bottom: 2, left: 5),
                       ),
+                      deleteTrend == null
+                          ? Container()
+                          : Expanded(
+                              child: GestureDetector(
+                                  onTap: () {
+                                    deleteTrend?.call();
+                                  },
+                                  child: CustomText(
+                                    textAlign: Alignment.centerRight,
+                                    text: '删除',
+                                    textStyle: TextStyle(
+                                        fontSize: 12, color: Colors.black),
+                                    margin: EdgeInsets.only(
+                                        right: 5, top: 13, bottom: 2),
+                                  )),
+                            )
                     ],
                   ),
                 ],

@@ -7,22 +7,32 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
 class MineController extends GetxController {
-  Rx<UserBasic>  userBasic=UserBasic().obs;
+  Rx<UserBasic> userBasic = UserBasic().obs;
+  RxString svipEndTime = "".obs;
+  RxBool isSvip = false.obs;
 
   @override
   void onInit() {
+    super.onInit();
     logger.i("MineControlleronInit");
     getInfo();
+    getPTime();
   }
 
   void getInfo() {
     getUserBasic().then((value) => {
           userBasic.value = value.data!,
           GetStorageUtils.saveUserBasic(userBasic.value),
-          GetStorageUtils.saveSvip(userBasic.value.svip == 1),
+          isSvip.value = userBasic.value.svip == 1,
+          GetStorageUtils.saveSvip(isSvip.value ),
           GetStorageUtils.saveIsHead(userBasic.value.isHead == 1),
           GetStorageUtils.saveIsVideo(userBasic.value.isVideo == 1)
         });
+  }
+
+  void getPTime() {
+    getPayTime().then((value) =>
+        {if (value.isOk()) svipEndTime.value = value.data!.svipEndTime ?? ""});
   }
 
   @override

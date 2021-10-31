@@ -10,6 +10,7 @@ class EditUserInfoController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
     logger.i("EditUserInfoController");
     getInfo();
     getHobbyList();
@@ -23,7 +24,6 @@ class EditUserInfoController extends GetxController {
     getHobby().then((value) => {hobby.value = value.data!});
   }
 
-
   void setUser() {
     updateUserData(
             expectAge: userInfo.value.expectAge,
@@ -32,7 +32,9 @@ class EditUserInfoController extends GetxController {
             expectRegion: userInfo.value.expectRegion,
             expectConstellation: userInfo.value.expectConstellation,
             expectType: userInfo.value.expectType)
-        .then((value) => {getInfo()});
+        .then((value) => {
+              if (value.isOk()) {Get.back()}
+            });
   }
 
   @override

@@ -44,6 +44,7 @@ class _ChatPageState extends State<ChatPage> {
     //聊天用户的uid
     UserBasic userBasic = Get.arguments as UserBasic;
     _controller.setUserBasic(userBasic);
+    _controller.getInfo(userBasic.uid);
   }
 
   @override
@@ -281,7 +282,8 @@ class _ChatPageState extends State<ChatPage> {
                                 EdgeInsets.only(right: 10, left: 10, top: 0),
                             child: Text(
                               _controller.cancelRecodeText.value,
-                              style: TextStyle(color: Colors.white,fontSize: 12),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12),
                             ),
                           )
                         ],
@@ -484,8 +486,8 @@ class _ChatPageState extends State<ChatPage> {
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2.0,
                                               valueColor:
-                                                  AlwaysStoppedAnimation<
-                                                      Color>(Colors.grey),
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.grey),
                                             ),
                                           ),
                                         )
@@ -694,85 +696,85 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget focusWidget() {
-    if (_controller.hisBasic.isFollow == 1) {
-      return Container(
-        width: ScreenUtil().setWidth(60),
-        height: ScreenUtil().setWidth(30),
-        // 边框设置
-        decoration: const BoxDecoration(
-          //背景
-          color: Color(0xffE6E6E6),
-          //设置四周圆角 角度
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-          //设置四周边框
-          border: Border(),
-        ),
-        // 设置 child 居中
-        alignment: const Alignment(0, 0),
-        child: InkWell(
-            onTap: () {
-              showBottomCancelFocus(context, () {
-                _controller.del();
-              });
-            },
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
-                '已关注',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(12),
-                  color: MyColor.redFd4343,
-                ),
-              ),
-            ])),
-      );
-    } else {
-      //关注按钮
-      return Container(
-        width: ScreenUtil().setWidth(60),
-        height: ScreenUtil().setWidth(30),
+    return Obx(() => _controller.isFollow.value
+        ? Container(
+            width: ScreenUtil().setWidth(60),
+            height: ScreenUtil().setWidth(30),
+            // 边框设置
+            decoration: const BoxDecoration(
+              //背景
+              color: Color(0xffE6E6E6),
+              //设置四周圆角 角度
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              //设置四周边框
+              border: Border(),
+            ),
+            // 设置 child 居中
+            alignment: const Alignment(0, 0),
+            child: InkWell(
+                onTap: () {
+                  showBottomCancelFocus(context, () {
+                    _controller.del();
+                  });
+                },
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    '已关注',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(12),
+                      color: MyColor.redFd4343,
+                    ),
+                  ),
+                ])),
+          )
+        : Container(//关注按钮
+            width: ScreenUtil().setWidth(60),
+            height: ScreenUtil().setWidth(30),
 
-        // 边框设置
-        decoration: const BoxDecoration(
-          //背景
-          color: Color(0xffE6E6E6),
-          //设置四周圆角 角度
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-          //设置四周边框
-          border: Border(),
-        ),
-        // 设置 child 居中
-        alignment: const Alignment(0, 0),
-        child: InkWell(
-            onTap: () {
-              _controller.add();
-            },
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(6),
-                    top: ScreenUtil().setWidth(6),
-                    bottom: ScreenUtil().setWidth(6),
-                    right: ScreenUtil().setWidth(4)),
-                child: Image(
-                    color: MyColor.redFd4343,
-                    width: ScreenUtil().setWidth(12),
-                    height: ScreenUtil().setWidth(12),
-                    image: const AssetImage("assets/images/add.png"),
-                    fit: BoxFit.fill),
-              ),
-              Text(
-                '关注',
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(12),
-                  color: MyColor.redFd4343,
-                ),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
-            ])),
-      );
-    }
+            // 边框设置
+            decoration: const BoxDecoration(
+              //背景
+              color: Color(0xffE6E6E6),
+              //设置四周圆角 角度
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              //设置四周边框
+              border: Border(),
+            ),
+            // 设置 child 居中
+            alignment: const Alignment(0, 0),
+            child: InkWell(
+                onTap: () {
+                  _controller.add();
+                },
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: ScreenUtil().setWidth(6),
+                        top: ScreenUtil().setWidth(6),
+                        bottom: ScreenUtil().setWidth(6),
+                        right: ScreenUtil().setWidth(4)),
+                    child: Image(
+                        color: MyColor.redFd4343,
+                        width: ScreenUtil().setWidth(12),
+                        height: ScreenUtil().setWidth(12),
+                        image: const AssetImage("assets/images/add.png"),
+                        fit: BoxFit.fill),
+                  ),
+                  Text(
+                    '关注',
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(12),
+                      color: MyColor.redFd4343,
+                    ),
+                  ),
+                  Padding(
+                      padding:
+                          EdgeInsets.only(right: ScreenUtil().setWidth(6))),
+                ])),
+          ));
   }
 
   ///动态图

@@ -13,9 +13,15 @@ class VipController extends GetxController {
   RxString name = ''.obs;
   List<MonthlyCard> monthlyCardList = <MonthlyCard>[].obs;
   RxInt selectedIndex = 0.obs;
+  RxString money = "".obs;
 
   void closeIosConnection() async {
     await FlutterInappPurchase.instance.endConnection;
+  }
+
+  void setSelectedCard(int index) {
+    selectedIndex.value = index;
+    money.value = monthlyCardList[index].money;
   }
 
   /// 销毁之前的订单，否则无法多次购买
@@ -132,9 +138,9 @@ class VipController extends GetxController {
                 {
                   imgurl.value = '${paylist?.headImgUrl}',
                   name.value = '${paylist?.cname}',
-                  monthlyCardList.clear(),
                   list = paylist?.monthlyCardList ?? [],
                   monthlyCardList.addAll(list),
+                  setSelectedCard(0),
                 }
             }
         });

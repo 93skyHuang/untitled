@@ -58,13 +58,14 @@ class UserBasic {
 //动态信息
 @JsonSerializable()
 class Trends {
-  ///[对方动态列表]id-动态ID,video-视频地址,content-动态内容,imgArr-动态图片集,fabulousSum-被赞次数,beClickedSum-被看次数,
+  ///[对方动态列表]id-动态ID,video-视频地址,content-动态内容,imgArr-动态图片集,fabulousSum-被赞次数,beClickedSum-被看次数, isTrendsFabulous自己是否点赞
   ///commentSum-被评论数,type-动态类型（0-心情（只有一段文字），1-动态（有文字和图片），2-视频）
   int id=0;
   int fabulousSum = 0;
   int beClickedSum = 0;
   int commentSum = 0;
   int type=0;
+  int? isTrendsFabulous=0;
   String? video;
   String? time;
   String? content;

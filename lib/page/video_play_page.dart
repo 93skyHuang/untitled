@@ -8,6 +8,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/video_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
@@ -110,15 +111,23 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ClipOval(
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: CachedNetworkImage(
-                            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                            imageUrl: info.headImgUrl ?? '',
-                            errorWidget: (context, url, error) => Image.asset(
-                              'assets/images/user_icon.png',
+                        child: GestureDetector(
+                          onTap: () {
+                            logger.i('他人主页');
+                            pause();
+                            Get.to(UserHomePage(uid: _controller.info.uid,initialIndex: 2,));
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            child: CachedNetworkImage(
                               fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                              imageUrl: info.headImgUrl ?? '',
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/user_icon.png',
+                                fit:
+                                    Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                              ),
                             ),
                           ),
                         ),
@@ -168,7 +177,10 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                           TextStyle(color: Color(0xffffffff), fontSize: 14))),
                       SizedBox(height: 40),
                       GestureDetector(
-                          onTap: () {Get.to(ReportPage(_controller.info.uid));},
+                          onTap: () {
+                            pause();
+                            Get.to(ReportPage(_controller.info.uid));
+                          },
                           child: Column(
                             children: [
                               Image.asset('assets/images/report.png'),

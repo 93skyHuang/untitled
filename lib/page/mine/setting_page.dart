@@ -104,7 +104,12 @@ class _SettingPageState extends State<SettingPage> {
               showArrow: false,
               padding: EdgeInsets.only(left: 16, right: 16),
             ),
-            Container(
+            GestureDetector(
+              onTap: () {
+                NimNetworkManager.instance.logout();
+                Get.offNamedUntil(loginPName,ModalRoute.withName(homePName));
+              },
+              child:Container(
               width: 214,
               height: 40,
               alignment: Alignment.center,
@@ -112,14 +117,7 @@ class _SettingPageState extends State<SettingPage> {
               decoration: new BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(40.0)),
                   color: Colors.white),
-              child: GestureDetector(
-                onTap: () {
-                  NimNetworkManager.instance.logout();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text('退出',
+              child:  Text('退出',
                     style: TextStyle(color: Color(0xffFD4343), fontSize: 17)),
               ),
             ),

@@ -2,13 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
-import 'package:untitled/network/logger.dart';
+import 'package:untitled/network/bean/user_basic.dart';
+import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/chat/chat_page.dart';
 import 'package:untitled/page/personcenter/user_home_controller.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
+import 'package:untitled/widgets/toast.dart';
 
 import 'info_page.dart';
 
@@ -28,11 +33,10 @@ class UserHomePage extends StatefulWidget {
 
 class _UserHomePageState extends State with SingleTickerProviderStateMixin {
   _UserHomePageState(this.uid, this.initialIndex);
+
   final UserHomeController _userHomeController = Get.put(UserHomeController());
   int uid;
   int initialIndex;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +104,10 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
               return ItemTrend(
                 trends: _userHomeController.trends.value[index],
                 onPressed: () {},
+                clickLike: () {
+                  clickLike(_userHomeController.trends.value[index]);
+                },
+                deleteTrend: null,
               );
             },
             itemCount: _userHomeController.trends.value.length,
@@ -110,7 +118,12 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
             itemBuilder: (context, index) {
               return ItemVideo(
                 trends: _userHomeController.videoTrends.value[index],
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(TrendVideoPlayPage(), arguments: {
+                    'videoTrendsInfo':
+                        _userHomeController.videoTrends.value[index]
+                  });
+                },
               );
             },
             itemCount: _userHomeController.videoTrends.value.length,
@@ -144,6 +157,33 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
         ),
       ],
     );
+  }
+
+  void clickLike(Trends trends) {
+    if (trends.beClickedSum == 0) {
+      trends.beClickedSum = 1;
+      trends.fabulousSum++;
+      addTrendsFabulous(trends.id).then((value) => {
+            if (value.isOk())
+              {}
+            else
+              {
+                trends.beClickedSum = 0,
+                trends.fabulousSum--,
+              }
+          });
+    } else {
+      trends.beClickedSum = 0;
+      trends.fabulousSum--;
+      deleteTrendsFabulous(trends.id).then((value) => {
+            if (!value.isOk())
+              {
+                MyToast.show(value.msg),
+                trends.beClickedSum = 1,
+                trends.fabulousSum++,
+              }
+          });
+    }
   }
 
   FlexibleSpaceBar buildFlexibleSpaceBar() {
@@ -213,7 +253,9 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                     )),
                 Container(
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(ChatPage());
+                      },
                       child: Row(
                         children: [
                           Icon(

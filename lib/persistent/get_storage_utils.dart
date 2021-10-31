@@ -32,7 +32,9 @@ class GetStorageUtils {
 
   static int getUID() {
     return _accountStorage.read('uid') ?? -1;
+    // return  105324;
   }
+
 
   ///
   static Future<void> saveUid(int? uid) {
@@ -121,7 +123,7 @@ class GetStorageUtils {
   }
 
   static UserBasic? getMineUserBasic() {
-    final userBasicMap = _commonStorage.read('${getUID()}');
+    final userBasicMap =getUserBasic(getUID());
     logger.i(userBasicMap);
     return userBasicMap;
   }

@@ -109,7 +109,8 @@ class _MessagesPageState extends State<MessagesPage>
             visualDensity: VisualDensity.compact,
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
-          Get.to(SystemMsgPage());
+          // Get.to(SystemMsgPage());
+          _goToChatPage(162984);
         },
         child: Column(
           children: [

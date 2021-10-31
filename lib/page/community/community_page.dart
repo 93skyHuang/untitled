@@ -31,7 +31,6 @@ class _CommunityPageState extends State<CommunityPage>
   @override
   Widget build(BuildContext context) {
     logger.i('CommunityPage');
-    bool isSvip = _homeController.isSvip.value;
     super.build(context);
     return Obx(() => DefaultTabController(
           length: _homeController.isSvip.value ? 3 : 1,
@@ -44,7 +43,7 @@ class _CommunityPageState extends State<CommunityPage>
                 children: [
                   Expanded(
                     child: CommunityTabBar(
-                      isSvip: isSvip,
+                      isSvip: _homeController.isSvip.value,
                     ),
                   ),
                   Container(
@@ -70,7 +69,7 @@ class _CommunityPageState extends State<CommunityPage>
                 ],
               ),
             ),
-            body: CommunityTabBarView(isSvip: isSvip,),
+            body: CommunityTabBarView(isSvip: _homeController.isSvip.value,),
           ),
         ));
   }

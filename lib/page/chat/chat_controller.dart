@@ -32,10 +32,19 @@ class ChatController extends GetxController {
 
   void setUserBasic(UserBasic hisBasic) {
     this.hisBasic = hisBasic;
-    this.hisBasic.uid = 105324;
+    this.hisBasic.uid = 162984;
     isFollow.value = hisBasic.isFollow == 1;
     headerUrl.value = hisBasic.headImgUrl ?? '';
     mineHeaderUrl.value = '${mineBasic?.headImgUrl}';
+
+  }
+
+  void getInfo(int uid) async {
+    final value = await getHomeUserData(uid);
+    if (value.isOk()) {
+      GetStorageUtils.saveUserBasic(value.data!);
+      setUserBasic(value.data!);
+    }
   }
 
   /// 是否是他发送的消息

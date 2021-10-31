@@ -17,7 +17,7 @@ class CommunityTabBarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.i('CommunityTabBarView');
+    logger.i('CommunityTabBarView $isSvip');
     return TabBarView(children: _list());
   }
 

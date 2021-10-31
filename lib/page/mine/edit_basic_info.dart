@@ -83,6 +83,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               padding: const EdgeInsets.all(16.0),
               child: GestureDetector(
                 onTap: () {
+                  logger.i('保存');
                   _commitInfo();
                 },
                 child: Text("保存",

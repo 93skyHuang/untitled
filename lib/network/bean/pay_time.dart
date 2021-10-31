@@ -5,7 +5,6 @@ part 'pay_time.g.dart';
 ///用户月卡到期时间
 @JsonSerializable()
 class PayTime {
-/// [是否需要更新 0-否，1-是]
   int svip=0;
   String? svipEndTime;
 
