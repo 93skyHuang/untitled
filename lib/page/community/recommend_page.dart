@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/widget/expandable_text.dart';
 import 'package:untitled/widget/trend_img.dart';
 import 'package:untitled/widgets/card_image.dart';
@@ -24,7 +26,7 @@ class RecommendWidget extends StatefulWidget {
 class _RecommendWidgetState extends State<RecommendWidget>
     with AutomaticKeepAliveClientMixin {
   final RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
   final double _textContextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(50 + 32 + 16);
 
@@ -74,31 +76,33 @@ class _RecommendWidgetState extends State<RecommendWidget>
   }
 
   void getData({bool isLoad = false}) {
-    getNewTrends(pageNo).then((value) =>
-    {
-      logger.i(value),
-      if (value.isOk())
-        if (isLoad)
-          if( value.data==null){
-            _refreshController.loadNoData(),
-          }else{
-            _refreshController.loadComplete(),
-            _trendsList.addAll(value.data ?? []),
-            updatePage(),
-          }
-        else
-          {
-            _refreshController.refreshCompleted(),
-            _trendsList = value.data ?? [],
-            updatePage(),
-          }
-      else
-        {
-          isLoad
-              ? _refreshController.loadFailed()
-              : _refreshController.refreshFailed()
-        }
-    });
+    getNewTrends(pageNo).then((value) => {
+          logger.i(value),
+          if (value.isOk())
+            if (isLoad)
+              if (value.data == null)
+                {
+                  _refreshController.loadNoData(),
+                }
+              else
+                {
+                  _refreshController.loadComplete(),
+                  _trendsList.addAll(value.data ?? []),
+                  updatePage(),
+                }
+            else
+              {
+                _refreshController.refreshCompleted(),
+                _trendsList = value.data ?? [],
+                updatePage(),
+              }
+          else
+            {
+              isLoad
+                  ? _refreshController.loadFailed()
+                  : _refreshController.refreshFailed()
+            }
+        });
   }
 
   void updatePage() {
@@ -131,8 +135,13 @@ class _RecommendWidgetState extends State<RecommendWidget>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                cardNetworkImage(info.headImgUrl ?? '',
-                    ScreenUtil().setWidth(44), ScreenUtil().setWidth(44)),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(UserHomePage(uid: info.uid));
+                  },
+                  child: cardNetworkImage(info.headImgUrl ?? '',
+                      ScreenUtil().setWidth(44), ScreenUtil().setWidth(44)),
+                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                       ScreenUtil().setWidth(10),
@@ -148,24 +157,28 @@ class _RecommendWidgetState extends State<RecommendWidget>
                         children: [
                           Align(
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _itemName(info),
-                                  const Flexible(child: Align()),
-                                  FocusOnBtn(info),
-                                ],
-                              )),
-                          const SizedBox(height: 12,),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _itemName(info),
+                              const Flexible(child: Align()),
+                              FocusOnBtn(info),
+                            ],
+                          )),
+                          const SizedBox(
+                            height: 12,
+                          ),
                           TQExpandableText(
                             "${info.content}",
                           ),
                           Padding(
                               padding: EdgeInsets.only(
-                                bottom: ScreenUtil().setWidth(10),
-                              )),
-                          TrendImg(imgs: info.imgArr,
+                            bottom: ScreenUtil().setWidth(10),
+                          )),
+                          TrendImg(
+                            imgs: info.imgArr,
                             contextWidth: _textContextWidth,
-                            onClick: (img) {},),
+                            onClick: (img) {},
+                          ),
                           Padding(
                             padding: EdgeInsets.only(
                               top: ScreenUtil().setWidth(14),
@@ -188,29 +201,29 @@ class _RecommendWidgetState extends State<RecommendWidget>
   Widget _comment(NewTrendsInfo info) {
     return info.commentList.isEmpty
         ? Container(
-      width: 0,
-      height: 0,
-    )
+            width: 0,
+            height: 0,
+          )
         : Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '精选评论',
-          style: TextStyle(
-            fontSize: ScreenUtil().setSp(12),
-            color: MyColor.grey8C8C8C,
-          ),
-          textAlign: TextAlign.left,
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            top: ScreenUtil().setWidth(10),
-            bottom: ScreenUtil().setWidth(10),
-          ),
-          child: _getComment(info),
-        )
-      ],
-    );
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '精选评论',
+                style: TextStyle(
+                  fontSize: ScreenUtil().setSp(12),
+                  color: MyColor.grey8C8C8C,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: ScreenUtil().setWidth(10),
+                  bottom: ScreenUtil().setWidth(10),
+                ),
+                child: _getComment(info),
+              )
+            ],
+          );
   }
 
   Widget _itemName(NewTrendsInfo info) {
@@ -373,7 +386,7 @@ class _RecommendWidgetState extends State<RecommendWidget>
             ),
             ConstrainedBox(
               constraints:
-              BoxConstraints(maxWidth: _textContextWidth * 2 / 3 - 15),
+                  BoxConstraints(maxWidth: _textContextWidth * 2 / 3 - 15),
               child: Text(
                 content,
                 maxLines: 1,
