@@ -13,6 +13,7 @@ import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/global_controller.dart';
 import 'package:untitled/page/messages/messages_page_bean.dart';
 import 'package:untitled/page/messages/system_msg_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
@@ -109,8 +110,7 @@ class _MessagesPageState extends State<MessagesPage>
             visualDensity: VisualDensity.compact,
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
-          // Get.to(SystemMsgPage());
-          _goToChatPage(162984);
+          Get.to(SystemMsgPage());
         },
         child: Column(
           children: [
@@ -255,7 +255,7 @@ class _MessagesPageState extends State<MessagesPage>
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Obx(() => _controller.isCanChat.value
+                        Obx(() => Get.find<GlobalController>().isSvip.value
                             ? Text('')
                             : Image.asset('assets/images/lock.png')),
                         singeLineText(
@@ -301,15 +301,6 @@ class _MessagesPageState extends State<MessagesPage>
   }
 
   void _goToChatPage(int uid) async {
-    final u = GetStorageUtils.getUserBasic(uid);
-    if (u == null) {
-      final value = await getHomeUserData(uid);
-      if (value.isOk()) {
-        GetStorageUtils.saveUserBasic(value.data!);
-        Get.to(ChatPage(), arguments: value.data);
-      }
-    } else {
-      Get.to(ChatPage(), arguments: u);
-    }
+    Get.to(ChatPage(), arguments: {'uid': uid});
   }
 }

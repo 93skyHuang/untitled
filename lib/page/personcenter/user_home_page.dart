@@ -254,7 +254,9 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 Container(
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(ChatPage());
+                        Get.to(ChatPage(), arguments: {
+                          'uid': _userHomeController.userBasic.value.uid
+                        });
                       },
                       child: Row(
                         children: [

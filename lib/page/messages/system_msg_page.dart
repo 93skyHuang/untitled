@@ -12,6 +12,7 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
 import 'package:untitled/page/messages/messages_page_bean.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
@@ -36,11 +37,10 @@ class SystemMsgPage extends StatefulWidget {
 
 class _SystemMsgPageState extends State<SystemMsgPage>
     with AutomaticKeepAliveClientMixin {
-  final MessagesController _controller = Get.put(MessagesController());
-
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  List<SystemMessage> _list = [];
+  List<NIMMessage> _list = [];
+
   final double _textContextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(180);
 
@@ -59,7 +59,6 @@ class _SystemMsgPageState extends State<SystemMsgPage>
     super.build(context);
     return Scaffold(
         backgroundColor: MyColor.pageBgColor,
-
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: MyColor.pageBgColor,
@@ -99,90 +98,34 @@ class _SystemMsgPageState extends State<SystemMsgPage>
     int length = _list.length;
     List<Widget> listView = [];
     for (int i = 0; i < length; i++) {
-      listView.add(_systemItem());
+      // listView.add(_systemItem());
     }
     return ListView(
       children: listView,
     );
   }
 
-  Widget _systemItem() {
-    return TextButton(
-        style: ButtonStyle(
-            minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-            visualDensity: VisualDensity.compact,
-            padding: MaterialStateProperty.all(EdgeInsets.zero)),
-        onPressed: () {
-          logger.i("itemclick");
-        },
-        child: Column(
-          children: [
-            Container(
-              height: ScreenUtil().setHeight(76),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(12, 16, 16, 16),
-                child: Row(
-                  children: [
-                    Stack(
-                      alignment: AlignmentDirectional.topEnd,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 4, right: 2),
-                          child: cardNetworkImage('', ScreenUtil().setWidth(44),
-                              ScreenUtil().setWidth(44),
-                              errorImagesUrl: 'assets/images/ic_launcher.png'),
-                        ),
-                        Obx(() => _controller.unReadSystemMsg > 0
-                            ? Container(
-                                alignment: Alignment.center,
-                                width: ScreenUtil().setWidth(14),
-                                height: ScreenUtil().setWidth(14),
-                                child: Text('${_controller.unReadSystemMsg}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: ScreenUtil().setSp(8))),
-                                decoration: BoxDecoration(
-                                    color: Color(0xffFD4343),
-                                    borderRadius: BorderRadius.circular(8)))
-                            : Container()),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        singeLineText(
-                            '官方小助手',
-                            _textContextWidth,
-                            TextStyle(
-                                color: Color(0xff000014),
-                                fontSize: ScreenUtil().setSp(14))),
-                        Obx(() => singeLineText(
-                            _controller.newSystemMsg.value,
-                            _textContextWidth,
-                            TextStyle(
-                                color: Color(0xff8C8C8C),
-                                fontSize: ScreenUtil().setSp(12)))),
-                      ],
-                    ),
-                    Expanded(child: Align()),
-                    Obx(() => singeLineText(
-                        _controller.newSystemMsgTime.value,
-                        _textContextWidth,
-                        TextStyle(
-                            color: Color(0xff8C8C8C),
-                            fontSize: ScreenUtil().setSp(12)))),
-                  ],
-                ),
-              ),
-            ),
-            HDivider(
-              padding: EdgeInsets.only(left: 16),
-              width: double.infinity,
-              height: 1,
-            ),
-          ],
-        ));
+  void queryHistoryMsg() async {
+    _list.clear();
+    final result = await NimNetworkManager.instance.queryHistoryMsg(sysUid);
+    if (result.isSuccess) {
+      List<NIMMessage> list = result.data ?? [];
+      if (list.isNotEmpty) {
+        list.sort((nim1, nim2) => nim2.timestamp.compareTo(nim1.timestamp));
+        _list.addAll(list);
+      }
+    }
   }
+
+  void queryMoreHistoryMsg() async{
+    final result = await NimNetworkManager.instance
+        .queryMoreHistoryMsg(_list[_list.length]);
+    if (result.isSuccess) {
+      List<NIMMessage> list = result.data ?? [];
+      if (list.isNotEmpty) {
+        _list.addAll(list);
+      }
+    }
+  }
+
 }

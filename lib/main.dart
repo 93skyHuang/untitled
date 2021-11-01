@@ -17,6 +17,7 @@ void main() async {
       // 下拉刷新控件
       RefreshLocalizations.delegate,
     ],
+    navigatorKey:navigatorKey,
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       appBarTheme: const AppBarTheme(brightness: Brightness.dark),

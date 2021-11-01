@@ -29,3 +29,15 @@ class MyClassicFooter extends StatelessWidget {
         loadingText: '加载中...',canLoadingText:'上拉加载更多',noDataText:'没有数据啦！');
   }
 }
+
+///消息加载脚
+class MsgClassicFooter extends StatelessWidget {
+  const MsgClassicFooter({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return const ClassicFooter(idleText: '',
+        loadingText: '',canLoadingText:'',noDataText:'',idleIcon:Icon(Icons.autorenew, color: MyColor.mainColor));
+  }
+}

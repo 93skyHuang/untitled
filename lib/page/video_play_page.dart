@@ -294,15 +294,6 @@ class _Controller extends GetxController {
   }
 
   void goToChatPage() async {
-    final u = GetStorageUtils.getUserBasic(info.uid);
-    if (u == null) {
-      final value = await getHomeUserData(info.uid);
-      if (value.isOk()) {
-        GetStorageUtils.saveUserBasic(value.data!);
-        Get.to(ChatPage(), arguments: value.data);
-      }
-    } else {
-      Get.to(ChatPage(), arguments: u);
-    }
+    Get.to(ChatPage(), arguments: {'uid': info.uid});
   }
 }

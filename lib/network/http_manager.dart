@@ -1160,7 +1160,7 @@ Future<BasePageData<TrendsDetails?>> trendsDetails(int trendsId) async {
     int uid = GetStorageUtils.getUID();
     Response response =
         await getDio().post('/index/Trends/trendsDetails', data: {
-      'uid': uid,
+      'myUid': uid,
       'trendsId': trendsId,
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);

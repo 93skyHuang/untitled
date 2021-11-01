@@ -89,11 +89,20 @@ class NimNetworkManager {
   }
 
   /**
+   * 查询系统的最近一条消息
+   */
+  Future<NIMResult<NIMMessage>> queryLastMsg(int uid) async {
+    final result = await NimCore.instance.messageService
+        .queryLastMessage('ll$uid', NIMSessionType.system);
+    return result;
+  }
+
+  /**
    * 查询与该用户的历史消息
    */
   Future<NIMResult<List<NIMMessage>>> queryHistoryMsg(int uid) async {
     final result = await NimCore.instance.messageService
-        .queryMessageList('ll$uid', NIMSessionType.p2p, 20);
+        .queryMessageList('ll$uid', NIMSessionType.p2p, 10);
     return result;
   }
 
@@ -122,45 +131,48 @@ class NimNetworkManager {
         '${result.isSuccess} ${result.data?.sessionId}  ${result.data?.senderNickname}');
   }
 
-  Future<NIMResult<NIMMessage>> createTextMsg(String content, int uid) {
+
+  Future<NIMResult<NIMMessage>> createTextMsg(String content, int uid) async {
     String account = 'll$uid';
     // 以单聊类型为例
     NIMSessionType sessionType = NIMSessionType.p2p;
     String text = content;
     Future<NIMResult<NIMMessage>> result = MessageBuilder.createTextMessage(
-            sessionId: account, sessionType: sessionType, text: text)
-        .then((value) => value.isSuccess
-            ? NimCore.instance.messageService
-                .sendMessage(message: value.data!, resend: false)
-            : Future.value(value));
+        sessionId: account, sessionType: sessionType, text: text);
+    return result;
+  }
+
+  Future<NIMResult<NIMMessage>> sendMsg(NIMMessage msg) {
+    final result = NimCore.instance.messageService
+        .sendMessage(message: msg, resend: false);
     result.then((value) =>
-        logger.i('${value.isSuccess} ${value.errorDetails} ${value.code}'));
+        logger.i('${value.isSuccess} ${value.errorDetails} ${value.code} ${value.data}'));
     return result;
   }
 
-  Future<NIMResult<NIMMessage>> sendCustomAudioMessage(
-      String filePath, int uid) async {
-    // 该帐号为示例
-    String account = 'll$uid';
-// 以单聊类型为例
-    NIMSessionType sessionType = NIMSessionType.p2p;
-// 示例音频，需要开发者在相应目录下有文件
-    File file = File(filePath);
-// 发送语音消息
-    Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
-            sessionId: account,
-            sessionType: sessionType,
-            filePath: file.path,
-            fileSize: file.lengthSync(),
-            duration: 2000)
-        .then((value) => value.isSuccess
-            ? NimCore.instance.messageService
-                .sendMessage(message: value.data!, resend: false)
-            : Future.value(value));
-    return result;
-  }
+//   Future<NIMResult<NIMMessage>> sendCustomAudioMessage(
+//       String filePath, int uid) async {
+//     // 该帐号为示例
+//     String account = 'll$uid';
+// // 以单聊类型为例
+//     NIMSessionType sessionType = NIMSessionType.p2p;
+// // 示例音频，需要开发者在相应目录下有文件
+//     File file = File(filePath);
+// // 发送语音消息
+//     Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
+//             sessionId: account,
+//             sessionType: sessionType,
+//             filePath: file.path,
+//             fileSize: file.lengthSync(),
+//             duration: 2000)
+//         .then((value) => value.isSuccess
+//             ? NimCore.instance.messageService
+//                 .sendMessage(message: value.data!, resend: false)
+//             : Future.value(value));
+//     return result;
+//   }
 
-  Future<NIMResult<NIMMessage>> sendAudioMessage(
+  Future<NIMResult<NIMMessage>> createAudioMessage(
       String filePath, int uid) async {
     // 该帐号为示例
     String account = 'll$uid';
@@ -177,11 +189,7 @@ class NimNetworkManager {
             sessionType: sessionType,
             filePath: file.path,
             fileSize: file.lengthSync(),
-            duration: duration?.inMilliseconds ?? 0)
-        .then((value) => value.isSuccess
-            ? NimCore.instance.messageService
-                .sendMessage(message: value.data!, resend: false)
-            : Future.value(value));
+            duration: duration?.inMilliseconds ?? 0);
     return result;
   }
 }

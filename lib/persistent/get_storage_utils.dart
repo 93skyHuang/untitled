@@ -33,7 +33,6 @@ class GetStorageUtils {
     // return  105324;
   }
 
-
   ///
   static Future<void> saveUid(int? uid) {
     logger.i('saveUid $uid');
@@ -109,7 +108,7 @@ class GetStorageUtils {
   }
 
   static UserBasic? getMineUserBasic() {
-    final userBasicMap =getUserBasic(getUID());
+    final userBasicMap = getUserBasic(getUID());
     logger.i(userBasicMap);
     return userBasicMap;
   }

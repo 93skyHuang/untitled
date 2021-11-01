@@ -39,3 +39,8 @@ const MinePName = '/mine';
 const photoViewPName = '/photoViewP';
 const photoViewScalePName = '/photoViewScaleP';
 const addBasicInfoPName = '/addBasicInfo';
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+BuildContext? getApplication() {
+  return navigatorKey.currentState?.overlay?.context;
+}

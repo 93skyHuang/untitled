@@ -73,6 +73,11 @@ class Trends {
 
   Trends();
 
+  @override
+  String toString() {
+    return 'Trends{id: $id, fabulousSum: $fabulousSum, beClickedSum: $beClickedSum, commentSum: $commentSum, type: $type, isTrendsFabulous: $isTrendsFabulous, video: $video, time: $time, content: $content, imgArr: $imgArr}';
+  }
+
   factory Trends.fromJson(Map<String, dynamic> json) =>
       _$TrendsFromJson(json);
 

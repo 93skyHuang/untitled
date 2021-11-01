@@ -5,6 +5,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/utils/time_utils.dart';
 
@@ -13,48 +14,37 @@ import 'messages_page_bean.dart';
 /**
  * 消息控制
  */
+//系统UId
+const int sysUid = 10000;
+
 class MessagesController extends GetxController {
   RxString newSystemMsg = ''.obs;
   RxString newSystemMsgTime = ''.obs;
-  RxBool isCanChat = GetStorageUtils.getSvip().obs;
   RxInt unReadSystemMsg = 0.obs;
 
   void newSystemMessageOnReceiver() {
-    NimCore.instance.systemMessageService.onReceiveSystemMsg
-        .listen((SystemMessage event) {
-      logger.i(event);
-      newSystemMsg.value = event.content ?? newSystemMsg.value;
-      int time = event.time ?? 0;
-      newSystemMsgTime.value = '$time';
-      unReadSystemMsg.value++;
+    NimCore.instance.messageService.onMessage.listen((List<NIMMessage> list) {
+      // 处理新收到的消息，为了上传处理方便，SDK 保证参数 messages 全部来自同一个聊天对象。
+      NIMMessage message = list[0];
+      if (message.fromAccount == "ll10000") {
+        newSystemMsg.value = message.content ?? "";
+        newSystemMsgTime.value =
+            TimeUtils.dateAndTimeToString(message.timestamp);
+      }
     });
-  }
-
-  void queryUnReadSystemMsgNum() async {
-    final r = await NimCore.instance.systemMessageService
-        .querySystemMessageUnreadCount();
-    logger.i(r);
-    unReadSystemMsg.value = r.data ?? 0;
   }
 
   /**
    * 查询一条系统消息
    */
   void querySystemMsg() async {
-    // final result =
-    //     await NimCore.instance.systemMessageService.querySystemMessages(1);
-    // logger.i(result);
-    // if (result.isSuccess) {
-    //   List<SystemMessage> msg = result.data ?? [];
-    //   logger.i(msg.length);
-    //   if (msg.isNotEmpty) {
-    //     SystemMessage systemMessage = msg[0];
-    //     newSystemMsg.value = systemMessage.content ?? newSystemMsg.value;
-    //     int time = systemMessage.time ?? 0;
-    //     newSystemMsgTime.value = '$time';
-    //     logger.i(systemMessage);
-    //   }
-    // }
+    final result = await NimNetworkManager.instance.queryLastMsg(sysUid);
+    if (result.isSuccess && result.data != null) {
+      NIMMessage msg = result.data!;
+      newSystemMsg.value = msg.content ?? "";
+      newSystemMsgTime.value = TimeUtils.dateAndTimeToString(msg.timestamp);
+      // unReadSystemMsg.value=msg.isRemoteRead
+    }
   }
 
   ///获取会话列表
@@ -71,14 +61,21 @@ class MessagesController extends GetxController {
       msgPageBean.unreadMsgNum = session.unreadCount;
       int uid = int.parse(
           session.sessionId.substring(session.sessionId.lastIndexOf('l') + 1));
-      UserBasic? userBasic = await getUserInfo(uid);
-      msgPageBean.heardUrl = '${userBasic?.headImgUrl}';
-      msgPageBean.nickName = '${userBasic?.cname}';
-      msgPageBean.age = userBasic?.age;
-      msgPageBean.uid = userBasic?.uid ?? -1;
-      msgPageBean.height = userBasic?.height;
-      msgPageBean.region = userBasic?.region;
-      listBean.add(msgPageBean);
+      if (uid == sysUid) {
+        newSystemMsg.value = session.lastMessageContent ?? "";
+        newSystemMsgTime.value =
+            TimeUtils.dateAndTimeToString(session.lastMessageTime);
+        unReadSystemMsg.value = session.unreadCount;
+      } else {
+        UserBasic? userBasic = await getUserInfo(uid);
+        msgPageBean.heardUrl = '${userBasic?.headImgUrl}';
+        msgPageBean.nickName = '${userBasic?.cname}';
+        msgPageBean.age = userBasic?.age;
+        msgPageBean.uid = userBasic?.uid ?? -1;
+        msgPageBean.height = userBasic?.height;
+        msgPageBean.region = userBasic?.region;
+        listBean.add(msgPageBean);
+      }
     }
     return listBean;
   }
@@ -99,7 +96,6 @@ class MessagesController extends GetxController {
   void onInit() {
     super.onInit();
     logger.i("onInit");
-    newSystemMessageOnReceiver();
   }
 
   @override
@@ -111,6 +107,6 @@ class MessagesController extends GetxController {
   void onReady() {
     logger.i("onReady");
     querySystemMsg();
-    isCanChat.value = GetStorageUtils.getSvip();
+    newSystemMessageOnReceiver();
   }
 }
