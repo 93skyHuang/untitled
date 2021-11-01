@@ -180,7 +180,7 @@ class _RecommendWidgetState extends State<RecommendWidget>
                               Get.to(CommentPage(info));
                             },
                             child: TQExpandableText(
-                              "${info.content}",
+                              "${info.content??''}",
                             ),
                           ),
                           Padding(

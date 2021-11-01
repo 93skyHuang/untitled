@@ -14,6 +14,7 @@ import 'package:untitled/widget/item_menu.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/dialog.dart';
 import 'beliked/beliked_page.dart';
+import 'black_page.dart';
 import 'edit_basic_info.dart';
 import 'fans/fan_page.dart';
 import 'follow/follow_page.dart';
@@ -455,6 +456,14 @@ class _MinePageState extends State<MinePage> {
             Get.to(() => MyHomePage(
                   initIndex: 2,
                 ));
+          },
+        ),
+        ItemMenu(
+          text: '黑名单',
+          img: "assets/images/black.png",
+          textStyle: TextStyle(fontSize: 12, color: Colors.black),
+          onPressed: () {
+            Get.to(() => BlackPage());
           },
         ),
       ];

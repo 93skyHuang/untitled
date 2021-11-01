@@ -51,7 +51,7 @@ class ItemVideo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TQExpandableText(
-                    '${trends.content}',
+                    '${trends.content??''}',
                   ),
                   if (trends.imgArr!.isNotEmpty)
                     TrendImg(

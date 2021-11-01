@@ -5,6 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/comment_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
+import 'package:untitled/network/bean/trends_details.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/community/recommend_item_widget.dart';
 import 'package:untitled/widget/custom_text.dart';
@@ -17,21 +18,21 @@ import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/toast.dart';
 
 class CommentPage extends StatefulWidget {
-  NewTrendsInfo info;
+  int trendsId;
 
-  CommentPage(this.info);
+  CommentPage(this.trendsId);
 
   @override
-  State<CommentPage> createState() => _CommentPageState(this.info);
+  State<CommentPage> createState() => _CommentPageState(this.trendsId);
 }
 
 class _CommentPageState extends State<CommentPage>
     with AutomaticKeepAliveClientMixin {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  NewTrendsInfo info;
+  int trendsId;
 
-  _CommentPageState(this.info);
+  _CommentPageState(this.trendsId);
 
   double contextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(50 + 32 + 16);
@@ -39,6 +40,7 @@ class _CommentPageState extends State<CommentPage>
   @override
   void initState() {
     super.initState();
+    getDtails();
     getCommentsInfo();
   }
 
@@ -82,7 +84,7 @@ class _CommentPageState extends State<CommentPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           cardNetworkImage(
-                              info.headImgUrl ?? '',
+                               '',
                               ScreenUtil().setWidth(44),
                               ScreenUtil().setWidth(44),
                               margin: EdgeInsets.only(right: 16)),
@@ -95,28 +97,29 @@ class _CommentPageState extends State<CommentPage>
                                   child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _itemName(info),
+                                  // _itemName(info),
                                   const Flexible(child: Align()),
-                                  FocusOnBtn(info),
+                                  // FocusOnBtn(info),
                                 ],
                               )),
-                              if(info.content!=null)CustomText(
-                                text: "${info.content??''}",
-                                margin: EdgeInsets.only(top: 5),
-                                textStyle: TextStyle(
-                                    color: MyColor.grey8C8C8C,
-                                    fontSize: ScreenUtil().setSp(14)),
-                              ),
-                              if (info.imgArr.isNotEmpty)
+                              if (trendsInfo.content != null)
+                                CustomText(
+                                  text: "${trendsInfo.content??''}",
+                                  margin: EdgeInsets.only(top: 5),
+                                  textStyle: TextStyle(
+                                      color: MyColor.grey8C8C8C,
+                                      fontSize: ScreenUtil().setSp(14)),
+                                ),
+                              if (trendsInfo.imgArr.isNotEmpty)
                                 TrendImg(
-                                  imgs: info.imgArr,
+                                  imgs: trendsInfo.imgArr,
                                   showAll: true,
                                   contextWidth: contextWidth,
                                   onClick: (String img) {
                                     showImg(img);
                                   },
                                 ),
-                              _itemLable(info),
+                              // _itemLable(),
                             ],
                           )),
                         ],
@@ -176,8 +179,8 @@ class _CommentPageState extends State<CommentPage>
 
   void sendComment() {
     Loading.show(context);
-    addComment(info.trendsId, _controllerInfo.text).then((value) => {
-      Loading.dismiss(context),
+    addComment(trendsId, _controllerInfo.text).then((value) => {
+          Loading.dismiss(context),
           if (value.isOk())
             {
               _controllerInfo.text = '',
@@ -230,10 +233,10 @@ class _CommentPageState extends State<CommentPage>
         CommentInfo commentBean = comments[i];
         list.add(ItemComment(
           onPressed: () {
-            if(commentBean.isFabulous==1){
-              delCommentFab(commentBean.id??0,i);
-            }else{
-              addCommentFab(commentBean.id??0,i);
+            if (commentBean.isFabulous == 1) {
+              delCommentFab(commentBean.id ?? 0, i);
+            } else {
+              addCommentFab(commentBean.id ?? 0, i);
             }
           },
           comment: commentBean,
@@ -256,11 +259,23 @@ class _CommentPageState extends State<CommentPage>
     getCommentsInfo(isLoad: true);
   }
 
+  late TrendsDetails trendsInfo=new TrendsDetails();
+
+  void getDtails() {
+    trendsDetails(trendsId).then((value) => {
+          if (value.isOk())
+            {
+              trendsInfo = value.data!,
+              setState(() {}),
+            }
+        });
+  }
+
   int pageNo = 1;
   List<CommentInfo> comments = [];
 
   void getCommentsInfo({bool isLoad = false}) {
-    getTrendsCommentList(pageNo, info.trendsId).then((value) => {
+    getTrendsCommentList(pageNo, trendsId).then((value) => {
           if (value.isOk())
             {
               if (isLoad)
@@ -284,38 +299,38 @@ class _CommentPageState extends State<CommentPage>
             }
         });
   }
-  void addCommentFab(int commentId,int index) {
+
+  void addCommentFab(int commentId, int index) {
     Loading.show(context);
     addCommentFabulous(commentId).then((value) => {
-      Loading.dismiss(context),
-      if (value.isOk())
-        {
-        comments[index].isFabulous=1,
-          comments[index].fabulousSum=(comments[index].fabulousSum!+1),
-        setState(() {}),
-        }
-    });
+          Loading.dismiss(context),
+          if (value.isOk())
+            {
+              comments[index].isFabulous = 1,
+              comments[index].fabulousSum = (comments[index].fabulousSum! + 1),
+              setState(() {}),
+            }
+        });
   }
-  void delCommentFab(int commentId,int index) {
+
+  void delCommentFab(int commentId, int index) {
     Loading.show(context);
     deleteCommentFabulous(commentId).then((value) => {
-      Loading.dismiss(context),
-      if (value.isOk())
-        {
-          comments[index].isFabulous=0,
-          comments[index].fabulousSum=(comments[index].fabulousSum!-1),
-          setState(() {}),
-        }
-    });
+          Loading.dismiss(context),
+          if (value.isOk())
+            {
+              comments[index].isFabulous = 0,
+              comments[index].fabulousSum = (comments[index].fabulousSum! - 1),
+              setState(() {}),
+            }
+        });
   }
 
   void showImg(String img) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              actions: <Widget>[
-                Container(child: normalNetWorkImage(img))
-              ],
+              actions: <Widget>[Container(child: normalNetWorkImage(img))],
             ));
   }
 
@@ -338,80 +353,80 @@ class _CommentPageState extends State<CommentPage>
   }
 
   //标签
-  Widget _itemLable(NewTrendsInfo info) {
-    List<Widget> list = [];
-    if (info.region != null) {
-      list.add(Container(
-          height: ScreenUtil().setHeight(23),
-          // 边框设置
-          decoration: const BoxDecoration(
-            //背景
-            color: Color(0x1A5DB1DE),
-            //设置四周圆角 角度
-            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-            //设置四周边框
-            border: Border(),
-          ),
-          // 设置 child 居中
-          alignment: const Alignment(0, 0),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: ScreenUtil().setWidth(6),
-                  top: ScreenUtil().setWidth(6),
-                  bottom: ScreenUtil().setWidth(6),
-                  right: ScreenUtil().setWidth(4)),
-              child: Image(
-                  color: MyColor.blackColor,
-                  image: const AssetImage("assets/images/ic_location.png"),
-                  fit: BoxFit.fill),
-            ),
-            Text(
-              '${info.region}',
-              style: TextStyle(
-                fontSize: ScreenUtil().setSp(12),
-                color: MyColor.blackColor,
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
-          ])));
-      if (info.topicName != null) {
-        list.add(
-          Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(10))),
-        );
-        list.add(radiusContainer(
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: ScreenUtil().setWidth(6),
-                  top: ScreenUtil().setWidth(6),
-                  bottom: ScreenUtil().setWidth(6),
-                  right: ScreenUtil().setWidth(4)),
-              child: Image(
-                  color: MyColor.blackColor,
-                  image: const AssetImage("assets/images/topic.png"),
-                  fit: BoxFit.fill),
-            ),
-            Text(
-              '${info.topicName}',
-              style: TextStyle(
-                fontSize: ScreenUtil().setSp(12),
-                color: MyColor.blackColor,
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
-          ]),
-          c: Color(0xffE6E6E6),
-          radius: 12,
-          height: ScreenUtil().setHeight(23),
-        ));
-      }
-    }
-    return Container(
-        child: Row(
-      children: list,
-    ));
-  }
+  // Widget _itemLable() {
+  //   List<Widget> list = [];
+  //   if (trendsInfo.region != null) {
+  //     list.add(Container(
+  //         height: ScreenUtil().setHeight(23),
+  //         // 边框设置
+  //         decoration: const BoxDecoration(
+  //           //背景
+  //           color: Color(0x1A5DB1DE),
+  //           //设置四周圆角 角度
+  //           borderRadius: BorderRadius.all(Radius.circular(12.0)),
+  //           //设置四周边框
+  //           border: Border(),
+  //         ),
+  //         // 设置 child 居中
+  //         alignment: const Alignment(0, 0),
+  //         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //           Padding(
+  //             padding: EdgeInsets.only(
+  //                 left: ScreenUtil().setWidth(6),
+  //                 top: ScreenUtil().setWidth(6),
+  //                 bottom: ScreenUtil().setWidth(6),
+  //                 right: ScreenUtil().setWidth(4)),
+  //             child: Image(
+  //                 color: MyColor.blackColor,
+  //                 image: const AssetImage("assets/images/ic_location.png"),
+  //                 fit: BoxFit.fill),
+  //           ),
+  //           Text(
+  //             '${trendsInfo.region}',
+  //             style: TextStyle(
+  //               fontSize: ScreenUtil().setSp(12),
+  //               color: MyColor.blackColor,
+  //             ),
+  //           ),
+  //           Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
+  //         ])));
+  //     if (trendsInfo.topicName != null) {
+  //       list.add(
+  //         Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(10))),
+  //       );
+  //       list.add(radiusContainer(
+  //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //           Padding(
+  //             padding: EdgeInsets.only(
+  //                 left: ScreenUtil().setWidth(6),
+  //                 top: ScreenUtil().setWidth(6),
+  //                 bottom: ScreenUtil().setWidth(6),
+  //                 right: ScreenUtil().setWidth(4)),
+  //             child: Image(
+  //                 color: MyColor.blackColor,
+  //                 image: const AssetImage("assets/images/topic.png"),
+  //                 fit: BoxFit.fill),
+  //           ),
+  //           Text(
+  //             '${trendsInfo.topicName}',
+  //             style: TextStyle(
+  //               fontSize: ScreenUtil().setSp(12),
+  //               color: MyColor.blackColor,
+  //             ),
+  //           ),
+  //           Padding(padding: EdgeInsets.only(right: ScreenUtil().setWidth(6))),
+  //         ]),
+  //         c: Color(0xffE6E6E6),
+  //         radius: 12,
+  //         height: ScreenUtil().setHeight(23),
+  //       ));
+  //     }
+  //   }
+  //   return Container(
+  //       child: Row(
+  //     children: list,
+  //   ));
+  // }
 
   @override
   bool get wantKeepAlive => true;
