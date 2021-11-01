@@ -18,8 +18,19 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerCode = TextEditingController();
 
+  void init(BuildContext context) {
+    //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: const Size(360, 690),
+        orientation: Orientation.portrait);
+  }
+
   @override
   Widget build(BuildContext context) {
+    init(context);
     return Scaffold(
       //键盘弹起不顶起布局
       resizeToAvoidBottomInset: false,

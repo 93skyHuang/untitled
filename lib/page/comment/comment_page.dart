@@ -291,7 +291,7 @@ class _CommentPageState extends State<CommentPage>
       if (value.isOk())
         {
         comments[index].isFabulous=1,
-          comments[index].fabulousSum=(comments[index].fabulousSum!+1)!,
+          comments[index].fabulousSum=(comments[index].fabulousSum!+1),
         setState(() {}),
         }
     });
@@ -303,7 +303,7 @@ class _CommentPageState extends State<CommentPage>
       if (value.isOk())
         {
           comments[index].isFabulous=0,
-          comments[index].fabulousSum=(comments[index].fabulousSum!-1)!,
+          comments[index].fabulousSum=(comments[index].fabulousSum!-1),
           setState(() {}),
         }
     });

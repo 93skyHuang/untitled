@@ -74,8 +74,19 @@ class _HomeState extends State<HomePage> {
         label: '我的'),
   ];
 
+  void init(BuildContext context) {
+    //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        designSize: const Size(360, 690),
+        orientation: Orientation.portrait);
+  }
+
   @override
   Widget build(BuildContext context) {
+    init(context);
     return Scaffold(
       ///使用这个才能保证子页面持久化
       body: IndexedStack(

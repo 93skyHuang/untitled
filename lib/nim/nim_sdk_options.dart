@@ -4,7 +4,7 @@ import 'package:nim_core/nim_core.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
-void nimSdkInit() async {
+Future<void> nimSdkInit() async {
   NIMLoginInfo? auto;
   int uid = GetStorageUtils.getUID();
   logger.i("$uid nimSdkInit=$nimSdkInit");

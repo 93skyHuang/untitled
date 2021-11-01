@@ -16,13 +16,9 @@ import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
-import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/my_text_button.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
 import 'package:untitled/widgets/toast.dart';
-import 'package:video_player/video_player.dart';
-import 'community_tab_bar.dart';
-import 'community_tab_bar_view.dart';
 
 //发布动态
 class PullDynamicPage extends StatefulWidget {

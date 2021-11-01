@@ -1,10 +1,8 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:untitled/basic/include.dart';
-import 'package:untitled/network/bean/find_tab_info.dart';
 import 'package:untitled/network/bean/user_basic.dart';
-import 'package:untitled/page/home_controller.dart';
-import 'package:untitled/page/mine/vip/vip_controller.dart';
+import 'package:untitled/page/global_controller.dart';
 
 class GetStorageUtils {
   //
@@ -59,8 +57,8 @@ class GetStorageUtils {
   static void saveSvip(bool svip) {
     _accountStorage.write('svip', svip);
     try {
-      final HomeController _homeController = Get.find<HomeController>();
-      _homeController.isSvip.value = svip;
+      final GlobalController _globalController = Get.find<GlobalController>();
+      _globalController.isSvip.value = svip;
     } catch (e) {
       logger.e(e);
     }
@@ -91,18 +89,6 @@ class GetStorageUtils {
   ///
   static void saveIsVideo(bool isVideo) {
     _accountStorage.write('isVideo', isVideo);
-  }
-
-  static List<FindTabInfo> getFindTab() {
-    List<dynamic>? list = _commonStorage.read('find_tab');
-    List<FindTabInfo>? infoList =
-        list?.map((e) => FindTabInfo.fromJson(e)).toList();
-    return infoList ?? [];
-  }
-
-  ///发现页面导航栏
-  static void saveFindTab(List<FindTabInfo>? f) {
-    _commonStorage.write('find_tab', f);
   }
 
   ///保存某个人的基本信息数据

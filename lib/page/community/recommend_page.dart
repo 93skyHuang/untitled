@@ -6,9 +6,11 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/personcenter/user_home_page.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/expandable_text.dart';
 import 'package:untitled/widget/trend_img.dart';
 import 'package:untitled/widgets/card_image.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/null_list_widget.dart';
@@ -71,8 +73,13 @@ class _RecommendWidgetState extends State<RecommendWidget>
   // 上拉加载更多
   void _onLoading() async {
     logger.i("_onLoading");
-    pageNo++;
-    getData(isLoad: true);
+    if (GetStorageUtils.getSvip()) {
+      pageNo++;
+      getData(isLoad: true);
+    } else {
+      _refreshController.loadFailed();
+      showOpenSvipDialog(context);
+    }
   }
 
   void getData({bool isLoad = false}) {

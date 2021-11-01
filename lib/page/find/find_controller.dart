@@ -7,14 +7,12 @@ import 'package:untitled/persistent/get_storage_utils.dart';
 
 class FindController extends GetxController {
   RxList<FindTabInfo> findTabList =
-      <FindTabInfo>[FindTabInfo(id: 0, title: "精选"),FindTabInfo(id: 1, title: "实名专区"),FindTabInfo(id: 2, title: "VIP专区"),FindTabInfo(id: 0, title: "活跃专区")].obs;
+      <FindTabInfo>[FindTabInfo(id: 0, title: "精选"),FindTabInfo(id: 1, title: "实名专区"),FindTabInfo(id: 2, title: "VIP专区"),FindTabInfo(id: 3, title: "活跃专区")].obs;
 
   void _getTabTitle() {
-    findTabList.value = GetStorageUtils.getFindTab();
     getFindTab().then((value) => {
           if (value.isOk())
             {
-              GetStorageUtils.saveFindTab(value.data),
               findTabList.value = value.data!,
             }
         });

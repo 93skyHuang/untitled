@@ -31,7 +31,6 @@ import 'bean/receive_fabulous_msg.dart';
 import 'bean/send_comment_msg.dart';
 import 'bean/send_fabulous_msg.dart';
 import 'bean/trends_details.dart';
-import 'bean/trends_like_info.dart';
 import 'bean/trends_tpoic_type_info.dart';
 import 'bean/order.dart';
 import 'bean/pay_list.dart';
@@ -66,7 +65,7 @@ Future<BasePageData<LoginResp?>> autoLogin() async {
       'longitude': 0.0,
       'latitude': 0.0,
       'registionID': 'registionID',
-      'packageName': 'packageName',
+      'packageName': Platform.isIOS ? "com.moshen.teck.liu" : "com.ace.freedom",
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
@@ -76,6 +75,7 @@ Future<BasePageData<LoginResp?>> autoLogin() async {
       String token = basePageData.data?.loginToken ?? "";
       GetStorageUtils.saveNimToken(token);
       GetStorageUtils.saveSex(basePageData.data?.sex ?? 1);
+      GetStorageUtils.saveSvip(basePageData.data?.svip == 1);
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
@@ -104,6 +104,7 @@ Future<BasePageData<LoginResp?>> phoneLogin(String phone, String code) async {
       GetStorageUtils.saveUid(uid);
       GetStorageUtils.saveNimToken(token);
       GetStorageUtils.saveSex(basePageData.data?.sex ?? 1);
+      GetStorageUtils.saveSvip(basePageData.data?.svip == 1);
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
@@ -463,7 +464,8 @@ Future<BasePageData> delFollow(int userid) async {
 
 /// 举报
 /// userid 对方用户id 接口测试通过
-Future<BasePageData> addAccusation(int userid, String content,List<String> localUrls) async {
+Future<BasePageData> addAccusation(
+    int userid, String content, List<String> localUrls) async {
   BasePageData basePageData;
   try {
     List<String> urlOSS = [];
@@ -481,7 +483,12 @@ Future<BasePageData> addAccusation(int userid, String content,List<String> local
     }
     int uid = GetStorageUtils.getUID();
     Response response = await getDio().post('/index/share/addAccusation',
-        data: {'uid': uid, 'userid': userid, 'content': content,'img':urlOSS});
+        data: {
+          'uid': uid,
+          'userid': userid,
+          'content': content,
+          'img': urlOSS
+        });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -494,12 +501,13 @@ Future<BasePageData> addAccusation(int userid, String content,List<String> local
   }
   return basePageData;
 }
+
 /// 意见反馈
 ///  * uid [反馈人的UID]
 //      * content [反馈内容]
 //      * img [图片附件]
 //      * userModel [用户机型]
-Future<BasePageData> addFeedback(String content,List<String> localUrls) async {
+Future<BasePageData> addFeedback(String content, List<String> localUrls) async {
   BasePageData basePageData;
   try {
     List<String> urlOSS = [];
@@ -515,20 +523,24 @@ Future<BasePageData> addFeedback(String content,List<String> localUrls) async {
         }
       }
     }
-    String userModel="";
+    String userModel = "";
     DeviceInfoPlugin deviceInfo = new DeviceInfoPlugin();
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       print('IOS设备：');
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      userModel=iosInfo.model;
-    }else if(Platform.isAndroid){
+      userModel = iosInfo.model;
+    } else if (Platform.isAndroid) {
       print('Android设备');
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      userModel=androidInfo.model;
+      userModel = androidInfo.model;
     }
     int uid = GetStorageUtils.getUID();
-    Response response = await getDio().post('/index/share/addFeedback',
-        data: {'uid': uid, 'userModel': userModel, 'content': content,'img':urlOSS});
+    Response response = await getDio().post('/index/share/addFeedback', data: {
+      'uid': uid,
+      'userModel': userModel,
+      'content': content,
+      'img': urlOSS
+    });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     if (baseResp.code == respCodeSuccess) {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);

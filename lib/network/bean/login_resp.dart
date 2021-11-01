@@ -7,6 +7,7 @@ class LoginResp {
   LoginResp();
   int uid = 0;
   int sex = 1;
+  int svip = 0;
   int? isNewUser = 0;
   String? loginToken = '';
 

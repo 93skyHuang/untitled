@@ -42,8 +42,8 @@ class _NearbyPageState extends State<NearbyPage>
   @override
   void initState() {
     logger.i('initState');
-    _onRefresh();
     super.initState();
+    _onRefresh();
   }
 
   @override
@@ -87,8 +87,13 @@ class _NearbyPageState extends State<NearbyPage>
   // 上拉加载更多
   void _onLoading() async {
     logger.i("_onLoading");
-    pageNo++;
-    getData(isLoad: true);
+    if (GetStorageUtils.getSvip()) {
+      pageNo++;
+      getData(isLoad: true);
+    } else {
+      _refreshController.loadFailed();
+      showOpenSvipDialog(context);
+    }
   }
 
   void getData({bool isLoad = false}) {

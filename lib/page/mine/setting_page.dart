@@ -107,7 +107,7 @@ class _SettingPageState extends State<SettingPage> {
             GestureDetector(
               onTap: () {
                 NimNetworkManager.instance.logout();
-                Get.offNamedUntil(loginPName,ModalRoute.withName(homePName));
+                Get.offAllNamed(loginPName);
               },
               child:Container(
               width: 214,
