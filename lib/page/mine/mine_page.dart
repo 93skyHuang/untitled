@@ -235,8 +235,8 @@ class _MinePageState extends State<MinePage> {
                           margin: EdgeInsets.only(left: 20),
                           text: '真人认证',
                           img: _mineController.userBasic.value.isVideo == 1
-                              ? "assets/images/ic_unverified_person.png"
-                              : "assets/images/ic_verified_person1.png",
+                              ?  "assets/images/ic_verified_person1.png":
+                              "assets/images/ic_unverified_person.png",
                           onPressed: () {},
                         ),
                         ItemMenu(

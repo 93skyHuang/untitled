@@ -68,10 +68,14 @@ class TrendImg extends StatelessWidget {
 
   Widget singlePic() {
     return Container(
-      width: contextWidth,
-      margin: EdgeInsets.only( top: 5),
-      child: normalNetWorkImage(imgs[0] ?? ''),
-    );
+        width: contextWidth,
+        margin: EdgeInsets.only(top: 5),
+        child: GestureDetector(
+          onTap: () {
+            onClick(imgs[0] ?? '');
+          },
+          child: normalNetWorkImage(imgs[0] ?? ''),
+        ));
   }
 
   Widget doublePic() {
@@ -81,15 +85,24 @@ class TrendImg extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          customNetworkImage(
-              imgs[0] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
-              radius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8), topLeft: Radius.circular(8))),
-          customNetworkImage(
-              imgs[1] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
-              radius: BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8))),
+          GestureDetector(
+              onTap: () {
+                onClick(imgs[0] ?? '');
+              },
+              child: customNetworkImage(
+                  imgs[0] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
+                  radius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      topLeft: Radius.circular(8)))),
+          GestureDetector(
+              onTap: () {
+                onClick(imgs[1] ?? '');
+              },
+              child: customNetworkImage(
+                  imgs[1] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
+                  radius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8)))),
         ],
       ),
     );
@@ -102,22 +115,35 @@ class TrendImg extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          customNetworkImage(imgs[0] ?? '', 2 * contextWidth / 3 - 12,
-              contextWidth * 2 / 3 - 12,
-              radius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8), topLeft: Radius.circular(8))),
+          GestureDetector(
+              onTap: () {
+                onClick(imgs[0] ?? '');
+              },
+              child: customNetworkImage(imgs[0] ?? '',
+                  2 * contextWidth / 3 - 12, contextWidth * 2 / 3 - 12,
+                  radius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      topLeft: Radius.circular(8)))),
           Column(
             children: [
-              customNetworkImage(
-                  imgs[1] ?? '', contextWidth / 3 - 10, contextWidth / 3 - 10,
-                  radius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
-              customNetworkImage(
-                  imgs[2] ?? '', contextWidth / 3 - 10, contextWidth / 3 - 10,
-                  radius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
+              GestureDetector(
+                  onTap: () {
+                    onClick(imgs[1] ?? '');
+                  },
+                  child: customNetworkImage(imgs[1] ?? '',
+                      contextWidth / 3 - 10, contextWidth / 3 - 10,
+                      radius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8)))),
+              GestureDetector(
+                  onTap: () {
+                    onClick(imgs[2] ?? '');
+                  },
+                  child: customNetworkImage(imgs[2] ?? '',
+                      contextWidth / 3 - 10, contextWidth / 3 - 10,
+                      radius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8)))),
             ],
           )
         ],
@@ -132,17 +158,26 @@ class TrendImg extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          customNetworkImage(imgs[0] ?? '', 2 * contextWidth / 3 - 18,
-              contextWidth * 2 / 3 - 18,
-              radius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8), topLeft: Radius.circular(8))),
+          GestureDetector(
+              onTap: () {
+                onClick(imgs[0] ?? '');
+              },
+              child: customNetworkImage(imgs[0] ?? '',
+                  2 * contextWidth / 3 - 18, contextWidth * 2 / 3 - 18,
+                  radius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      topLeft: Radius.circular(8)))),
           Column(
             children: [
-              customNetworkImage(
-                  imgs[1] ?? '', contextWidth / 3 - 10, contextWidth / 3 - 10,
-                  radius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
+              GestureDetector(
+                  onTap: () {
+                    onClick(imgs[1] ?? '');
+                  },
+                  child: customNetworkImage(imgs[1] ?? '',
+                      contextWidth / 3 - 10, contextWidth / 3 - 10,
+                      radius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8)))),
               GestureDetector(
                   onTap: () {
                     onClick('more');

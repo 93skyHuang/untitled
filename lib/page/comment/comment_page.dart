@@ -100,7 +100,7 @@ class _CommentPageState extends State<CommentPage>
                                   FocusOnBtn(info),
                                 ],
                               )),
-                              CustomText(
+                              if(info.content!=null)CustomText(
                                 text: "${info.content}",
                                 margin: EdgeInsets.only(top: 5),
                                 textStyle: TextStyle(

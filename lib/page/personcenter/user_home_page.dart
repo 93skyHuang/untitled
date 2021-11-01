@@ -134,29 +134,33 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
     );
   }
 
-  TabBar buildTabBar() {
-    return TabBar(
-      labelColor: Color(0xffFD4343),
-      labelStyle: TextStyle(fontSize: 14),
-      unselectedLabelColor: MyColor.grey8C8C8C,
-      unselectedLabelStyle: TextStyle(fontSize: 14),
-      indicatorWeight: 3,
-      indicatorSize: TabBarIndicatorSize.label,
-      indicatorColor: MyColor.redFd4343,
-      controller: tabController,
-      padding: EdgeInsets.only(right: 120),
-      tabs: <Widget>[
-        new Tab(
-          text: "动态",
-        ),
-        new Tab(
-          text: "视频",
-        ),
-        new Tab(
-          text: "个人资料",
-        ),
-      ],
-    );
+  PreferredSize buildTabBar() {
+    return PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Material(
+            color: Colors.white,
+            child: TabBar(
+              labelColor: Color(0xffFD4343),
+              labelStyle: TextStyle(fontSize: 14),
+              unselectedLabelColor: MyColor.grey8C8C8C,
+              unselectedLabelStyle: TextStyle(fontSize: 14),
+              indicatorWeight: 3,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorColor: MyColor.redFd4343,
+              controller: tabController,
+              padding: EdgeInsets.only(right: 120),
+              tabs: <Widget>[
+                new Tab(
+                  text: "动态",
+                ),
+                new Tab(
+                  text: "视频",
+                ),
+                new Tab(
+                  text: "个人资料",
+                ),
+              ],
+            )));
   }
 
   void clickLike(Trends trends) {
@@ -204,7 +208,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 image: NetworkImage(
                   "${_userHomeController.userBasic.value.headImgUrl ?? ''}",
                 ),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             child: Row(
