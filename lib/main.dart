@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -42,6 +43,14 @@ Future<void> _init() async {
   await _autoLogin();
   nimSdkInit();
   await GetStorage.init();
+  await SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,   // 竖屏 Portrait 模式
+      DeviceOrientation.portraitDown,
+      // DeviceOrientation.landscapeLeft, // 横屏 Landscape 模式
+      // DeviceOrientation.landscapeRight,
+    ],
+  );
 }
 
 Future<void> _autoLogin() async {
