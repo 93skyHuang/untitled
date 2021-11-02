@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
@@ -13,10 +14,13 @@ import 'package:untitled/network/logger.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
+import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/toast.dart';
 
+import '../../../route_config.dart';
 import 'info_page.dart';
 import 'my_home_controller.dart';
+import 'my_trend_detail_page.dart';
 
 //个人首页页面
 class MyHomePage extends StatefulWidget {
@@ -101,7 +105,10 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
             itemBuilder: (context, index) {
               return ItemTrend(
                 trends: _myHomeController.trends.value[index],
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(MyTrendDetailPage(
+                      _myHomeController.trends.value[index].id));
+                },
                 clickLike: () {},
                 deleteTrend: () {
                   showOpenDelDialog(
@@ -168,21 +175,28 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
       child: Column(
         children: [
           Container(
-            height: 365,
-            alignment: Alignment.topLeft,
-            width: double.infinity,
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  "${_myHomeController.userBasic.value.headImgUrl ?? ''}",
-                ),
-                fit: BoxFit.cover,
+              height: 365,
+              alignment: Alignment.topLeft,
+              width: double.infinity,
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
               ),
-            ),
-          ),
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed(photoViewPName, arguments: {
+                    'index': 1,
+                    'photoList': [
+                      _myHomeController.userBasic.value.headImgUrl ?? ''
+                    ]
+                  });
+                },
+                child: cardNetworkImage(
+                    '${_myHomeController.userBasic.value.headImgUrl}',
+                    double.infinity,
+                    365,
+                    radius: 0,
+                    margin: EdgeInsets.all(0)),
+              )),
         ],
       ),
     ));

@@ -18,7 +18,9 @@ TrendsDetails _$TrendsDetailsFromJson(Map<String, dynamic> json) {
     ..time = json['time'] as String?
     ..area = json['area'] as String?
     ..isfabulous = json['isfabulous'] as int?
+    ..cname = json['cname'] as String?
     ..isfollow = json['isfollow'] as int?
+    ..headImgUrl = json['headImgUrl'] as String?
     ..fabulousSum = json['fabulousSum'] as int?
     ..fabulousList = (json['fabulousList'] as List<dynamic>?)
         ?.map((e) => e as String?)
@@ -29,6 +31,7 @@ Map<String, dynamic> _$TrendsDetailsToJson(TrendsDetails instance) =>
     <String, dynamic>{
       'uid': instance.uid,
       'id': instance.id,
+      'cname': instance.cname,
       'video': instance.video,
       'content': instance.content,
       'imgArr': instance.imgArr,
@@ -38,5 +41,6 @@ Map<String, dynamic> _$TrendsDetailsToJson(TrendsDetails instance) =>
       'isfabulous': instance.isfabulous,
       'isfollow': instance.isfollow,
       'fabulousSum': instance.fabulousSum,
+      'headImgUrl': instance.headImgUrl,
       'fabulousList': instance.fabulousList,
     };

@@ -55,6 +55,7 @@ class ItemTrend extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (trends.content != null&&trends.content != '')
                   TQExpandableText(
                     '${trends.content??''}',
                   ),
@@ -63,7 +64,8 @@ class ItemTrend extends StatelessWidget {
                       imgs: trends.imgArr ?? [],
                       showAll: true,
                       contextWidth: contextWidth,
-                      onClick: (String img) {},
+                      onClick: (int index) {
+                        onPressed();},
                     ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -71,7 +73,6 @@ class ItemTrend extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       GestureDetector(
-
                           //点赞
                           onTap: () {
                             clickLike.call();

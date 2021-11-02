@@ -51,7 +51,7 @@ class TrendImg extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  onClick(imgs[index] ?? '');
+                  onClick(index);
                 },
                 child: customNetworkImage(
                   imgs[index] ?? '',
@@ -72,7 +72,7 @@ class TrendImg extends StatelessWidget {
         margin: EdgeInsets.only(top: 5),
         child: GestureDetector(
           onTap: () {
-            onClick(imgs[0] ?? '');
+            onClick(0);
           },
           child: normalNetWorkImage(imgs[0] ?? ''),
         ));
@@ -87,7 +87,7 @@ class TrendImg extends StatelessWidget {
         children: [
           GestureDetector(
               onTap: () {
-                onClick(imgs[0] ?? '');
+                onClick(0);
               },
               child: customNetworkImage(
                   imgs[0] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
@@ -96,7 +96,7 @@ class TrendImg extends StatelessWidget {
                       topLeft: Radius.circular(8)))),
           GestureDetector(
               onTap: () {
-                onClick(imgs[1] ?? '');
+                onClick(1);
               },
               child: customNetworkImage(
                   imgs[1] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
@@ -117,7 +117,7 @@ class TrendImg extends StatelessWidget {
         children: [
           GestureDetector(
               onTap: () {
-                onClick(imgs[0] ?? '');
+                onClick(0);
               },
               child: customNetworkImage(imgs[0] ?? '',
                   2 * contextWidth / 3 - 12, contextWidth * 2 / 3 - 12,
@@ -128,7 +128,7 @@ class TrendImg extends StatelessWidget {
             children: [
               GestureDetector(
                   onTap: () {
-                    onClick(imgs[1] ?? '');
+                    onClick(1);
                   },
                   child: customNetworkImage(imgs[1] ?? '',
                       contextWidth / 3 - 10, contextWidth / 3 - 10,
@@ -137,7 +137,7 @@ class TrendImg extends StatelessWidget {
                           bottomRight: Radius.circular(8)))),
               GestureDetector(
                   onTap: () {
-                    onClick(imgs[2] ?? '');
+                    onClick(2);
                   },
                   child: customNetworkImage(imgs[2] ?? '',
                       contextWidth / 3 - 10, contextWidth / 3 - 10,
@@ -160,7 +160,7 @@ class TrendImg extends StatelessWidget {
         children: [
           GestureDetector(
               onTap: () {
-                onClick(imgs[0] ?? '');
+                onClick(0);
               },
               child: customNetworkImage(imgs[0] ?? '',
                   2 * contextWidth / 3 - 18, contextWidth * 2 / 3 - 18,
@@ -171,7 +171,7 @@ class TrendImg extends StatelessWidget {
             children: [
               GestureDetector(
                   onTap: () {
-                    onClick(imgs[1] ?? '');
+                    onClick(1);
                   },
                   child: customNetworkImage(imgs[1] ?? '',
                       contextWidth / 3 - 10, contextWidth / 3 - 10,
@@ -180,7 +180,7 @@ class TrendImg extends StatelessWidget {
                           bottomRight: Radius.circular(8)))),
               GestureDetector(
                   onTap: () {
-                    onClick('more');
+                    onClick(0);
                   },
                   child: ClipRRect(
                       borderRadius: BorderRadius.only(
@@ -229,4 +229,4 @@ class TrendImg extends StatelessWidget {
   }
 }
 
-typedef MyCallBack = Function(String string);
+typedef MyCallBack = Function(int index);

@@ -25,7 +25,9 @@ class ItemVideo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          onPressed();
+        },
         child: Container(
           padding: EdgeInsets.only(top: 20, bottom: 16, left: 16,right: 16 ),
           decoration: BoxDecoration(
@@ -58,7 +60,7 @@ class ItemVideo extends StatelessWidget {
                       imgs: trends.imgArr ?? [],
                       showAll: true,
                       contextWidth: contextWidth,
-                      onClick: (String img) {},
+                      onClick: (int index) {},
                     ),
                   Row(
                     mainAxisSize: MainAxisSize.min,

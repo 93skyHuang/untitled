@@ -8,15 +8,17 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
-import 'package:untitled/page/personcenter/comment_page.dart';
+import 'package:untitled/page/personcenter/trend_detail_page.dart';
 import 'package:untitled/page/personcenter/user_home_controller.dart';
 import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
+import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/toast.dart';
 
+import '../../route_config.dart';
 import 'info_page.dart';
 
 //他人首页页面
@@ -113,8 +115,8 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
               return ItemTrend(
                 trends: _userHomeController.trends.value[index],
                 onPressed: () {
-                  Get.to(
-                      CommentPage(_userHomeController.trends.value[index].id));
+                  Get.to(TrendDetailPage(
+                      _userHomeController.trends.value[index].id));
                 },
                 clickLike: () {
                   clickLike(_userHomeController.trends.value[index]);
@@ -200,101 +202,120 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
       child: Column(
         children: [
           Container(
-            height: 365,
-            alignment: Alignment.bottomRight,
-            width: double.infinity,
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  "${_userHomeController.userBasic.value.headImgUrl ?? ''}",
-                ),
-                fit: BoxFit.cover,
+              height: 365,
+              alignment: Alignment.bottomRight,
+              width: double.infinity,
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (_userHomeController.userBasic.value.isFollow == 0) {
-                          _userHomeController.add();
-                        } else {
-                          showBottomOpen(context);
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          if (_userHomeController.userBasic.value.isFollow == 0)
-                            Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 18,
+              child: Stack(
+                alignment: AlignmentDirectional.bottomEnd,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(photoViewPName, arguments: {
+                        'index': 1,
+                        'photoList': [
+                          _userHomeController.userBasic.value.headImgUrl ?? ''
+                        ]
+                      });
+                    },
+                    child: cardNetworkImage(
+                        '${_userHomeController.userBasic.value.headImgUrl}',
+                        double.infinity,
+                        365,
+                        radius: 0,
+                        margin: EdgeInsets.all(0)),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (_userHomeController
+                                      .userBasic.value.isFollow ==
+                                  0) {
+                                _userHomeController.add();
+                              } else {
+                                showBottomOpen(context);
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                if (_userHomeController
+                                        .userBasic.value.isFollow ==
+                                    0)
+                                  Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                CustomText(
+                                  text: _userHomeController
+                                              .userBasic.value.isFollow ==
+                                          0
+                                      ? '关注'
+                                      : '已关注',
+                                  textAlign: Alignment.center,
+                                  margin: EdgeInsets.only(left: 3),
+                                  textStyle: TextStyle(
+                                      fontSize: 15, color: Colors.white),
+                                ),
+                              ],
                             ),
-                          CustomText(
-                            text:
-                                _userHomeController.userBasic.value.isFollow ==
-                                        0
-                                    ? '关注'
-                                    : '已关注',
-                            textAlign: Alignment.center,
-                            margin: EdgeInsets.only(left: 3),
-                            textStyle:
-                                TextStyle(fontSize: 15, color: Colors.white),
                           ),
-                        ],
-                      ),
-                    ),
-                    margin: EdgeInsets.only(bottom: 20),
-                    height: 35,
-                    padding: EdgeInsets.only(
-                      left: 15,
-                      right: 15,
-                    ),
-                    decoration: new BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(23.0)),
-                      color: Color(0xff9943FD),
-                    )),
-                Container(
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.to(ChatPage(), arguments: {
-                          'uid': _userHomeController.userBasic.value.uid
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.chat_outlined,
-                            color: Colors.black,
-                            size: 18,
+                          margin: EdgeInsets.only(bottom: 20),
+                          height: 35,
+                          padding: EdgeInsets.only(
+                            left: 15,
+                            right: 15,
                           ),
-                          CustomText(
-                            text: '私聊',
-                            textAlign: Alignment.center,
-                            margin: EdgeInsets.only(left: 3),
-                            textStyle:
-                                TextStyle(fontSize: 15, color: Colors.black),
+                          decoration: new BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(23.0)),
+                            color: Color(0xff9943FD),
+                          )),
+                      Container(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.to(ChatPage(), arguments: {
+                                'uid': _userHomeController.userBasic.value.uid
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.chat_outlined,
+                                  color: Colors.black,
+                                  size: 18,
+                                ),
+                                CustomText(
+                                  text: '私聊',
+                                  textAlign: Alignment.center,
+                                  margin: EdgeInsets.only(left: 3),
+                                  textStyle: TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                    margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
-                    height: 35,
-                    padding: EdgeInsets.only(
-                      left: 15,
-                      right: 15,
-                    ),
-                    decoration: new BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(23.0)),
-                      color: Color(0xffF3CD8E),
-                    )),
-              ],
-            ),
-          ),
+                          margin:
+                              EdgeInsets.only(bottom: 20, left: 16, right: 16),
+                          height: 35,
+                          padding: EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                          ),
+                          decoration: new BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(23.0)),
+                            color: Color(0xffF3CD8E),
+                          )),
+                    ],
+                  ),
+                ],
+              )),
         ],
       ),
     ));

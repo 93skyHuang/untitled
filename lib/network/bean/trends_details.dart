@@ -26,10 +26,12 @@ class TrendsDetails {
   int? type;
   String? time;
   String? area;
+  String? cname = '';
   int? isfabulous;
   int? isfollow;
   int? fabulousSum;
   List<String?>? fabulousList;
+  String? headImgUrl = '';
 
 
   TrendsDetails();
