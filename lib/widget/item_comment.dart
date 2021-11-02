@@ -41,7 +41,7 @@ class ItemComment extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.black),
                   textAlign: TextAlign.left,
                 ),
-                Text('${comment.content}',
+                Text('${comment.content??''}',
                     style: TextStyle(fontSize: 12, color: Color(0xFF8C8C8C))),
               ],
             ),

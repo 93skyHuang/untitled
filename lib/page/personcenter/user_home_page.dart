@@ -8,7 +8,9 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/personcenter/comment_page.dart';
 import 'package:untitled/page/personcenter/user_home_controller.dart';
+import 'package:untitled/page/report/report_page.dart';
 import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
@@ -67,6 +69,13 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
             ),
             backgroundColor: Colors.white,
             elevation: 0,
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.more_vert, size: 28, color: Colors.white),
+                  onPressed: () {
+                    showMore(context, uid);
+                  }),
+            ],
 
             ///是否随着滑动隐藏标题
             floating: true,
@@ -103,7 +112,10 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
             itemBuilder: (context, index) {
               return ItemTrend(
                 trends: _userHomeController.trends.value[index],
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(
+                      CommentPage(_userHomeController.trends.value[index].id));
+                },
                 clickLike: () {
                   clickLike(_userHomeController.trends.value[index]);
                 },
@@ -134,53 +146,48 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
     );
   }
 
-  TabBar buildTabBar() {
-    return TabBar(
-      labelColor: Color(0xffFD4343),
-      labelStyle: TextStyle(fontSize: 14),
-      unselectedLabelColor: MyColor.grey8C8C8C,
-      unselectedLabelStyle: TextStyle(fontSize: 14),
-      indicatorWeight: 3,
-      indicatorSize: TabBarIndicatorSize.label,
-      indicatorColor: MyColor.redFd4343,
-      controller: tabController,
-      padding: EdgeInsets.only(right: 120),
-      tabs: <Widget>[
-        new Tab(
-          text: "动态",
-        ),
-        new Tab(
-          text: "视频",
-        ),
-        new Tab(
-          text: "个人资料",
-        ),
-      ],
-    );
+  PreferredSize buildTabBar() {
+    return PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Material(
+            color: Colors.white,
+            child: TabBar(
+              labelColor: Color(0xffFD4343),
+              labelStyle: TextStyle(fontSize: 14),
+              unselectedLabelColor: MyColor.grey8C8C8C,
+              unselectedLabelStyle: TextStyle(fontSize: 14),
+              indicatorWeight: 3,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorColor: MyColor.redFd4343,
+              controller: tabController,
+              padding: EdgeInsets.only(right: 120),
+              tabs: <Widget>[
+                new Tab(
+                  text: "动态",
+                ),
+                new Tab(
+                  text: "视频",
+                ),
+                new Tab(
+                  text: "个人资料",
+                ),
+              ],
+            )));
   }
 
   void clickLike(Trends trends) {
-    if (trends.beClickedSum == 0) {
-      trends.beClickedSum = 1;
-      trends.fabulousSum++;
+    if (trends.isTrendsFabulous == 0) {
       addTrendsFabulous(trends.id).then((value) => {
             if (value.isOk())
-              {}
-            else
               {
-                trends.beClickedSum = 0,
-                trends.fabulousSum--,
+                _userHomeController.getInfo(uid),
               }
           });
     } else {
-      trends.beClickedSum = 0;
-      trends.fabulousSum--;
       deleteTrendsFabulous(trends.id).then((value) => {
-            if (!value.isOk())
+            if (value.isOk())
               {
-                MyToast.show(value.msg),
-                trends.beClickedSum = 1,
-                trends.fabulousSum++,
+                _userHomeController.getInfo(uid),
               }
           });
     }
@@ -204,7 +211,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 image: NetworkImage(
                   "${_userHomeController.userBasic.value.headImgUrl ?? ''}",
                 ),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             child: Row(
@@ -361,6 +368,98 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                                       fontSize: 17, color: Color(0xffFD4343)))),
                         ]))
                   ]));
+        });
+  }
+
+  void showMore(BuildContext context, int uid) {
+    showModalBottomSheet(
+        enableDrag: false,
+        elevation: 0,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return Container(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      )),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(bottom: 20.0, top: 16),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0)),
+                        ),
+                        child: Column(children: <Widget>[
+                          CustomText(
+                              text: "操作",
+                              textAlign: Alignment.center,
+                              padding: EdgeInsets.only(bottom: 16),
+                              textStyle:
+                                  TextStyle(fontSize: 17, color: Colors.black)),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                Get.to(ReportPage(uid))!
+                                    .then((value) => Navigator.pop(context));
+                              },
+                              child: CustomText(
+                                  text: "举报",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Colors.black))),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                addBlack(uid);
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "拉黑",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Colors.black))),
+                          Divider(
+                            height: 1,
+                            color: Color(0xffE6E6E6),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                  text: "取消",
+                                  textAlign: Alignment.center,
+                                  padding: EdgeInsets.only(top: 16),
+                                  textStyle: TextStyle(
+                                      fontSize: 17, color: Color(0xffFD4343)))),
+                        ]))
+                  ]));
+        });
+  }
+
+  void addBlack(int userId) {
+    addPullBlack(userId).then((value) => {
+          if (value.isOk()) {MyToast.show('拉黑成功'), Navigator.pop(context)}
         });
   }
 }

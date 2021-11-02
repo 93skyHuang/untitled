@@ -28,7 +28,9 @@ class ItemTrend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          onPressed();
+        },
         child: Container(
           padding: EdgeInsets.only(top: 20, bottom: 16, left: 16, right: 16),
           decoration: BoxDecoration(
@@ -54,7 +56,7 @@ class ItemTrend extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TQExpandableText(
-                    '${trends.content}',
+                    '${trends.content??''}',
                   ),
                   if (trends.imgArr!.isNotEmpty)
                     TrendImg(

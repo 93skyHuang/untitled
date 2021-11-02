@@ -230,7 +230,12 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     expects.clear();
     details.clear();
     hobbies.clear();
-    hobbies = userInfo.hobby!;
+    if (userInfo.hobby!.isNotEmpty) {
+      if (userInfo.hobby!.length == 1 && userInfo.hobby![0] == '') {
+      } else {
+        hobbies = userInfo.hobby!;
+      }
+    }
     uid = userInfo.uid;
     sex = userInfo.sex;
     details.add(CustomTextRadius(
@@ -241,13 +246,13 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
       text: '年龄：${age}',
     ));
     height = userInfo.height;
-    if (height != 0) {
+    if (height != null&&height != 0) {
       details.add(CustomTextRadius(
         text: '身高：${height}cm',
       ));
     }
     constellation = userInfo.constellation;
-    if (constellation != '') {
+    if (constellation != null&&constellation != '') {
       details.add(CustomTextRadius(
         text: '星座：${constellation}',
       ));
@@ -260,19 +265,19 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     }
     autograph = userInfo.autograph;
     birthday = userInfo.birthday;
-    if (birthday != '') {
+    if (birthday != null&&birthday != '') {
       details.add(CustomTextRadius(
         text: '生日：${birthday}',
       ));
     }
     monthlyIncome = userInfo.monthlyIncome;
-    if (monthlyIncome != '') {
+    if (monthlyIncome != null&&monthlyIncome != '') {
       details.add(CustomTextRadius(
         text: '月收入：${monthlyIncome}',
       ));
     }
     education = userInfo.education;
-    if (education != '') {
+    if (education != null&&education != '') {
       details.add(CustomTextRadius(
         text: '学历：${education}',
       ));
@@ -281,45 +286,48 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     isVideo = userInfo.isVideo;
     isHead = userInfo.isHead;
     expectAge = userInfo.expectAge;
-    if (expectAge != '') {
+    if (expectAge != null&&expectAge != '') {
       expects.add(CustomTextRadius(
         text: '年龄：${expectAge}',
       ));
     }
     expectHeight = userInfo.expectHeight;
-    if (expectHeight != '') {
+    if (expectHeight != null&&expectHeight != '') {
       expects.add(CustomTextRadius(
         text: '身高：${expectHeight}',
       ));
     }
     expectConstellation = userInfo.expectConstellation;
-    if (expectConstellation != '') {
+    if (expectConstellation != null&&expectConstellation != '') {
       expects.add(CustomTextRadius(
         text: '星座：${expectConstellation}',
       ));
     }
     expectType = userInfo.expectType;
-    if (expectType != '') {
+    if (expectType != null&&expectType != '') {
       expects.add(CustomTextRadius(
         text: '目标：${expectType}',
       ));
     }
     expectRegion = userInfo.expectRegion;
-    if (expectRegion != '') {
+    if (expectRegion != null&&expectRegion != '') {
       expects.add(CustomTextRadius(
         text: '城市：${expectRegion}',
       ));
     }
-    if (isHead == 1) {
-      //0-否，1-是]
-      verify.add('头像认证');
-      icons.add("assets/images/icon_verified_avatar.png");
-    }
-    if (isVideo == 1) {
-      //0-否，1-是]
-      verify.add('视频认证');
-      icons.add("assets/images/icon_verified_person.png");
-    }
+    //0-否，1-是]
+    verify.add('头像认证');
+    icons.add(isHead == 1
+        ? "assets/images/icon_verified_avatar.png"
+        : "assets/images/icon_un_verified_avatar.png");
+    //0-否，1-是]
+    verify.add('真人认证');
+    icons.add(isVideo == 1
+        ?  "assets/images/ic_verified_person1.png":
+    "assets/images/ic_unverified_person.png");
+    //0-否，1-是]
+    verify.add('手机认证');
+    icons.add("assets/images/icon_verified_phone.png");
 
     setState(() {});
   }

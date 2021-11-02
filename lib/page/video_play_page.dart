@@ -202,7 +202,7 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
                           maxWidth: ScreenUtil().screenWidth / 2),
-                      child: Text('${info.content}',
+                      child: Text('${info.content??''}',
                           maxLines: 2,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,

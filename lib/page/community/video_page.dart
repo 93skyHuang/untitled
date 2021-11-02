@@ -150,7 +150,7 @@ class _VideoListPageState extends State<VideoListPage>
               child: Padding(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    '${info.content}',
+                    '${info.content??''}',
                     maxLines: 2,
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,

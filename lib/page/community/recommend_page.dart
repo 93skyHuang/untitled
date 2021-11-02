@@ -5,6 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/comment/comment_page.dart';
 import 'package:untitled/page/personcenter/user_home_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/expandable_text.dart';
@@ -172,22 +173,29 @@ class _RecommendWidgetState extends State<RecommendWidget>
                               FocusOnBtn(info),
                             ],
                           )),
-                          const SizedBox(
+                          if(info.content!=null)const SizedBox(
                             height: 12,
                           ),
-                          TQExpandableText(
-                            "${info.content}",
+                          if(info.content!=null)GestureDetector(
+                            onTap: () {
+                              Get.to(CommentPage(info));
+                            },
+                            child: TQExpandableText(
+                              "${info.content??''}",
+                            ),
                           ),
                           Padding(
                               padding: EdgeInsets.only(
                             bottom: ScreenUtil().setWidth(10),
                           )),
                           if (info.imgArr.isNotEmpty)
-                          TrendImg(
-                            imgs: info.imgArr,
-                            contextWidth: _textContextWidth,
-                            onClick: (img) {},
-                          ),
+                            TrendImg(
+                              imgs: info.imgArr,
+                              contextWidth: _textContextWidth,
+                              onClick: (img) {
+                                Get.to(CommentPage(info));
+                              },
+                            ),
                           Padding(
                             padding: EdgeInsets.only(
                               top: ScreenUtil().setWidth(14),

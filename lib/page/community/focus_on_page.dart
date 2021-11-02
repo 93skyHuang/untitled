@@ -159,7 +159,7 @@ class _FocusOnPageState extends State<FocusOnPage>
                             height: 12,
                           ),
                           TQExpandableText(
-                            "${info.content}",
+                            "${info.content??''}",
                           ),
                           Padding(
                               padding: EdgeInsets.only(
