@@ -26,7 +26,7 @@ class UserHomePage extends StatefulWidget {
   int uid;
   int initialIndex;
 
-  UserHomePage({required this.uid, Key? key, this.initialIndex = 0})
+  UserHomePage({required this.uid, Key? key, this.initialIndex = 2})
       : super(key: key);
 
   @override

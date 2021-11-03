@@ -128,17 +128,14 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
                 color: Color(0xffE6E6E6),
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
               )),
-          if (verify.length > 0)
             Divider(
               color: Color(0xffE6E6E6),
             ),
-          if (verify.length > 0)
             CustomText(
               text: '个人认证',
               textStyle: TextStyle(fontSize: 14, color: Colors.black),
               margin: EdgeInsets.only(left: 16, top: 5),
             ),
-          if (verify.length > 0)
             Container(
               height: 75,
               padding: EdgeInsets.only(left: 16),
@@ -176,7 +173,6 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
             margin: EdgeInsets.only(top: 18),
             color: Color(0xffE6E6E6),
           ),
-          if (expects.isNotEmpty)
             CustomText(
               text: '择偶要求',
               textStyle: TextStyle(fontSize: 14, color: Colors.black),
@@ -191,12 +187,11 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
                 children: expects,
               ),
             ),
-              if (expects.isNotEmpty)Container(
+          Container(
             height: 0.5,
             margin: EdgeInsets.only(top: 18),
             color: Color(0xffE6E6E6),
           ),
-          if (hobbies.isNotEmpty)
             CustomText(
               text: '兴趣爱好',
               textStyle: TextStyle(fontSize: 14, color: Colors.black),

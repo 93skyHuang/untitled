@@ -16,6 +16,7 @@ DiscoverInfo _$DiscoverInfoFromJson(Map<String, dynamic> json) {
     ..loginTime = json['loginTime'] as String
     ..userLabel = json['userLabel'] as int?
     ..age = json['age'] as int?
+    ..education = json['education'] as String?
     ..region = json['region'] as String?
     ..autograph = json['autograph'] as String?;
 }
@@ -30,5 +31,6 @@ Map<String, dynamic> _$DiscoverInfoToJson(DiscoverInfo instance) =>
       'userLabel': instance.userLabel,
       'age': instance.age,
       'region': instance.region,
+      'education': instance.education,
       'autograph': instance.autograph,
     };

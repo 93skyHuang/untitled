@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled/network/bean/comment_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/card_image.dart';
 
 class ItemComment extends StatelessWidget {
   CommentInfo comment;
   VoidCallback onPressed;
+  int uid = GetStorageUtils.getUID();
 
   ItemComment({
     required this.comment,
@@ -46,6 +48,7 @@ class ItemComment extends StatelessWidget {
               ],
             ),
           )),
+          if(comment.uid!=uid)
           GestureDetector(
             onTap: onPressed,
             child: Image(
@@ -57,6 +60,7 @@ class ItemComment extends StatelessWidget {
               height: 20,
             ),
           ),
+          if(comment.uid!=uid)
           Container(
             width: 40,
             margin: EdgeInsets.only(left: 4),

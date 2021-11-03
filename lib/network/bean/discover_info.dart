@@ -22,6 +22,7 @@ class DiscoverInfo {
   String loginTime='刚刚在线';
 
   int? userLabel;
+  String? education = '';
 
   int? age = 0;
   String? region;

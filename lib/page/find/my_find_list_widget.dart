@@ -235,35 +235,18 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
                   clipBehavior: Clip.antiAlias,
                   color: Colors.black38,
                   child: Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        ScreenUtil().setWidth(8),
-                        ScreenUtil().setWidth(2),
-                        ScreenUtil().setWidth(8),
-                        ScreenUtil().setWidth(2),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: ScreenUtil().setWidth(3),
-                            height: ScreenUtil().setWidth(3),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                          ),
-                          Padding(
-                              padding: EdgeInsets.only(
-                            right: ScreenUtil().setWidth(5),
-                          )),
-                          Text(
-                            discoverInfo.loginTime,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: ScreenUtil().setSp(9)),
-                          ),
-                        ],
-                      )),
+                    padding: EdgeInsets.fromLTRB(
+                      ScreenUtil().setWidth(8),
+                      ScreenUtil().setWidth(2),
+                      ScreenUtil().setWidth(8),
+                      ScreenUtil().setWidth(2),
+                    ),
+                    child: Text(
+                      discoverInfo.loginTime,
+                      style: TextStyle(
+                          color: Colors.white, fontSize: ScreenUtil().setSp(9)),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -277,6 +260,14 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   }
 
   Widget _itemInfo(DiscoverInfo discoverInfo) {
+    String constellation='';
+    String education='';
+    if(discoverInfo.constellation!=null&&discoverInfo.constellation!=''){
+      constellation='·'+discoverInfo.constellation.toString();
+    }
+    if(discoverInfo.education!=null&&discoverInfo.education!=''){
+      education='·'+discoverInfo.education.toString();
+    }
     return Padding(
         padding: EdgeInsets.only(
           left: ScreenUtil().setWidth(4),
@@ -291,7 +282,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
           Row(
             children: [
               Text(
-                '${discoverInfo.age}·${discoverInfo.constellation}',
+                '${discoverInfo.age??''}$constellation$education',
                 style: TextStyle(
                     color: MyColor.grey8C8C8C,
                     fontSize: ScreenUtil().setSp(10)),

@@ -143,7 +143,6 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
             margin: EdgeInsets.only(top: 18),
             color: Color(0xffE6E6E6),
           ),
-          if (expects.isNotEmpty)
             CustomText(
               text: '择偶要求',
               textStyle: TextStyle(fontSize: 14, color: Colors.black),
@@ -158,13 +157,11 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
                 children: expects,
               ),
             ),
-          if (expects.isNotEmpty)
             Container(
               height: 0.5,
               margin: EdgeInsets.only(top: 18),
               color: Color(0xffE6E6E6),
             ),
-          if (hobbies.isNotEmpty)
             CustomText(
               text: '兴趣爱好',
               textStyle: TextStyle(fontSize: 14, color: Colors.black),
