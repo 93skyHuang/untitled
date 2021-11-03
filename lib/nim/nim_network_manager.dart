@@ -184,12 +184,18 @@ class NimNetworkManager {
     var duration = await player.setFilePath(filePath);
     logger.i(duration);
 // 发送语音消息
-    Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
+//     Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
+//             sessionId: account,
+//             sessionType: sessionType,
+//             filePath: file.path,
+//             fileSize: file.lengthSync(),
+//             duration: duration?.inMilliseconds ?? 0);
+//     return result;
+    Map<String,dynamic> map={"file":file,"duration":duration?.inMilliseconds ?? 0,"type":"Audio"};
+    Future<NIMResult<NIMMessage>> result = MessageBuilder.createCustomMessage(
             sessionId: account,
             sessionType: sessionType,
-            filePath: file.path,
-            fileSize: file.lengthSync(),
-            duration: duration?.inMilliseconds ?? 0);
+        attachment: NIMCustomMessageAttachment(data: map),);
     return result;
   }
 }
