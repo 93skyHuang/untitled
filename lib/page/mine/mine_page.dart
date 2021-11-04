@@ -76,7 +76,7 @@ class _MinePageState extends State<MinePage> {
                                     CustomText(
                                       text:
                                       '${_mineController.userBasic.value
-                                          .cname}',
+                                          .cname??''}',
                                       margin: EdgeInsets.only(
                                           left: 10, right: 10),
                                     ),

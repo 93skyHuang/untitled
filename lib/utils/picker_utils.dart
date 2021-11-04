@@ -9,13 +9,13 @@ typedef _DateClickCallBack = void Function(
     String selectDateStr, DateTime selectDataTime);
 
 void showSexPicker(BuildContext context,
-    {required _SingleClickCallBack clickCallBack,int choice=1}) {
+    {required _SingleClickCallBack clickCallBack,int choice=0}) {
   List<String> sex = [
-    '女',
     '男',
+    '女',
   ];
   showStringPicker<String>(context,
-      data: sex, choice: sex[--choice], clickCallBack: clickCallBack);
+      data: sex, choice: sex[choice], clickCallBack: clickCallBack);
 }
 
 void showEducationPicker(BuildContext context,

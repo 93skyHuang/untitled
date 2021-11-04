@@ -31,7 +31,7 @@ class AddBasicInfoPage extends StatefulWidget {
 class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   String birthday = '';
   int? height;
-  int sex = -1;
+  int sex = 1;
 
   //上传至oss返回的路径
   String? headerImgUrl;
@@ -121,36 +121,6 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                         style: TextStyle(fontSize: 15, color: Colors.black)),
                   ),
                   _inputNickName(),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     Get.to(() => NicknamePage());
-                  //   },
-                  //   style: ButtonStyle(
-                  //       minimumSize:
-                  //       MaterialStateProperty.all(const Size(0, 0)),
-                  //       visualDensity: VisualDensity.compact,
-                  //       padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                  //   child: Container(
-                  //     height: 50,
-                  //     child: Row(
-                  //       children: [
-                  //         Text('昵称',
-                  //             style:
-                  //             TextStyle(fontSize: 15, color: Colors.black)),
-                  //         Expanded(
-                  //             child: Text(nickName,
-                  //                 textAlign: TextAlign.right,
-                  //                 style: TextStyle(
-                  //                     fontSize: 15,
-                  //                     color: MyColor.grey8C8C8C))),
-                  //         Icon(
-                  //           Icons.chevron_right,
-                  //           color: Color(0xFF8C8C8C),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Divider(
                     height: 2.0,
                     color: Color(0xffE6E6E6),
@@ -161,11 +131,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                   ),
                   _textFieldInfo(),
                   SizedBox(
-                    height: 30,
-                  ),
-                  _sexChoice(),
-                  SizedBox(
-                    height: 30,
+                    height: 10,
                   ),
                   _itemArrow(
                     '城市',
@@ -173,6 +139,14 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     () {
                       FocusScope.of(context).requestFocus(FocusNode());
                       _choiceCity();
+                    },
+                  ),
+                  _itemArrow(
+                    '性别',
+                    '${sex==1?'男':'女'}',
+                        () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      _choiceSex();
                     },
                   ),
                   _itemArrow(
@@ -236,7 +210,9 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         color: MyColor.blackColor,
       ),
       decoration: InputDecoration(
-        filled: false,
+        // 设置背景色
+        fillColor: Colors.white,
+        filled: true,
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
         enabledBorder: const OutlineInputBorder(
@@ -251,41 +227,6 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         ),
       ),
       controller: _controllerInfo,
-    );
-  }
-
-  Widget _sexChoice() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          child: Image.asset(sex == 1
-              ? 'assets/images/male_select.png'
-              : 'assets/images/male_unselect.png'),
-          onTap: () {
-            logger.i('message$sex');
-            if (sex != 1) {
-              sex = 1;
-              setState(() {});
-            }
-          },
-        ),
-        SizedBox(
-          width: 50,
-        ),
-        GestureDetector(
-          child: Image.asset(sex == 2
-              ? 'assets/images/female_select.png'
-              : 'assets/images/female_unselect.png'),
-          onTap: () {
-            logger.i('message$sex');
-            if (sex != 2) {
-              sex = 2;
-              setState(() {});
-            }
-          },
-        ),
-      ],
     );
   }
 
@@ -368,6 +309,14 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     XFile? f = await getImageFromGallery();
     headerImgUrlLocal = f?.path;
     setState(() {});
+  }
+
+  void _choiceSex() async {
+    showSexPicker(context, choice: sex-1,
+        clickCallBack: (int index, dynamic d) {
+          sex = index+1 ;
+          setState(() {});
+        });
   }
 
   //拍照
