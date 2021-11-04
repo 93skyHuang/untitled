@@ -40,6 +40,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
       if (!mounted) {
         return;
       }
+      controller!.setFocusPoint(Offset(0.5,0.5));
       setState(() {});
     });
   }
@@ -72,21 +73,13 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
             child:
                 controller == null ? Container() : CameraPreview(controller!),
           ),
-          Container(
-            height: 130,
-            color: Color(0xffffffff),
-          ),
-          Container(
-            height: 130,
-            color: Color(0x80000000),
-          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               CustomText(
                   text: "把脸移入圈内",
                   textAlign: Alignment.center,
-                  margin: EdgeInsets.only(top: 30),
+                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(30)),
                   textStyle: TextStyle(
                       decoration: TextDecoration.none,
                       fontSize: 30,
@@ -94,7 +87,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                       fontWeight: FontWeight.bold)),
               CustomText(
                   text: "拍摄真实信息，获取“真人”标签",
-                  margin: EdgeInsets.only(top: 20, bottom: 50),
+                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(20), bottom: ScreenUtil().setHeight(50)),
                   textAlign: Alignment.center,
                   textStyle: TextStyle(
                     fontSize: 15,
@@ -106,9 +99,9 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                     startVideoRecording();
                   },
                   child: Container(
-                      height: 40,
+                      height:  ScreenUtil().setHeight(40),
                       alignment: Alignment.center,
-                      width: 214,
+                      width: ScreenUtil().setWidth(214) ,
                       decoration: new BoxDecoration(
                         color: Color(0xffF3CD8E),
                         borderRadius: BorderRadius.all(Radius.circular(40.0)),
@@ -143,17 +136,18 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                           )))),
               TextButton(
                 onPressed: () {
+                  controller?.dispose();
                   Get.until((route) => Get.currentRoute == homePName);
                 },
                 child: CustomText(
                     textAlign: Alignment.center,
                     text: "取消认证",
-                    padding: EdgeInsets.only(top: 20),
+                    padding: EdgeInsets.only(top:ScreenUtil().setHeight(20)),
                     textStyle:
                         TextStyle(fontSize: 12, color: Color(0xff8C8C8C))),
               ),
               SizedBox(
-                height: 50,
+                height: ScreenUtil().setHeight(30),
               ),
             ]),
           ),
@@ -232,7 +226,7 @@ class Controller extends GetxController {
       final r2 = await addCertification(1, files: [r.data ?? ""]);
       btnStatus.value = 0;
       if (r2.isOk()) {
-        MyToast.show('恭喜您认证成功！');
+        MyToast.show(r2.msg);
         Get.until((route) => Get.currentRoute == homePName);
       } else {
         MyToast.show(r2.msg);
