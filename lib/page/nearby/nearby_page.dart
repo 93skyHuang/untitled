@@ -10,7 +10,9 @@ import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/personcenter/trend_detail_page.dart';
 import 'package:untitled/page/personcenter/user_home_page.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
@@ -290,7 +292,15 @@ class _NearbyPageState extends State<NearbyPage>
         if (!isSvip) {
           showOpenSvipDialog(context);
         } else {
-          // Get.to(() => UserHomePage(uid:info.uid,initialIndex: 2,));
+          if (trendsImg.type == 2) {
+            //视频
+            Get.to(TrendVideoPlayPage(), arguments: {
+              "videoUrl": trendsImg.video,
+              "trendsId": trendsImg.id,
+            });
+          } else {
+            Get.to(TrendDetailPage(trendsImg.id));
+          }
         }
       },
     );

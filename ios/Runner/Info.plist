@@ -27,7 +27,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>我们将精确的为您推送异性，是否开启定位计算功能</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>为了您更好的体验,APP需要您的麦克风权限</string>
 	<key>NSPhotoLibraryUsageDescription</key>

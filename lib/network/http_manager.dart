@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/constant/error_code.dart';
 import 'package:untitled/network/bean/address.dart';
@@ -60,10 +61,11 @@ Future<BasePageData<LoginResp?>> autoLogin() async {
   BasePageData<LoginResp?> basePageData;
   try {
     int uid = GetStorageUtils.getUID();
+    Position? p = GetStorageUtils.getLocation();
     Response response = await getDio().post('/index/Login/defaultLogin', data: {
       'uid': uid,
-      'longitude': 0.0,
-      'latitude': 0.0,
+      'longitude': p?.longitude ?? 0.0,
+      'latitude': p?.latitude ?? 0.0,
       'registionID': 'registionID',
       'packageName': Platform.isIOS ? "com.moshen.teck.liu" : "com.ace.freedom",
     });

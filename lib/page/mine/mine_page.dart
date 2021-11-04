@@ -458,7 +458,7 @@ class _MinePageState extends State<MinePage> {
           textStyle: TextStyle(fontSize: 12, color: Colors.black),
           onPressed: () {
             Get.toNamed(webViewPName, arguments: {
-              'url': 'https://www.sancun.vip/index/index/securityCenter',
+              'url': 'http://www.sancun.vip/index/index/securityCenter',
               'title': '安全中心'
             });
           },

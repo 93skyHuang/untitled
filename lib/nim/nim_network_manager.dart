@@ -97,6 +97,13 @@ class NimNetworkManager {
     return result;
   }
 
+  Future<NIMResult<void>> sendMessageReceipt(
+      int uid, NIMMessage message) async {
+    logger.i(message);
+    return await NimCore.instance.messageService
+        .sendMessageReceipt(sessionId: 'll$uid', message: message);
+  }
+
   /**
    * 查询与该用户的历史消息
    */
@@ -131,7 +138,6 @@ class NimNetworkManager {
         '${result.isSuccess} ${result.data?.sessionId}  ${result.data?.senderNickname}');
   }
 
-
   Future<NIMResult<NIMMessage>> createTextMsg(String content, int uid) async {
     String account = 'll$uid';
     // 以单聊类型为例
@@ -145,8 +151,8 @@ class NimNetworkManager {
   Future<NIMResult<NIMMessage>> sendMsg(NIMMessage msg) {
     final result = NimCore.instance.messageService
         .sendMessage(message: msg, resend: false);
-    result.then((value) =>
-        logger.i('${value.isSuccess} ${value.errorDetails} ${value.code} ${value.data}'));
+    result.then((value) => logger.i(
+        '${value.isSuccess} ${value.errorDetails} ${value.code} ${value.data}'));
     return result;
   }
 
@@ -184,18 +190,18 @@ class NimNetworkManager {
     var duration = await player.setFilePath(filePath);
     logger.i(duration);
 // 发送语音消息
-//     Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
-//             sessionId: account,
-//             sessionType: sessionType,
-//             filePath: file.path,
-//             fileSize: file.lengthSync(),
-//             duration: duration?.inMilliseconds ?? 0);
-//     return result;
-    Map<String,dynamic> map={"file":file,"duration":duration?.inMilliseconds ?? 0,"type":"Audio"};
-    Future<NIMResult<NIMMessage>> result = MessageBuilder.createCustomMessage(
-            sessionId: account,
-            sessionType: sessionType,
-        attachment: NIMCustomMessageAttachment(data: map),);
+    Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
+        sessionId: account,
+        sessionType: sessionType,
+        filePath: file.path,
+        fileSize: file.lengthSync(),
+        duration: duration?.inMilliseconds ?? 0);
     return result;
+    // Map<String,dynamic> map={"file":file,"duration":duration?.inMilliseconds ?? 0,"type":"Audio"};
+    // Future<NIMResult<NIMMessage>> result = MessageBuilder.createCustomMessage(
+    //         sessionId: account,
+    //         sessionType: sessionType,
+    //     attachment: NIMCustomMessageAttachment(data: map),);
+    // return result;
   }
 }

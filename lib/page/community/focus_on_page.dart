@@ -1,9 +1,12 @@
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/bean/trends_like_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/community/recommend_item_widget.dart';
+import 'package:untitled/page/personcenter/trend_detail_page.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/expandable_text.dart';
 import 'package:untitled/widget/trend_img.dart';
@@ -168,7 +171,17 @@ class _FocusOnPageState extends State<FocusOnPage>
                           TrendImg(
                             imgs: info.imgArr,
                             contextWidth: _textContextWidth,
-                            onClick: (img) {},
+                            onClick: (img) {
+                              if (info.type == 2) {
+                                //视频
+                                Get.to(TrendVideoPlayPage(), arguments: {
+                                  "videoUrl": info.video,
+                                  "trendsId": info.trendsId,
+                                });
+                              } else {
+                                Get.to(TrendDetailPage(info.trendsId));
+                              }
+                            },
                           ),
                           Padding(
                             padding: EdgeInsets.only(

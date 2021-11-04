@@ -130,12 +130,13 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
         Container(
           child: ListView.builder(
             itemBuilder: (context, index) {
+              Trends trends = _userHomeController.videoTrends.value[index];
               return ItemVideo(
-                trends: _userHomeController.videoTrends.value[index],
+                trends: trends,
                 onPressed: () {
                   Get.to(TrendVideoPlayPage(), arguments: {
-                    'videoTrendsInfo':
-                        _userHomeController.videoTrends.value[index]
+                    'videoUrl': trends.video,
+                    'treadsId': trends.id
                   });
                 },
               );

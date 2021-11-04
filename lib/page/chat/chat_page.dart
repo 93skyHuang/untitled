@@ -92,6 +92,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     Container(
                       height: ScreenUtil().setHeight(50),
+                      margin: EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Color(0xFFF0F0F0),
                         boxShadow: [
@@ -316,33 +317,41 @@ class _ChatPageState extends State<ChatPage> {
         ]));
   }
 
+  bool _isNoMoreData = false;
   _onLoad() {
-    _controller.queryMoreHistoryMsg().then((value) => {
-          if (value == 2)
-            {
-              _refreshController.loadComplete(),
-            }
-          else if (value == 1)
-            {
-              _refreshController.loadComplete(),
-            }
-          else
-            {
-              _refreshController.loadComplete(),
-            }
-        });
+    if (!_isNoMoreData) {
+      _controller.queryMoreHistoryMsg().then((value) => {
+            if (value == 2)
+              {
+                _refreshController.loadComplete(),
+              }
+            else if (value == 1)
+              {
+                _isNoMoreData = true,
+                _refreshController.loadComplete(),
+              }
+            else
+              {
+                _refreshController.loadComplete(),
+              }
+          });
+    }else{
+      _refreshController.loadComplete();
+    }
   }
 
   _renderList() {
     return Obx(() => SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: false,
-          header: const MsgClassicHeader(),
-          // footer: const MsgClassicFooter(),
+          enablePullDown: false,
+          enablePullUp: !_controller.isNoMoreData.value,
+          // header: const MsgClassicHeader(),
+          footer: const MsgClassicFooter(),
           // 配置默认底部指示器
           controller: _refreshController,
-          onRefresh: _onLoad(),
+          // onRefresh: _onLoad(),
+          onLoading: _onLoad(),
           child: ListView.builder(
+            reverse: true,
             shrinkWrap: true,
             padding: EdgeInsets.only(top: 27),
             itemBuilder: (context, index) {
@@ -424,14 +433,14 @@ class _ChatPageState extends State<ChatPage> {
   ///接收到的语音消息
   Widget _receiveVoiceItem(NIMMessage item) {
     NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
-    if (item.messageType == NIMMessageType.custom) {
-      NIMCustomMessageAttachment nimCustomMessageAttachment =
-          NIMCustomMessageAttachment.fromMap(nimMessageAttachment!.toMap());
-      int mill = nimCustomMessageAttachment.data?['duration'] ?? 0;
-      File? file = nimCustomMessageAttachment.data?['file'] as File?;
-      // NIMAudioAttachment nimAudioAttachment =
-      //     NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
-      // int mill = nimAudioAttachment.duration ?? 0;
+    if (item.messageType == NIMMessageType.audio) {
+      // NIMCustomMessageAttachment nimCustomMessageAttachment =
+      // NIMCustomMessageAttachment.fromMap(nimMessageAttachment!.toMap());
+      // int mill = nimCustomMessageAttachment.data?['duration'] ?? 0;
+      // File? file = nimCustomMessageAttachment.data?['file'] as File?;
+      NIMAudioAttachment nimAudioAttachment =
+          NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      int mill = nimAudioAttachment.duration ?? 0;
       int second = mill ~/ 1000;
       double width = second < 3
           ? contentWidth / 4
@@ -441,7 +450,8 @@ class _ChatPageState extends State<ChatPage> {
       return InkWell(
           onTap: () {
             logger.i('播放语音');
-            _controller.playVoice(item.messageId ?? "-2", file?.path);
+            _controller.playVoice(
+                item.messageId ?? "-2", nimAudioAttachment.path);
           },
           child: Container(
             width: width,
@@ -572,14 +582,14 @@ class _ChatPageState extends State<ChatPage> {
    */
   Widget _sendVoiceItem(NIMMessage item) {
     NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
-    if (item.messageType == NIMMessageType.custom) {
-      NIMCustomMessageAttachment nimCustomMessageAttachment =
-          NIMCustomMessageAttachment.fromMap(nimMessageAttachment!.toMap());
-      int mill = nimCustomMessageAttachment.data?['duration'] ?? 0;
-      File? file = nimCustomMessageAttachment.data?['file'] as File?;
-      // NIMAudioAttachment nimAudioAttachment =
-      //     NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
-      // int mill = nimAudioAttachment.duration ?? 0;
+    if (item.messageType == NIMMessageType.audio) {
+      // NIMCustomMessageAttachment nimCustomMessageAttachment =
+      // NIMCustomMessageAttachment.fromMap(nimMessageAttachment!.toMap());
+      // int mill = nimCustomMessageAttachment.data?['duration'] ?? 0;
+      // File? file = nimCustomMessageAttachment.data?['file'] as File?;
+      NIMAudioAttachment nimAudioAttachment =
+          NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
+      int mill = nimAudioAttachment.duration ?? 0;
       int second = mill ~/ 1000;
       double width = second < 3
           ? contentWidth / 4
@@ -589,7 +599,8 @@ class _ChatPageState extends State<ChatPage> {
       return InkWell(
           onTap: () {
             logger.i('播放语音');
-            _controller.playVoice(item.messageId ?? "-2", file?.path);
+            _controller.playVoice(
+                item.messageId ?? "-2", nimAudioAttachment.path);
           },
           child: Container(
             width: width,
