@@ -492,10 +492,7 @@ class _MinePageState extends State<MinePage> {
         ),
       ];
     }
-
   return
-
   _menuItem
-
   ;
 }}

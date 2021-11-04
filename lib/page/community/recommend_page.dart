@@ -145,8 +145,7 @@ class _RecommendWidgetState extends State<RecommendWidget>
               children: [
                 GestureDetector(
                   onTap: () {
-                    trendsDetails(info.trendsId);
-                    // Get.to(UserHomePage(uid: info.uid));
+                    Get.to(UserHomePage(uid: info.uid));
                   },
                   child: cardNetworkImage(info.headImgUrl ?? '',
                       ScreenUtil().setWidth(44), ScreenUtil().setWidth(44)),
