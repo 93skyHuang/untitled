@@ -70,7 +70,7 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: 'ID： ${uid}\n${region}｜${sex == 1 ? '男' : '女'}｜${age}岁',
+                text: 'ID： ${uid}\n${region??''}｜${sex == 1 ? '男' : '女'}｜${age}岁',
                 textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                 margin: EdgeInsets.only(left: 18, top: 20, bottom: 10),
               ),
@@ -87,7 +87,7 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
           Container(
               margin: EdgeInsets.all(16),
               child: CustomText(
-                text: '${autograph}',
+                text: '${autograph??'暂无个人介绍'}',
                 textStyle: TextStyle(fontSize: 12, color: Colors.black),
               ),
               padding: EdgeInsets.only(left: 20, right: 20, bottom: 9, top: 9),
@@ -195,6 +195,8 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     expects.clear();
     details.clear();
     hobbies.clear();
+    verify.clear();
+    icons.clear();
     if (userInfo.hobby!.isNotEmpty) {
       if (userInfo.hobby!.length == 1 && userInfo.hobby![0] == '') {
       } else {

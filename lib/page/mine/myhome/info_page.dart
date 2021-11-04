@@ -225,6 +225,8 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     expects.clear();
     details.clear();
     hobbies.clear();
+    verify.clear();
+    icons.clear();
     if (userInfo.hobby!.isNotEmpty) {
       if (userInfo.hobby!.length == 1 && userInfo.hobby![0] == '') {
       } else {

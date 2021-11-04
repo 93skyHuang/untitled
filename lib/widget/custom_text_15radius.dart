@@ -16,6 +16,7 @@ class CustomTextRadius extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      if(text!='')
       Container(
         decoration: new BoxDecoration(
           color: Color(0xFFE2E2E2),
