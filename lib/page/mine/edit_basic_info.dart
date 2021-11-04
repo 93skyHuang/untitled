@@ -43,8 +43,8 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
   String province = '';
   String? city = '';
   String? autograph = '';
-  late double lat;
-  late double lon;
+  late double lat=0;
+  late double lon=0;
 
   late final TextEditingController _controllerNickName =
       TextEditingController();
@@ -159,7 +159,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                 '${province??''} ${city??''}',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
-                  _choiceCity();
+                  getLocations();
                 },
               ),
               _itemArrow(
@@ -394,40 +394,60 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
         headerImgUrl = basePageData.data;
       }
     }
-    BasePageData basePageData = await updateUserInfo(
-        headImgUrl: headerImgUrl,
-        cname: _controllerNickName.text,
-        birthday: birthday,
-        autograph: _controllerInfo.text,
-        province: province,
-        region: city,
-        sex: sex,
-        monthlyIncome: monthlyIncome,
-        education: education,
-        height: height);
-    //
-    if (basePageData.isOk()) {
-      Get.back();
+
+    if (lon != null ||lon != 0|| lat != null|| lat != 0) {
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: _controllerInfo.text,
+          latitude: lat,
+          longitude: lon,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.back();
+      }
+    }else{
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: _controllerInfo.text,
+          province: province,
+          region: city,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.back();
+      }
     }
   }
 
-  void getLocation() async {
-    // getAddress(120.52, 122.12);
-
-    // bool hasPermission = await checkAndRequestPermission();
-    // if (hasPermission) {
-    //   MyToast.show('正在获取您的位置...');
-    //   Future.delayed(Duration(seconds: 8)).then((value) => {
-    //     MyToast.show('定位失败'),
-    //   });
-    //   Position position = await getPosition();
-    //   logger.i(position);
-    //   lon = position.longitude;
-    //   lat = position.latitude;
-    //   BasePageData<Address?> data = await getAddress(lon, lat);
-    //   if (data.isOk()) {
-    //     city = data.data?.region ?? '';
-    //   }
-    // }
+  void getLocations() async {
+    bool hasPermission = await checkAndRequestPermission();
+    if (hasPermission) {
+      MyToast.show('正在获取您的位置...');
+      Future.delayed(Duration(seconds: 2)).then((value) => {
+        MyToast.show('定位失败'),
+      _choiceCity(),
+      });
+      Position position = await getPosition();
+      lon = position.longitude;
+      lat = position.latitude;
+      BasePageData<Address?> data = await getAddress(lon, lat);
+      if (data.isOk()) {
+        city = data.data?.region ?? '';
+        setState(() {});
+      }else{
+        _choiceCity();
+      }
+    }else{
+      _choiceCity();
+    }
   }
 }

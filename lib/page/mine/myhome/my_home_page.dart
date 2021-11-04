@@ -104,7 +104,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
         Container(
           child: ListView.builder(
             itemBuilder: (context, index) {
-              Trends trends = _myHomeController.videoTrends[index];
+              Trends trends = _myHomeController.trends[index];
               return ItemTrend(
                 trends: trends,
                 onPressed: () {

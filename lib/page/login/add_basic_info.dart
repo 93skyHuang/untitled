@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/address.dart';
 import 'package:untitled/network/bean/base_page_data.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/mine/nickname_page.dart';
 import 'package:untitled/utils/image_picker_util.dart';
+import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:untitled/utils/picker_utils.dart';
@@ -45,6 +48,8 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   String city = '';
   String autograph = '';
   DateTime? _lastPressedAt; //上 次点击时间
+  late double lat=0;
+  late double lon=0;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -138,7 +143,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                     '$province $city',
                     () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      _choiceCity();
+                      getLocations();
                     },
                   ),
                   _itemArrow(
@@ -373,6 +378,28 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     });
   }
 
+  void getLocations() async {
+    bool hasPermission = await checkAndRequestPermission();
+    if (hasPermission) {
+      MyToast.show('正在获取您的位置...');
+      Future.delayed(Duration(seconds: 2)).then((value) => {
+        MyToast.show('定位失败'),
+        _choiceCity(),
+      });
+      Position position = await getPosition();
+      lon = position.longitude;
+      lat = position.latitude;
+      BasePageData<Address?> data = await getAddress(lon, lat);
+      if (data.isOk()) {
+        city = data.data?.region ?? '';
+        setState(() {});
+      }else{
+        _choiceCity();
+      }
+    }else{
+      _choiceCity();
+    }
+  }
   void _commitInfo() async {
     if (headerImgUrlLocal != null) {
       BasePageData<String?> basePageData =
@@ -381,20 +408,37 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         headerImgUrl = basePageData.data;
       }
     }
-    BasePageData basePageData = await updateUserInfo(
-        headImgUrl: headerImgUrl,
-        cname: _controllerNickName.text,
-        birthday: birthday,
-        autograph: autograph,
-        province: province,
-        region: city,
-        sex: sex,
-        monthlyIncome: monthlyIncome,
-        education: education,
-        height: height);
-    //
-    if (basePageData.isOk()) {
-      Get.offNamed(homePName);
+
+    if (lon != null ||lon != 0|| lat != null|| lat != 0) {
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: autograph,
+          longitude: lon,
+          latitude: lat,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.offNamed(homePName);
+      }
+    }else{
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: autograph,
+          province: province,
+          region: city,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.offNamed(homePName);
+      }
     }
   }
 }
