@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:untitled/basic/include.dart';
@@ -5,56 +6,56 @@ import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/page/global_controller.dart';
 
 class GetStorageUtils {
-  //
-  static final _accountStorage = GetStorage('AccountStorage');
+  ///开启app马上需要初始化的数据
+  static final _firstInitStorage = GetStorage('firstInitStorage');
 
   static final _commonStorage = GetStorage();
 
   static String getRegistionID() {
-    return _accountStorage.read('registionID') ?? '';
+    return _firstInitStorage.read('registionID') ?? '';
   }
 
   ///激光推送id
   static Future<void> saveRegistionID(String registionID) {
-    return _accountStorage.write('registionID', registionID);
+    return _firstInitStorage.write('registionID', registionID);
   }
 
   static String getNimToken() {
-    return _accountStorage.read('nimToken') ?? '';
+    return _firstInitStorage.read('nimToken') ?? '';
   }
 
   ///云信im token
   static Future<void> saveNimToken(String nimToken) {
-    return _accountStorage.write('nimToken', nimToken);
+    return _firstInitStorage.write('nimToken', nimToken);
   }
 
   static int getUID() {
-    return _accountStorage.read('uid') ?? -1;
+    return _firstInitStorage.read('uid') ?? -1;
     // return  105324;
   }
 
   ///
   static Future<void> saveUid(int? uid) {
     logger.i('saveUid $uid');
-    return _accountStorage.write('uid', uid);
+    return _firstInitStorage.write('uid', uid);
   }
 
   static int getSex() {
-    return _accountStorage.read('sex') ?? 1;
+    return _firstInitStorage.read('sex') ?? 1;
   }
 
   ///
   static void saveSex(int sex) {
-    _accountStorage.write('sex', sex);
+    _firstInitStorage.write('sex', sex);
   }
 
   static bool getSvip() {
-    return _accountStorage.read('svip') ?? false;
+    return _firstInitStorage.read('svip') ?? false;
   }
 
   ///
   static void saveSvip(bool svip) {
-    _accountStorage.write('svip', svip);
+    _firstInitStorage.write('svip', svip);
     try {
       final GlobalController _globalController = Get.find<GlobalController>();
       _globalController.isSvip.value = svip;
@@ -64,30 +65,38 @@ class GetStorageUtils {
   }
 
   static bool getIsShowVerifiedTipsInHomePage() {
-    return _accountStorage.read('isShowVerifiedTips') ?? false;
+    return _firstInitStorage.read('isShowVerifiedTips') ?? false;
   }
 
   ///
   static void saveIsShowVerifiedTipsInHomePage(bool isShowVerifiedTips) {
-    _accountStorage.write('isShowVerifiedTips', isShowVerifiedTips);
+    _firstInitStorage.write('isShowVerifiedTips', isShowVerifiedTips);
   }
 
   static bool getIsHead() {
-    return _accountStorage.read('isHead') ?? false;
+    return _firstInitStorage.read('isHead') ?? false;
   }
 
   ///
   static void saveIsHead(bool isHead) {
-    _accountStorage.write('isHead', isHead);
+    _firstInitStorage.write('isHead', isHead);
   }
 
   static bool getIsVideo() {
-    return _accountStorage.read('isVideo') ?? false;
+    return _firstInitStorage.read('isVideo') ?? false;
   }
 
   ///
   static void saveIsVideo(bool isVideo) {
-    _accountStorage.write('isVideo', isVideo);
+    _firstInitStorage.write('isVideo', isVideo);
+  }
+
+  static Position? getLocation() {
+    _firstInitStorage.read('position');
+  }
+
+  static void saveLocation(Position position) {
+    _firstInitStorage.write('position', position);
   }
 
   ///保存某个人的基本信息数据

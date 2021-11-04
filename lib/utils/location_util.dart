@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/toast.dart';
 
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
@@ -10,8 +11,10 @@ Future<Position> getPosition() async {
   if (lastP == null) {
     Position position = await getCurrentPosition();
     logger.i(position);
+    GetStorageUtils.saveLocation(position);
     return position;
   }
+  GetStorageUtils.saveLocation(lastP);
   return lastP;
 }
 
@@ -23,6 +26,28 @@ Future<Position> getCurrentPosition() async {
 Future<Position?> getLastPosition() async {
   return await _geolocatorPlatform.getLastKnownPosition();
 }
+
+Future<bool> checkAndRequestPermission1() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+  permission = await _geolocatorPlatform.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await _geolocatorPlatform.requestPermission();
+    if (permission == LocationPermission.denied) {
+      return false;
+    }
+  }
+  // Test if location services are enabled.
+  serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    return false;
+  }
+  if (permission == LocationPermission.deniedForever) {
+    return false;
+  }
+  return true;
+}
+
 
 ///申请权限
 Future<bool> checkAndRequestPermission() async {

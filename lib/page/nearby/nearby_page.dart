@@ -9,7 +9,10 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/nearby_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/personcenter/trend_detail_page.dart';
 import 'package:untitled/page/personcenter/user_home_page.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
@@ -159,8 +162,11 @@ class _NearbyPageState extends State<NearbyPage>
                 bool isSvip = GetStorageUtils.getSvip();
                 if (!isSvip) {
                   showOpenSvipDialog(context);
-                }else {
-                  Get.to(() => UserHomePage(uid:info.uid,initialIndex: 2,));
+                } else {
+                  Get.to(() => UserHomePage(
+                        uid: info.uid,
+                        initialIndex: 2,
+                      ));
                 }
               },
             ),
@@ -285,8 +291,16 @@ class _NearbyPageState extends State<NearbyPage>
         bool isSvip = GetStorageUtils.getSvip();
         if (!isSvip) {
           showOpenSvipDialog(context);
-        }else{
-          // Get.to(() => UserHomePage(uid:info.uid,initialIndex: 2,));
+        } else {
+          if (trendsImg.type == 2) {
+            //视频
+            Get.to(TrendVideoPlayPage(), arguments: {
+              "videoUrl": trendsImg.video,
+              "trendsId": trendsImg.id,
+            });
+          } else {
+            Get.to(TrendDetailPage(trendsImg.id));
+          }
         }
       },
     );
@@ -299,12 +313,13 @@ class _NearbyPageState extends State<NearbyPage>
         const Flexible(child: Align()),
         TextButton(
           style: ButtonStyle(
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
             minimumSize: MaterialStateProperty.all(const Size(0, 0)),
             visualDensity: VisualDensity.compact,
             padding: MaterialStateProperty.all(EdgeInsets.zero),
           ),
           onPressed: () {
-            logger.i(info.cname);
+            Get.to(ChatPage(), arguments: {"uid": info.uid});
           },
           child: Image.asset('assets/images/nearby_chat.png'),
         ),

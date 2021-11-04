@@ -3,18 +3,22 @@ import 'dart:io';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/network/bean/address.dart';
 import 'package:untitled/network/bean/base_page_data.dart';
 import 'package:untitled/network/bean/user_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/utils/image_picker_util.dart';
+import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/utils/picker_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
+import 'package:untitled/widgets/toast.dart';
 
 class EditBasicInfoPage extends StatefulWidget {
   const EditBasicInfoPage();
@@ -39,6 +43,8 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
   String province = '';
   String? city = '';
   String? autograph = '';
+  late double lat=0;
+  late double lon=0;
 
   late final TextEditingController _controllerNickName =
       TextEditingController();
@@ -148,19 +154,12 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                 margin: EdgeInsets.only(top: 12, bottom: 10),
               ),
               _textFieldInfo(),
-              SizedBox(
-                height: 30,
-              ),
-              _sexChoice(),
-              SizedBox(
-                height: 30,
-              ),
               _itemArrow(
                 '城市',
-                '$province $city',
+                '${province??''} ${city??''}',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
-                  _choiceCity();
+                  getLocations();
                 },
               ),
               _itemArrow(
@@ -189,7 +188,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               ),
               _itemArrow(
                 '学历',
-                '$education',
+                '${education??''}',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
                   _choiceEducation();
@@ -242,41 +241,6 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
     );
   }
 
-  Widget _sexChoice() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          child: Image.asset(sex == 1
-              ? 'assets/images/male_select.png'
-              : 'assets/images/male_unselect.png'),
-          onTap: () {
-            logger.i('message$sex');
-            if (sex != 1) {
-              sex = 1;
-              setState(() {});
-            }
-          },
-        ),
-        SizedBox(
-          width: 50,
-        ),
-        GestureDetector(
-          child: Image.asset(sex == 2
-              ? 'assets/images/female_select.png'
-              : 'assets/images/female_unselect.png'),
-          onTap: () {
-            logger.i('message$sex');
-            if (sex != 2) {
-              sex = 2;
-              setState(() {});
-            }
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _itemArrow(String text, String des, VoidCallback onPressed) {
     return Column(
       children: [
@@ -296,10 +260,13 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
                         textAlign: TextAlign.right,
                         style: TextStyle(
                             fontSize: 15, color: MyColor.grey8C8C8C))),
+                Container(
+                  width: 17,child:
                 Icon(
                   Icons.chevron_right,
                   color: Color(0xFF8C8C8C),
-                ),
+                )
+                  ,),
               ],
             ),
           ),
@@ -379,14 +346,6 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
     }
   }
 
-  void _choiceSex() async {
-    showSexPicker(context, choice: sex ?? 1,
-        clickCallBack: (int index, dynamic d) {
-      sex = d + 1;
-      setState(() {});
-    });
-  }
-
   void _choiceBirthday() async {
     List<String> date=birthday!.split('-');
     DateTime dateTime;
@@ -435,20 +394,60 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
         headerImgUrl = basePageData.data;
       }
     }
-    BasePageData basePageData = await updateUserInfo(
-        headImgUrl: headerImgUrl,
-        cname: _controllerNickName.text,
-        birthday: birthday,
-        autograph: _controllerInfo.text,
-        province: province,
-        region: city,
-        sex: sex,
-        monthlyIncome: monthlyIncome,
-        education: education,
-        height: height);
-    //
-    if (basePageData.isOk()) {
-      Get.back();
+
+    if (lon != null ||lon != 0|| lat != null|| lat != 0) {
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: _controllerInfo.text,
+          latitude: lat,
+          longitude: lon,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.back();
+      }
+    }else{
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: _controllerInfo.text,
+          province: province,
+          region: city,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.back();
+      }
+    }
+  }
+
+  void getLocations() async {
+    bool hasPermission = await checkAndRequestPermission();
+    if (hasPermission) {
+      MyToast.show('正在获取您的位置...');
+      Future.delayed(Duration(seconds: 2)).then((value) => {
+        MyToast.show('定位失败'),
+      _choiceCity(),
+      });
+      Position position = await getPosition();
+      lon = position.longitude;
+      lat = position.latitude;
+      BasePageData<Address?> data = await getAddress(lon, lat);
+      if (data.isOk()) {
+        city = data.data?.region ?? '';
+        setState(() {});
+      }else{
+        _choiceCity();
+      }
+    }else{
+      _choiceCity();
     }
   }
 }

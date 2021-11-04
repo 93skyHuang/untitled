@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/trends_details.dart';
 import 'package:untitled/network/bean/video_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
@@ -27,16 +28,17 @@ class TrendVideoPlayPage extends StatefulWidget {
 class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
   late VideoPlayerController _videoController;
   final _Controller _controller = Get.put(_Controller());
-  late VideoTrendsInfo info;
   bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     final details = Get.arguments as Map;
-    info = details['videoTrendsInfo'];
-    _controller.setInfo(info);
-    _videoController = VideoPlayerController.network(info.video ?? '')
+    String videoUrl = details['videoUrl'];
+    int  trendsId = details['trendsId'];
+    logger.i("trendsId=$trendsId videoUrl=$videoUrl");
+    _controller.setTrendsId(trendsId);
+    _videoController = VideoPlayerController.network(videoUrl)
       ..initialize().then((value) => {
             // setState(() {}),
             logger.i('VideoPlayerController initialize'), initPlay(),
@@ -115,27 +117,34 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                           onTap: () {
                             logger.i('他人主页');
                             pause();
-                            Get.to(UserHomePage(uid: _controller.info.uid,initialIndex: 2,));
+                            Get.to(UserHomePage(
+                              uid: _controller.info.uid,
+                              initialIndex: 2,
+                            ));
                           },
                           child: Container(
                             width: 40,
                             height: 40,
-                            child: CachedNetworkImage(
-                              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                              imageUrl: info.headImgUrl ?? '',
-                              errorWidget: (context, url, error) => Image.asset(
-                                'assets/images/user_icon.png',
-                                fit:
-                                    Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-                              ),
-                            ),
+                            child: Obx(() => CachedNetworkImage(
+                                  fit: Platform.isIOS
+                                      ? BoxFit.cover
+                                      : BoxFit.fill,
+                                  imageUrl: _controller.headerUrl.value,
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    'assets/images/user_icon.png',
+                                    fit: Platform.isIOS
+                                        ? BoxFit.cover
+                                        : BoxFit.fill,
+                                  ),
+                                )),
                           ),
                         ),
                       ),
                       SizedBox(height: 10),
-                      singeLineText('${info.cname}', 80,
+                      Obx(() => singeLineText(_controller.cName.value, 80,
                           TextStyle(color: Color(0xffffffff), fontSize: 14),
-                          textAlign: TextAlign.right),
+                          textAlign: TextAlign.right)),
                       SizedBox(height: 30),
                       GestureDetector(
                         onTap: () {
@@ -202,12 +211,12 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
                           maxWidth: ScreenUtil().screenWidth / 2),
-                      child: Text('${info.content??''}',
+                      child: Obx(() => Text(_controller.content.value,
                           maxLines: 2,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              color: Color(0xffffffff), fontSize: 17)),
+                              color: Color(0xffffffff), fontSize: 17))),
                     )),
               ),
             ],
@@ -249,19 +258,36 @@ class _TrendVideoPlayPageState extends State<TrendVideoPlayPage> {
 class _Controller extends GetxController {
   RxBool isLike = false.obs;
   RxInt likeNum = 0.obs;
-  late VideoTrendsInfo info;
+  RxString headerUrl = "".obs;
+  RxString cName = "".obs;
+  RxString content = "".obs;
+  late TrendsDetails info;
+  int id = -1;
 
-  void setInfo(VideoTrendsInfo info) {
+  void setTrendsId(int id) {
+    this.id = id;
+    trendsDetails(id).then((value) => {
+          if (value.isOk())
+            {setInfo(value.data!)}
+          else
+            {MyToast.show(value.msg)}
+        });
+  }
+
+  void setInfo(TrendsDetails info) {
     this.info = info;
     isLike.value = info.isTrendsFabulous == 1;
     likeNum.value = info.fabulousSum ?? 0;
+    headerUrl.value = info.headImgUrl ?? "";
+    cName.value = info.cname ?? "";
+    content.value = info.content ?? "";
   }
 
   void clickLike() {
     if (!isLike.value) {
       likeNum++;
       isLike.value = true;
-      addTrendsFabulous(info.trendsId ?? 0).then((value) => {
+      addTrendsFabulous(info.id).then((value) => {
             if (value.isOk())
               {
                 info.isTrendsFabulous = 1,
@@ -277,7 +303,7 @@ class _Controller extends GetxController {
     } else {
       likeNum--;
       isLike.value = false;
-      deleteTrendsFabulous(info.trendsId ?? 0).then((value) => {
+      deleteTrendsFabulous(info.id).then((value) => {
             if (value.isOk())
               {
                 info.isTrendsFabulous = 0,

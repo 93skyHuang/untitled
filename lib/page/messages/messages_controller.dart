@@ -106,7 +106,7 @@ class MessagesController extends GetxController {
   @override
   void onReady() {
     logger.i("onReady");
-    querySystemMsg();
+    // querySystemMsg();
     newSystemMessageOnReceiver();
   }
 }

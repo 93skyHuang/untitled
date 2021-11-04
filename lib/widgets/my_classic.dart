@@ -25,8 +25,30 @@ class MyClassicFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const ClassicFooter(idleText: '上拉加载',
-        loadingText: '加载中...',canLoadingText:'上拉加载更多',noDataText:'没有数据啦！');
+    return const ClassicFooter(
+        idleText: '上拉加载',
+        loadingText: '加载中...',
+        canLoadingText: '上拉加载更多',
+        noDataText: '没有数据啦！');
+  }
+}
+
+///消息加载头
+class MsgClassicHeader extends StatelessWidget {
+  const MsgClassicHeader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return const ClassicHeader(
+        idleText: '',
+        refreshingText: '',
+        completeText: '',
+        failedText: '',
+        releaseText: '',
+        releaseIcon: Icon(Icons.autorenew, color: MyColor.mainColor),
+        completeIcon: null,
+        idleIcon: null);
   }
 }
 
@@ -37,7 +59,12 @@ class MsgClassicFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const ClassicFooter(idleText: '',
-        loadingText: '',canLoadingText:'',noDataText:'',idleIcon:Icon(Icons.autorenew, color: MyColor.mainColor));
+    return const ClassicFooter(
+        idleText: '',
+        loadingText: '',
+        canLoadingText: '',
+        noDataText: '',
+        canLoadingIcon: Icon(Icons.autorenew, color: MyColor.mainColor),
+        idleIcon: null);
   }
 }

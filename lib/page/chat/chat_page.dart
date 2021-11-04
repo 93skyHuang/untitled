@@ -92,6 +92,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     Container(
                       height: ScreenUtil().setHeight(50),
+                      margin: EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Color(0xFFF0F0F0),
                         boxShadow: [
@@ -316,13 +317,25 @@ class _ChatPageState extends State<ChatPage> {
         ]));
   }
 
-  _onLoad() async {
-    int status = await _controller.queryMoreHistoryMsg();
-    if (status == 2) {
-      _refreshController.loadFailed();
-    } else if (status == 1) {
-      _refreshController.loadNoData();
-    } else {
+  bool _isNoMoreData = false;
+  _onLoad() {
+    if (!_isNoMoreData) {
+      _controller.queryMoreHistoryMsg().then((value) => {
+            if (value == 2)
+              {
+                _refreshController.loadComplete(),
+              }
+            else if (value == 1)
+              {
+                _isNoMoreData = true,
+                _refreshController.loadComplete(),
+              }
+            else
+              {
+                _refreshController.loadComplete(),
+              }
+          });
+    }else{
       _refreshController.loadComplete();
     }
   }
@@ -330,13 +343,13 @@ class _ChatPageState extends State<ChatPage> {
   _renderList() {
     return Obx(() => SmartRefresher(
           enablePullDown: false,
-          enablePullUp: true,
+          enablePullUp: !_controller.isNoMoreData.value,
+          // header: const MsgClassicHeader(),
           footer: const MsgClassicFooter(),
           // 配置默认底部指示器
           controller: _refreshController,
-          onLoading: () {
-            _onLoad();
-          },
+          // onRefresh: _onLoad(),
+          onLoading: _onLoad(),
           child: ListView.builder(
             reverse: true,
             shrinkWrap: true,
@@ -421,6 +434,10 @@ class _ChatPageState extends State<ChatPage> {
   Widget _receiveVoiceItem(NIMMessage item) {
     NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
     if (item.messageType == NIMMessageType.audio) {
+      // NIMCustomMessageAttachment nimCustomMessageAttachment =
+      // NIMCustomMessageAttachment.fromMap(nimMessageAttachment!.toMap());
+      // int mill = nimCustomMessageAttachment.data?['duration'] ?? 0;
+      // File? file = nimCustomMessageAttachment.data?['file'] as File?;
       NIMAudioAttachment nimAudioAttachment =
           NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
       int mill = nimAudioAttachment.duration ?? 0;
@@ -566,6 +583,10 @@ class _ChatPageState extends State<ChatPage> {
   Widget _sendVoiceItem(NIMMessage item) {
     NIMMessageAttachment? nimMessageAttachment = item.messageAttachment;
     if (item.messageType == NIMMessageType.audio) {
+      // NIMCustomMessageAttachment nimCustomMessageAttachment =
+      // NIMCustomMessageAttachment.fromMap(nimMessageAttachment!.toMap());
+      // int mill = nimCustomMessageAttachment.data?['duration'] ?? 0;
+      // File? file = nimCustomMessageAttachment.data?['file'] as File?;
       NIMAudioAttachment nimAudioAttachment =
           NIMAudioAttachment.fromMap(nimMessageAttachment!.toMap());
       int mill = nimAudioAttachment.duration ?? 0;

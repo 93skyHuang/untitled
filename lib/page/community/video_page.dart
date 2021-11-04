@@ -136,7 +136,7 @@ class _VideoListPageState extends State<VideoListPage>
   Widget _itemView(VideoTrendsInfo info) {
     return GestureDetector(
       onTap: () {
-        Get.to(TrendVideoPlayPage(), arguments: {'videoTrendsInfo': info});
+        Get.to(TrendVideoPlayPage(), arguments: {'videoUrl': info.video,'trendsId':info.trendsId});
       },
       child: Container(
         child: Stack(

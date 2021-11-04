@@ -16,6 +16,7 @@ import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
 import 'package:untitled/page/messages/messages_page_bean.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
+import 'package:untitled/utils/time_utils.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
@@ -81,6 +82,7 @@ class _SystemMsgPageState extends State<SystemMsgPage>
           // 配置默认底部指示器
           controller: _refreshController,
           onRefresh: _onRefresh,
+          onLoading: _onLoad,
           child: _getListView(),
         ));
   }
@@ -88,44 +90,93 @@ class _SystemMsgPageState extends State<SystemMsgPage>
   @override
   bool get wantKeepAlive => true;
 
-  void _onRefresh() async {
+  void _onRefresh() {
     logger.i("_onRefresh");
-    _refreshController.refreshCompleted();
-    setState(() {});
+    queryHistoryMsg();
+  }
+
+  void _onLoad() {
+    queryMoreHistoryMsg();
   }
 
   Widget _getListView() {
     int length = _list.length;
     List<Widget> listView = [];
     for (int i = 0; i < length; i++) {
-      // listView.add(_systemItem());
+      listView.add(_systemItem(_list[i]));
     }
     return ListView(
       children: listView,
     );
   }
 
+  Widget _systemItem(NIMMessage nimMessage) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      width: double.infinity,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxWidth: ScreenUtil().screenWidth * 0.6),
+                child: Text("${nimMessage.content}",
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 24, color: Colors.black)),
+              ),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(TimeUtils.dateAndTimeToString(nimMessage.timestamp),
+                    style: TextStyle(fontSize: 14, color: Color(0xff8C8C8C))),
+              )),
+            ],
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Divider(
+            height: 1,
+            color: MyColor.dividerColor2,
+          )
+        ],
+      ),
+    );
+  }
+
   void queryHistoryMsg() async {
-    _list.clear();
     final result = await NimNetworkManager.instance.queryHistoryMsg(sysUid);
     if (result.isSuccess) {
+      _refreshController.refreshCompleted();
       List<NIMMessage> list = result.data ?? [];
       if (list.isNotEmpty) {
+        _list.clear();
         list.sort((nim1, nim2) => nim2.timestamp.compareTo(nim1.timestamp));
         _list.addAll(list);
+        setState(() {});
+        NimNetworkManager.instance.sendMessageReceipt(sysUid, _list[0]);
       }
+    } else {
+      _refreshController.refreshFailed();
     }
   }
 
-  void queryMoreHistoryMsg() async{
+  void queryMoreHistoryMsg() async {
     final result = await NimNetworkManager.instance
         .queryMoreHistoryMsg(_list[_list.length]);
     if (result.isSuccess) {
       List<NIMMessage> list = result.data ?? [];
       if (list.isNotEmpty) {
+        _refreshController.loadComplete();
         _list.addAll(list);
+        setState(() {});
+      } else {
+        _refreshController.loadNoData();
       }
+    } else {
+      _refreshController.loadFailed();
     }
   }
-
 }

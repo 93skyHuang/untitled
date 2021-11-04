@@ -9,7 +9,7 @@ part of 'login_resp.dart';
 LoginResp _$LoginRespFromJson(Map<String, dynamic> json) {
   return LoginResp()
     ..uid = json['uid'] as int
-    ..sex = json['sex'] as int
+    ..sex = json['sex'] as int? ?? 1
     ..svip = json['svip'] as int
     ..isNewUser = json['isNewUser'] as int?
     ..loginToken = json['loginToken'] as String?;

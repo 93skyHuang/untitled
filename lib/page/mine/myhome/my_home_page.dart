@@ -11,6 +11,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
@@ -103,31 +104,38 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
         Container(
           child: ListView.builder(
             itemBuilder: (context, index) {
+              Trends trends = _myHomeController.trends[index];
               return ItemTrend(
-                trends: _myHomeController.trends.value[index],
+                trends: trends,
                 onPressed: () {
                   Get.to(MyTrendDetailPage(
-                      _myHomeController.trends.value[index].id));
+                      trends.id));
                 },
                 clickLike: () {},
                 deleteTrend: () {
                   showOpenDelDialog(
-                      context, _myHomeController.trends.value[index]);
+                      context, trends);
                 },
               );
             },
-            itemCount: _myHomeController.trends.value.length,
+            itemCount: _myHomeController.trends.length,
           ),
         ),
         Container(
           child: ListView.builder(
             itemBuilder: (context, index) {
+              Trends trends = _myHomeController.videoTrends[index];
               return ItemVideo(
-                trends: _myHomeController.videoTrends.value[index],
-                onPressed: () {},
+                trends: trends,
+                onPressed: () {
+                  Get.to(TrendVideoPlayPage(), arguments: {
+                    "videoUrl": trends.video,
+                    "trendsId": trends.id,
+                  });
+                },
                 deleteTrend: () {
                   showOpenDelDialog(
-                      context, _myHomeController.videoTrends.value[index]);
+                      context, trends);
                 },
               );
             },

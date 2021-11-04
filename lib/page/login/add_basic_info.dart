@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/network/bean/address.dart';
 import 'package:untitled/network/bean/base_page_data.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/mine/nickname_page.dart';
 import 'package:untitled/utils/image_picker_util.dart';
+import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:untitled/utils/picker_utils.dart';
@@ -31,7 +34,7 @@ class AddBasicInfoPage extends StatefulWidget {
 class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   String birthday = '';
   int? height;
-  int sex = -1;
+  int sex = 1;
 
   //上传至oss返回的路径
   String? headerImgUrl;
@@ -45,6 +48,8 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   String city = '';
   String autograph = '';
   DateTime? _lastPressedAt; //上 次点击时间
+  late double lat=0;
+  late double lon=0;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -121,36 +126,6 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                         style: TextStyle(fontSize: 15, color: Colors.black)),
                   ),
                   _inputNickName(),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     Get.to(() => NicknamePage());
-                  //   },
-                  //   style: ButtonStyle(
-                  //       minimumSize:
-                  //       MaterialStateProperty.all(const Size(0, 0)),
-                  //       visualDensity: VisualDensity.compact,
-                  //       padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                  //   child: Container(
-                  //     height: 50,
-                  //     child: Row(
-                  //       children: [
-                  //         Text('昵称',
-                  //             style:
-                  //             TextStyle(fontSize: 15, color: Colors.black)),
-                  //         Expanded(
-                  //             child: Text(nickName,
-                  //                 textAlign: TextAlign.right,
-                  //                 style: TextStyle(
-                  //                     fontSize: 15,
-                  //                     color: MyColor.grey8C8C8C))),
-                  //         Icon(
-                  //           Icons.chevron_right,
-                  //           color: Color(0xFF8C8C8C),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Divider(
                     height: 2.0,
                     color: Color(0xffE6E6E6),
@@ -161,18 +136,22 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                   ),
                   _textFieldInfo(),
                   SizedBox(
-                    height: 30,
-                  ),
-                  _sexChoice(),
-                  SizedBox(
-                    height: 30,
+                    height: 10,
                   ),
                   _itemArrow(
                     '城市',
                     '$province $city',
                     () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      _choiceCity();
+                      getLocations();
+                    },
+                  ),
+                  _itemArrow(
+                    '性别',
+                    '${sex==1?'男':'女'}',
+                        () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      _choiceSex();
                     },
                   ),
                   _itemArrow(
@@ -236,7 +215,9 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         color: MyColor.blackColor,
       ),
       decoration: InputDecoration(
-        filled: false,
+        // 设置背景色
+        fillColor: Colors.white,
+        filled: true,
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xffE6E6E6), width: 1)),
         enabledBorder: const OutlineInputBorder(
@@ -251,41 +232,6 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         ),
       ),
       controller: _controllerInfo,
-    );
-  }
-
-  Widget _sexChoice() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          child: Image.asset(sex == 1
-              ? 'assets/images/male_select.png'
-              : 'assets/images/male_unselect.png'),
-          onTap: () {
-            logger.i('message$sex');
-            if (sex != 1) {
-              sex = 1;
-              setState(() {});
-            }
-          },
-        ),
-        SizedBox(
-          width: 50,
-        ),
-        GestureDetector(
-          child: Image.asset(sex == 2
-              ? 'assets/images/female_select.png'
-              : 'assets/images/female_unselect.png'),
-          onTap: () {
-            logger.i('message$sex');
-            if (sex != 2) {
-              sex = 2;
-              setState(() {});
-            }
-          },
-        ),
-      ],
     );
   }
 
@@ -370,6 +316,14 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     setState(() {});
   }
 
+  void _choiceSex() async {
+    showSexPicker(context, choice: sex-1,
+        clickCallBack: (int index, dynamic d) {
+          sex = index+1 ;
+          setState(() {});
+        });
+  }
+
   //拍照
   void _tokePhoto() async {
     XFile? f = await getPhoto();
@@ -424,6 +378,28 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     });
   }
 
+  void getLocations() async {
+    bool hasPermission = await checkAndRequestPermission();
+    if (hasPermission) {
+      MyToast.show('正在获取您的位置...');
+      Future.delayed(Duration(seconds: 2)).then((value) => {
+        MyToast.show('定位失败'),
+        _choiceCity(),
+      });
+      Position position = await getPosition();
+      lon = position.longitude;
+      lat = position.latitude;
+      BasePageData<Address?> data = await getAddress(lon, lat);
+      if (data.isOk()) {
+        city = data.data?.region ?? '';
+        setState(() {});
+      }else{
+        _choiceCity();
+      }
+    }else{
+      _choiceCity();
+    }
+  }
   void _commitInfo() async {
     if (headerImgUrlLocal != null) {
       BasePageData<String?> basePageData =
@@ -432,20 +408,37 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         headerImgUrl = basePageData.data;
       }
     }
-    BasePageData basePageData = await updateUserInfo(
-        headImgUrl: headerImgUrl,
-        cname: _controllerNickName.text,
-        birthday: birthday,
-        autograph: autograph,
-        province: province,
-        region: city,
-        sex: sex,
-        monthlyIncome: monthlyIncome,
-        education: education,
-        height: height);
-    //
-    if (basePageData.isOk()) {
-      Get.offNamed(homePName);
+
+    if (lon != null ||lon != 0|| lat != null|| lat != 0) {
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: autograph,
+          longitude: lon,
+          latitude: lat,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.offNamed(homePName);
+      }
+    }else{
+      BasePageData basePageData = await updateUserInfo(
+          headImgUrl: headerImgUrl,
+          cname: _controllerNickName.text,
+          birthday: birthday,
+          autograph: autograph,
+          province: province,
+          region: city,
+          sex: sex,
+          monthlyIncome: monthlyIncome,
+          education: education,
+          height: height);
+      if (basePageData.isOk()) {
+        Get.offNamed(homePName);
+      }
     }
   }
 }

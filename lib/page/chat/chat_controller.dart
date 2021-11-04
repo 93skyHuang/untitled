@@ -39,6 +39,7 @@ class ChatController extends GetxController {
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
+  RxBool isNoMoreData = false.obs;
 
   void setUserUid(int uid) {
     hisUid = uid;
@@ -77,6 +78,7 @@ class ChatController extends GetxController {
 
   void queryHistoryMsg() async {
     nimMessageList.clear();
+    isNoMoreData.value = false;
     final result = await _nimNetworkManager.queryHistoryMsg(hisUid);
     if (result.isSuccess) {
       List<NIMMessage> list = result.data ?? [];
@@ -99,13 +101,14 @@ class ChatController extends GetxController {
           list.sort((nim1, nim2) => nim2.timestamp.compareTo(nim1.timestamp));
           nimMessageList.addAll(list);
         } else {
-          return 1;//没有数据
+          isNoMoreData.value = true;
+          return 1; //没有数据
         }
-      }else{
-        return 2;//加载失败
+      } else {
+        return 2; //加载失败
       }
     }
-    return 0;//
+    return 0; //
   }
 
   int trendsLength() {
@@ -309,7 +312,7 @@ class ChatController extends GetxController {
   Future<void> playVoice(String msgId, String? path) async {
     if (path == null) {
       logger.e('null 消息');
-      MyToast.show('该语音已被删除');
+      MyToast.show('未找到该语音');
       return;
     }
     if (curPlayAudioMsgId.value != msgId) {

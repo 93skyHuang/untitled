@@ -1,9 +1,14 @@
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/bean/trends_like_info.dart';
 import 'package:untitled/network/http_manager.dart';
+import 'package:untitled/page/comment/comment_page.dart';
 import 'package:untitled/page/community/recommend_item_widget.dart';
+import 'package:untitled/page/personcenter/trend_detail_page.dart';
+import 'package:untitled/page/personcenter/user_home_page.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/expandable_text.dart';
 import 'package:untitled/widget/trend_img.dart';
@@ -78,13 +83,16 @@ class _FocusOnPageState extends State<FocusOnPage>
           if (value.isOk())
             if (isLoad)
               {
-                if( value.data==null){
-                  _refreshController.loadNoData(),
-                }else{
-                  _refreshController.loadComplete(),
-                  _trendsLikeInfo.addAll(value.data ?? []),
-                  updatePage(),
-                }
+                if (value.data == null)
+                  {
+                    _refreshController.loadNoData(),
+                  }
+                else
+                  {
+                    _refreshController.loadComplete(),
+                    _trendsLikeInfo.addAll(value.data ?? []),
+                    updatePage(),
+                  }
               }
             else
               {
@@ -131,8 +139,13 @@ class _FocusOnPageState extends State<FocusOnPage>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                cardNetworkImage(info.headImgUrl ?? '',
-                    ScreenUtil().setWidth(44), ScreenUtil().setWidth(44)),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(UserHomePage(uid: info.uid));
+                  },
+                  child: cardNetworkImage(info.headImgUrl ?? '',
+                      ScreenUtil().setWidth(44), ScreenUtil().setWidth(44)),
+                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(
                       ScreenUtil().setWidth(10),
@@ -158,17 +171,33 @@ class _FocusOnPageState extends State<FocusOnPage>
                           const SizedBox(
                             height: 12,
                           ),
-                          TQExpandableText(
-                            "${info.content??''}",
+                          if(info.content!=null)GestureDetector(
+                            onTap: () {
+                              Get.to(CommentPage(info));
+                            },
+                            child: TQExpandableText(
+                              "${info.content??''}",
+                            ),
                           ),
                           Padding(
                               padding: EdgeInsets.only(
                             bottom: ScreenUtil().setWidth(10),
                           )),
+                          if (info.imgArr.isNotEmpty)
                           TrendImg(
                             imgs: info.imgArr,
                             contextWidth: _textContextWidth,
-                            onClick: (img) {},
+                            onClick: (img) {
+                              if (info.type == 2) {
+                                //视频
+                                Get.to(TrendVideoPlayPage(), arguments: {
+                                  "videoUrl": info.video,
+                                  "trendsId": info.trendsId,
+                                });
+                              } else {
+                                Get.to(TrendDetailPage(info.trendsId));
+                              }
+                            },
                           ),
                           Padding(
                             padding: EdgeInsets.only(

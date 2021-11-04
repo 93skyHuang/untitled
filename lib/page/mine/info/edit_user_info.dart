@@ -94,7 +94,7 @@ class _EditUserState extends State<EditUser> {
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
                 CustomText(
-                  text: '昵称：${_editUserInfoController.userInfo.value.cname}  城市：${_editUserInfoController.userInfo.value.region}  性别：女',
+                  text: '昵称：${_editUserInfoController.userInfo.value.cname??''}  城市：${_editUserInfoController.userInfo.value.region??''}  性别：${_editUserInfoController.userInfo.value.sex==1?'男':'女'}',
                   textStyle: TextStyle(fontSize: 14, color: Color(0xff8C8C8C)),
                   margin: EdgeInsets.only(left: 16, bottom: 16),
                 ),
@@ -113,7 +113,7 @@ class _EditUserState extends State<EditUser> {
                   },
                   text: '城市',
                   value:
-                      '${_editUserInfoController.userInfo.value.expectRegion}',
+                      '${_editUserInfoController.userInfo.value.expectRegion??''}',
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
                 ItemArrow(
@@ -123,7 +123,7 @@ class _EditUserState extends State<EditUser> {
                   },
                   text: '身高',
                   value:
-                      '${_editUserInfoController.userInfo.value.expectHeight}',
+                      '${_editUserInfoController.userInfo.value.expectHeight??''}',
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
                 ItemArrow(
@@ -132,7 +132,7 @@ class _EditUserState extends State<EditUser> {
                     _choiceAge();
                   },
                   text: '年龄',
-                  value: '${_editUserInfoController.userInfo.value.expectAge}',
+                  value: '${_editUserInfoController.userInfo.value.expectAge??''}',
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
                 ItemArrow(
@@ -142,7 +142,7 @@ class _EditUserState extends State<EditUser> {
                   },
                   text: '星座',
                   value:
-                      '${_editUserInfoController.userInfo.value.expectConstellation}',
+                      '${_editUserInfoController.userInfo.value.expectConstellation??''}',
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
                 Container(
@@ -158,6 +158,7 @@ class _EditUserState extends State<EditUser> {
                   showDivider: false,
                   padding: EdgeInsets.only(left: 16, right: 16),
                 ),
+                if(_editUserInfoController.userInfo.value.hobby!.isNotEmpty)
                 Wrap(
                     children: List.generate(
                         _editUserInfoController.userInfo.value.hobby!.length,
@@ -298,8 +299,10 @@ class _EditUserState extends State<EditUser> {
   final List<List<int>> heightLists = [];
 
   void _choiceHeight() async {
-    List<String> height =
-        _editUserInfoController.userInfo.value.expectHeight!.split('-');
+    List<String> height =[];
+    if(_editUserInfoController.userInfo.value.expectHeight!=null){
+      height = _editUserInfoController.userInfo.value.expectHeight!.split('-');
+    }
     try {
       if (height != null && height.length == 2) {
         heightStart = int.parse(height[0]);
@@ -339,8 +342,10 @@ class _EditUserState extends State<EditUser> {
   final List<List<int>> lists = [];
 
   void _choiceAge() async {
-    List<String> age =
-        _editUserInfoController.userInfo.value.expectAge!.split('-');
+    List<String> age =[];
+    if(_editUserInfoController.userInfo.value.expectAge!=null){
+      age =_editUserInfoController.userInfo.value.expectAge!.split('-');
+    }
     try {
       if (age != null && age.length == 2) {
         ageStart = int.parse(age[0]);
@@ -376,7 +381,9 @@ class _EditUserState extends State<EditUser> {
   }
 
   void _choiceConstellation() async {
-    constellation = _editUserInfoController.userInfo.value.expectConstellation!;
+    if(_editUserInfoController.userInfo.value.expectConstellation!=null){
+      constellation = _editUserInfoController.userInfo.value.expectConstellation!;
+    }
     showConstellationsPicker(context,
         choice: constellation == '' ? '水瓶座' : constellation,
         clickCallBack: (int index, dynamic d) {
