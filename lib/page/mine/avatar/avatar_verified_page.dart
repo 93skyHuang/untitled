@@ -123,7 +123,9 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
     }
     addCertification(3, files: urlOSS).then((value) => {
           Loading.dismiss(context),
-          if (value.isOk()) {MyToast.show('提交成功'), Get.back()}
+          if (value.isOk()) {MyToast.show(value.msg), Get.back()}else{
+            MyToast.show(value.msg)
+          }
         });
   }
 

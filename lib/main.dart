@@ -39,7 +39,7 @@ void main() async {
 
 Future<void> _init() async {
   Get.put(GlobalController());
-  await GetStorage.init('AccountStorage');
+  await GetStorage.init('firstInitStorage');
   await _autoLogin();
   nimSdkInit();
   await GetStorage.init();

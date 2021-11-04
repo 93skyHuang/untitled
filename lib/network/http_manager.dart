@@ -76,7 +76,7 @@ Future<BasePageData<LoginResp?>> autoLogin() async {
       //执行云信登录
       String token = basePageData.data?.loginToken ?? "";
       GetStorageUtils.saveNimToken(token);
-      GetStorageUtils.saveSex(basePageData.data?.sex ?? 1);
+      GetStorageUtils.saveSex(basePageData.data?.sex ?? 0);
       GetStorageUtils.saveSvip(basePageData.data?.svip == 1);
     } else {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -305,7 +305,7 @@ Future<BasePageData<UserBasic?>> getHomeUserData(int userId) async {
       basePageData = BasePageData(baseResp.code, baseResp.msg, null);
     }
     logger.i('$basePageData');
-  } on DioError catch (error) {
+  } catch (error) {
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }

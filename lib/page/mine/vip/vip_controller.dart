@@ -54,10 +54,6 @@ class VipController extends GetxController {
     }
 
     List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(key);
-
-    for (int i = 0; i < items.length; i++) {
-      logger.i('${items[i]} ${items[i].productId}  ');
-    }
     logger.i('苹果支付开始 ${items.length}');
 
     /// 初始化连接
@@ -76,21 +72,45 @@ class VipController extends GetxController {
       logger.i('购买状态监听----$productItem');
       //自有服务器校验
       if (productItem != null) {
-        String transactionId = productItem.transactionId ?? '';
-        String receiptData = productItem.transactionReceipt ?? '';
-        final r = await verifyOrder(
-          orderid,
-          receiptData,
-          transactionId,
-        );
-        logger.i('${r.isOk()}  ${r.msg}');
-        if (r.isOk()) {
-          MyToast.show(r.msg);
-          Get.back();
-        } else {
-          MyToast.show(r.msg);
+        logger.i('transactionStateIOS===${productItem.transactionStateIOS}');
+        switch(productItem.transactionStateIOS){
+          case TransactionState.purchasing:// 购买中
+            // TODO: Handle this case.
+            await clearTransaction();
+            break;
+          case TransactionState.restored://恢复用户先前购买的交易
+          // TODO: Handle this case.
+            break;
+          case TransactionState.purchased://购买完成
+          logger.i('${productItem.originalTransactionIdentifierIOS}');
+            if(productItem.originalTransactionIdentifierIOS!=null){
+             //自动续费订单
+              logger.e('自动续费订单 message');
+            }else {
+              //普通购买或第一次购买
+            }
+          String transactionId = productItem.transactionId ?? '';
+          String receiptData = productItem.transactionReceipt ?? '';
+          final r = await verifyOrder(
+            orderid,
+            receiptData,
+            transactionId,
+          );
+          logger.i('${r.isOk()}  ${r.msg}');
+          if (r.isOk()) {
+            MyToast.show(r.msg);
+            Get.back();
+          } else {
+            MyToast.show(r.msg);
+          }
+          await clearTransaction();
+            break;
+          case TransactionState.failed://失败的交易
+            await clearTransaction();
+            break;
+          case TransactionState.deferred://队列中的交易
+            break;
         }
-        await clearTransaction();
       }
     });
 
@@ -99,14 +119,12 @@ class VipController extends GetxController {
       print('监听到错误 purchase-error: $purchaseError');
       await clearTransaction();
       await FlutterInappPurchase.instance.endConnection;
-
       /// 购买错误回调
     });
 
     if (items.isNotEmpty) {
       /// 发起支付请求，传递iosProductId
       ///
-      logger.e('${items[3].productId}');
       FlutterInappPurchase.instance.requestPurchase(card.iosKey);
     } else {
       logger.e('null items  IAPItem');
@@ -114,11 +132,13 @@ class VipController extends GetxController {
   }
 
   Future _getPurchaseHistory() async {
+    logger.i('_getPurchaseHistory}');
     List<PurchasedItem>? items =
         await FlutterInappPurchase.instance.getPurchaseHistory();
-    logger.i('_getPurchaseHistory${items}');
+    logger.i('_getPurchaseHistory${items?.length}');
     int l = items?.length ?? 0;
     for (int i = 0; i < l; i++) {
+      logger.i('${items![i].transactionStateIOS}');
       logger.i('${items![i].toString()}');
     }
   }
@@ -150,6 +170,7 @@ class VipController extends GetxController {
   @override
   void onClose() {
     logger.i("onClose");
+    FlutterInappPurchase.instance.endConnection;
   }
 
   @override

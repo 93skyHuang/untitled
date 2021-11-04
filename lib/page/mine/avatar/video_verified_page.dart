@@ -40,7 +40,6 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
       if (!mounted) {
         return;
       }
-      controller!.setFocusPoint(Offset(0.5,0.5));
       setState(() {});
     });
   }
@@ -59,7 +58,8 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
           ShaderMask(
             shaderCallback: (Rect bounds) {
               return RadialGradient(
-                radius: .6,
+                center: Alignment.center,
+                radius: .7,
                 colors: <Color>[
                   Colors.transparent,
                   Colors.transparent,
@@ -79,7 +79,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
               CustomText(
                   text: "把脸移入圈内",
                   textAlign: Alignment.center,
-                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(30)),
+                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
                   textStyle: TextStyle(
                       decoration: TextDecoration.none,
                       fontSize: 30,
@@ -87,7 +87,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                       fontWeight: FontWeight.bold)),
               CustomText(
                   text: "拍摄真实信息，获取“真人”标签",
-                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(20), bottom: ScreenUtil().setHeight(50)),
+                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(20), bottom: ScreenUtil().setHeight(20)),
                   textAlign: Alignment.center,
                   textStyle: TextStyle(
                     fontSize: 15,
@@ -142,7 +142,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                 child: CustomText(
                     textAlign: Alignment.center,
                     text: "取消认证",
-                    padding: EdgeInsets.only(top:ScreenUtil().setHeight(20)),
+                    padding: EdgeInsets.only(top:ScreenUtil().setHeight(10)),
                     textStyle:
                         TextStyle(fontSize: 12, color: Color(0xff8C8C8C))),
               ),

@@ -710,14 +710,18 @@ class _Controller extends GetxController {
     return topicList;
   }
 
+  bool isGetLocation=true;
   void getLocation() async {
     bool hasPermission = await checkAndRequestPermission();
     if (hasPermission) {
+      isGetLocation=false;
       MyToast.show('正在获取您的位置...');
-      Future.delayed(Duration(seconds: 8)).then((value) => {
+      Future.delayed(Duration(seconds: 4)).then((value) => {
+          if(!isGetLocation)
             MyToast.show('定位失败'),
           });
       Position position = await getPosition();
+      isGetLocation=true;
       logger.i(position);
       lon = position.longitude;
       lat = position.latitude;

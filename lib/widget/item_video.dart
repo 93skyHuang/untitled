@@ -60,7 +60,7 @@ class ItemVideo extends StatelessWidget {
                       imgs: trends.imgArr ?? [],
                       showAll: true,
                       contextWidth: contextWidth,
-                      onClick: (int index) {},
+                      onClick: (int index) {onPressed.call();},
                     ),
                   Row(
                     mainAxisSize: MainAxisSize.min,

@@ -136,7 +136,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 onPressed: () {
                   Get.to(TrendVideoPlayPage(), arguments: {
                     'videoUrl': trends.video,
-                    'treadsId': trends.id
+                    'trendsId': trends.id
                   });
                 },
               );

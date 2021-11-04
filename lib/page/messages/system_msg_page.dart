@@ -120,11 +120,10 @@ class _SystemMsgPageState extends State<SystemMsgPage>
             children: [
               ConstrainedBox(
                 constraints:
-                    BoxConstraints(maxWidth: ScreenUtil().screenWidth * 0.6),
+                    BoxConstraints(maxWidth: ScreenUtil().screenWidth * 0.7),
                 child: Text("${nimMessage.content}",
                     textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 24, color: Colors.black)),
+                    style: TextStyle(fontSize: 18, color: Colors.black)),
               ),
               Expanded(
                   child: Align(

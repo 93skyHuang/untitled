@@ -31,7 +31,6 @@ class GetStorageUtils {
 
   static int getUID() {
     return _firstInitStorage.read('uid') ?? -1;
-    // return  105324;
   }
 
   ///

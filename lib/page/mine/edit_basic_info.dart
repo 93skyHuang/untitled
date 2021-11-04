@@ -428,15 +428,20 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
     }
   }
 
+  bool isGetLocation=true;
   void getLocations() async {
     bool hasPermission = await checkAndRequestPermission();
     if (hasPermission) {
+      isGetLocation=false;
       MyToast.show('正在获取您的位置...');
       Future.delayed(Duration(seconds: 2)).then((value) => {
-        MyToast.show('定位失败'),
-      _choiceCity(),
+        if(!isGetLocation){
+          MyToast.show('定位失败'),
+          _choiceCity(),
+        }
       });
       Position position = await getPosition();
+      isGetLocation=true;
       lon = position.longitude;
       lat = position.latitude;
       BasePageData<Address?> data = await getAddress(lon, lat);

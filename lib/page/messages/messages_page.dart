@@ -155,6 +155,7 @@ class _MessagesPageState extends State<MessagesPage>
                             TextStyle(
                                 color: Color(0xff000014),
                                 fontSize: ScreenUtil().setSp(14))),
+                        SizedBox(height: 5,),
                         Obx(() => singeLineText(
                             _controller.newSystemMsg.value,
                             _textContextWidth,
@@ -243,6 +244,7 @@ class _MessagesPageState extends State<MessagesPage>
                             TextStyle(
                                 color: Color(0xff000014),
                                 fontSize: ScreenUtil().setSp(14))),
+                        SizedBox(height: 5,),
                         singeLineText(
                             '${info.getInfo()}',
                             _textContextWidth,
