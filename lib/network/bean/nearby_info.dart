@@ -29,6 +29,9 @@ class NearbyInfo {
   String? loginTime;
   int? userLabel;
   int? age = 0;
+  int? isVideo ;
+  int? isCard ;
+  int? isHead ;
   List<TrendsImg?> trendsImg=[];
 
 

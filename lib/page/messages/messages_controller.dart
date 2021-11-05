@@ -57,6 +57,7 @@ class MessagesController extends GetxController {
       logger.i(list[i].sessionId);
       NIMSession session = list[i];
       MsgPageBean msgPageBean = MsgPageBean();
+      logger.i(session.extension);
       msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
       msgPageBean.unreadMsgNum = session.unreadCount;
       int uid = int.parse(

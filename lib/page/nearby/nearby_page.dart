@@ -174,8 +174,10 @@ class _NearbyPageState extends State<NearbyPage>
               padding: EdgeInsets.only(left: ScreenUtil().setWidth(6)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    height: 10,
+                  ),
                   _info1(info),
                   _info2(info),
                   singeLineText(
@@ -223,6 +225,30 @@ class _NearbyPageState extends State<NearbyPage>
             ScreenUtil().setWidth(90),
             TextStyle(
                 color: MyColor.blackColor, fontSize: ScreenUtil().setSp(14))),
+        info.isCard == 1
+            ? Container(
+                width: 16,
+                height: 12,
+                margin: EdgeInsets.only(right: 4, left: 4),
+                child: Image.asset("assets/images/ic_card_ver.png"),
+              )
+            : Container(),
+        info.isHead == 1
+            ? Container(
+                width: 12,
+                height: 12,
+                margin: EdgeInsets.only(right: 4, left: 4),
+                child: Image.asset("assets/images/icon_verified_avatar.png"),
+              )
+            : Container(),
+        info.isVideo == 1
+            ? Container(
+                width: 12,
+                height: 12,
+                margin: EdgeInsets.only(right: 4, left: 4),
+                child: Image.asset("assets/images/ic_verified_person1.png"),
+              )
+            : Container(),
         singeLineText(
             '${info.loginTime}',
             ScreenUtil().setWidth(60),

@@ -100,48 +100,55 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
   }
 
   Widget _child() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            child: TextField(
-              onChanged: (text) {
-                //输入框内容变化回调
-                _jumpIsCanPull();
-              },
-              controller: _textFieldController,
-              maxLines: 6,
-              minLines: 4,
-              maxLength: 400,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white, width: 0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white, width: 0),
-                ),
-                fillColor: Color(0xffF5F5F5),
-                filled: true,
-                hintStyle: TextStyle(color: Color(0xFF8C8C8C), fontSize: 15),
-                hintText: "说出你的心情～",
-                contentPadding: EdgeInsets.fromLTRB(12, 5, 10, 5),
+    return Column(
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 30,
               ),
-            ),
+              Container(
+                child: TextField(
+                  onChanged: (text) {
+                    //输入框内容变化回调
+                    _jumpIsCanPull();
+                  },
+                  controller: _textFieldController,
+                  maxLines: 12,
+                  minLines: 6,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 0),
+                    ),
+                    fillColor: Color(0xffF5F5F5),
+                    filled: true,
+                    hintStyle:
+                        TextStyle(color: Color(0xFF8C8C8C), fontSize: 15),
+                    hintText: "说出你的心情～",
+                    contentPadding: EdgeInsets.fromLTRB(12, 5, 10, 5),
+                  ),
+                ),
+              ),
+            ],
           ),
-          _photoAndVideoGridView(),
-          SizedBox(
-            height: 20,
-          ),
-          _locationAndTopic(),
-          SizedBox(
-            height: 20,
-          ),
-          _action(),
-        ],
-      ),
+        ),
+        _photoAndVideoGridView(),
+        SizedBox(
+          height: 20,
+        ),
+        _locationAndTopic(),
+        SizedBox(
+          height: 20,
+        ),
+        _action(),
+        SizedBox(
+          height: 70,
+        ),
+      ],
     );
   }
 
@@ -157,6 +164,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
 
   Widget _photoAndVideoGridView() {
     return GridView.count(
+      reverse: true,
       shrinkWrap: true,
       //为true可以解决子控件必须设置高度的问题
       physics: NeverScrollableScrollPhysics(),

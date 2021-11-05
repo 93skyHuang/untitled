@@ -42,10 +42,7 @@ class _MinePageState extends State<MinePage> {
         backgroundColor: Color(0xFFF5F5F5),
         appBar: PreferredSize(
           preferredSize:
-          Size.fromHeight(MediaQuery
-              .of(context)
-              .size
-              .height * 0.07),
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
           child: SafeArea(
             top: true,
             child: Offstage(),
@@ -60,297 +57,291 @@ class _MinePageState extends State<MinePage> {
                     Container(
                       margin:
                       EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 16),
-                      child: Row(
-                        children: [
-                          cardNetworkImage(
-                            _mineController.userBasic.value.headImgUrl ?? '',
-                            ScreenUtil().setWidth(60),
-                            ScreenUtil().setHeight(60),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    children: [
+                      cardNetworkImage(
+                        _mineController.userBasic.value.headImgUrl ?? '',
+                        ScreenUtil().setWidth(60),
+                        ScreenUtil().setHeight(60),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    CustomText(
-                                      text:
-                                      '${_mineController.userBasic.value
-                                          .cname??''}',
-                                      margin: EdgeInsets.only(
-                                          left: 10, right: 10),
-                                    ),
-                                    _mineController.userBasic.value.svip == 1
-                                        ? Image(
-                                      image: AssetImage(
-                                          "assets/images/icon_vip.png"),
-                                    )
-                                        : Container(),
-                                  ],
-                                ),
                                 CustomText(
                                   text:
-                                  '资料完整度${_mineController.userBasic.value
-                                      .dataPerfection}%',
+                                      '${_mineController.userBasic.value.cname}',
+                                  margin: EdgeInsets.only(left: 10, right: 10),
+                                ),
+                                _mineController.userBasic.value.svip == 1
+                                    ? Image(
+                                        image: AssetImage(
+                                            "assets/images/icon_vip.png"),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                            CustomText(
+                              text:
+                                  '资料完整度${_mineController.userBasic.value.dataPerfection}%',
+                              textStyle: TextStyle(
+                                  fontSize: 12, color: Color(0xff8C8C8C)),
+                              margin: EdgeInsets.only(left: 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.to(() => EditUser())!
+                                  .then((value) => _mineController.getInfo());
+                            },
+                            child: Row(
+                              children: [
+                                Image(
+                                  image:
+                                      AssetImage("assets/images/icon_edit.png"),
+                                ),
+                                CustomText(
+                                  text: '编辑资料',
+                                  margin: EdgeInsets.only(left: 3),
                                   textStyle: TextStyle(
                                       fontSize: 12, color: Color(0xff8C8C8C)),
-                                  margin: EdgeInsets.only(left: 10),
                                 ),
                               ],
                             ),
                           ),
-                          Container(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(() => EditUser())!
-                                      .then((value) =>
-                                      _mineController.getInfo());
-                                },
-                                child: Row(
-                                  children: [
-                                    Image(
-                                      image:
-                                      AssetImage("assets/images/icon_edit.png"),
-                                    ),
-                                    CustomText(
-                                      text: '编辑资料',
-                                      margin: EdgeInsets.only(left: 3),
-                                      textStyle: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xff8C8C8C)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              padding:
+                          padding:
                               EdgeInsets.only(left: 6, right: 6, bottom: 2),
-                              decoration: new BoxDecoration(
-                                borderRadius:
+                          decoration: new BoxDecoration(
+                            borderRadius:
                                 BorderRadius.all(Radius.circular(15.0)),
-                                border: new Border.all(
-                                    width: 1, color: Color(0xff8C8C8C)),
-                              ))
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        CustomText(
-                          text: '动态 ',
-                          textStyle:
-                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                          margin: EdgeInsets.only(left: 16),
-                        ),
-                        CustomText(
-                          text:
-                          '${_mineController.userBasic.value.trendsList
-                              ?.length}',
-                          textStyle: TextStyle(
-                              fontSize: 15, color: Colors.black),
-                        ),
-                        CustomText(
-                          text: '访客 ',
-                          textStyle:
-                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                          margin: EdgeInsets.only(left: 30),
-                        ),
-                        CustomText(
-                          text: '${_mineController.userBasic.value.pasDaySum} ',
-                          textStyle: TextStyle(
-                              fontSize: 15, color: Colors.black),
-                        ),
-                        CustomText(
-                          text: '喜欢 ',
-                          textStyle:
-                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                          margin: EdgeInsets.only(left: 30),
-                        ),
-                        CustomText(
-                          text: '${_mineController.userBasic.value.followSum}',
-                          textStyle: TextStyle(
-                              fontSize: 15, color: Colors.black),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      color: Color(0xff5DB1DE),
-                      margin: EdgeInsets.only(top: 16, bottom: 16),
-                      padding: EdgeInsets.only(left: 16, right: 18),
-                      height: 51,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomText(
-                                text: '完善基本资料',
-                                textStyle:
-                                TextStyle(fontSize: 12, color: Colors.white),
-                              ),
-                              CustomText(
-                                text: '详细的个人资料才能得到更多关注哟',
-                                textStyle:
-                                TextStyle(fontSize: 10, color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(EditBasicInfoPage())!
-                                  .then((value) => _mineController.getInfo());
-                            },
-                            child: Container(
-                                padding: EdgeInsets.only(
-                                    left: 12, right: 12, bottom: 5, top: 3),
-                                decoration: new BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(16.0)),
-                                ),
-                                child: Text(
-                                  "去完善",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xff5DB1DE),
-                                  ),
-                                )),
-                          )
-                        ],
-                      ),
-                    ),
+                            border: new Border.all(
+                                width: 1, color: Color(0xff8C8C8C)),
+                          ))
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
                     CustomText(
-                      text: '认证信息',
-                      textStyle: TextStyle(
-                          fontSize: 12, color: Color(0xff8C8C8C)),
+                      text: '动态 ',
+                      textStyle:
+                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
                       margin: EdgeInsets.only(left: 16),
                     ),
-                    Container(
-                        height: 84,
-                        width: double.infinity,
-                        alignment: Alignment.bottomCenter,
-                        margin: EdgeInsets.only(
-                            left: 16, right: 16, top: 10, bottom: 16),
-                        decoration: new BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ItemMenu(
-                              margin: EdgeInsets.only(left: 20),
-                              text: '头像认证',
-                              img: _mineController.userBasic.value.isHead == 1
-                                  ? "assets/images/icon_verified_avatar.png"
-                                  : "assets/images/icon_un_verified_avatar.png",
-                              onPressed: () {},
-                            ),
-                            ItemMenu(
-                              margin: EdgeInsets.only(left: 20),
-                              text: '真人认证',
-                              img: _mineController.userBasic.value.isVideo == 1
-                                  ? "assets/images/ic_verified_person1.png" :
-                              "assets/images/ic_unverified_person.png",
-                              onPressed: () {},
-                            ),
-                            ItemMenu(
-                              margin: EdgeInsets.only(left: 20),
-                              text: '手机认证',
-                              img: "assets/images/icon_verified_phone.png",
-                              onPressed: () {},
-                            ),
-                          ],
-                        )),
-                    Container(
-                      height: _mineController.isSvip.value
-                          ? 50 : 70,
-                      margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      decoration: new BoxDecoration(
-                        color: Color(0xff3E321E),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _mineController.isSvip.value
-                              ? CustomText(
-                            textAlign: Alignment.center,
-                            text:
-                            '会员有效期：${_mineController.svipEndTime.value}',
-                            textStyle: TextStyle(
-                                fontSize: 18, color: Color(0xffF3CD8E)),
-                          )
-                              : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomText(
-                                text: '开通SVIP会员',
-                                textStyle: TextStyle(
-                                    fontSize: 15, color: Color(0xffF3CD8E)),
-                              ),
-                              CustomText(
-                                text: '尊享10项专属特权，提高交友成功率',
-                                textStyle: TextStyle(
-                                    fontSize: 10, color: Color(0xffE6E6E6)),
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(() => VipPage());
-                            },
-                            child: Container(
-                                padding: EdgeInsets.only(
-                                    left: 12, right: 12, bottom: 5, top: 3),
-                                decoration: new BoxDecoration(
-                                  color: Color(0xffF3CD8E),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(16.0)),
-                                ),
-                                child: Text(
-                                  _mineController.isSvip.value
-                                      ? "继续购买"
-                                      : "立即开通",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                  ),
-                                )),
-                          )
-                        ],
-                      ),
+                    CustomText(
+                      text:
+                          '${_mineController.userBasic.value.trendsList?.length}',
+                      textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                     CustomText(
-                      text: '更多服务',
-                      textStyle: TextStyle(
-                          fontSize: 12, color: Color(0xff8C8C8C)),
-                      margin: EdgeInsets.only(left: 16),
+                      text: '访客 ',
+                      textStyle:
+                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                      margin: EdgeInsets.only(left: 30),
                     ),
-                    Container(
-                      height: 240,
-                      margin:
-                      EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
-                      decoration: new BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: GridView.count(
-                        crossAxisCount: 4,
-                        // 设置每子元素的大小（宽高比）
-                        childAspectRatio: 1.2,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: _getMenuItem(),
-                      ),
+                    CustomText(
+                      text: '${_mineController.userBasic.value.pasDaySum} ',
+                      textStyle: TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                    CustomText(
+                      text: '喜欢 ',
+                      textStyle:
+                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                      margin: EdgeInsets.only(left: 30),
+                    ),
+                    CustomText(
+                      text: '${_mineController.userBasic.value.followSum}',
+                      textStyle: TextStyle(fontSize: 15, color: Colors.black),
                     ),
                   ],
                 ),
+                Container(
+                  color: Color(0xff5DB1DE),
+                  margin: EdgeInsets.only(top: 16, bottom: 16),
+                  padding: EdgeInsets.only(left: 16, right: 18),
+                  height: 51,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(
+                            text: '完善基本资料',
+                            textStyle:
+                                TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                          CustomText(
+                            text: '详细的个人资料才能得到更多关注哟',
+                            textStyle:
+                                TextStyle(fontSize: 10, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(EditBasicInfoPage())!
+                              .then((value) => _mineController.getInfo());
+                        },
+                        child: Container(
+                            padding: EdgeInsets.only(
+                                left: 12, right: 12, bottom: 5, top: 3),
+                            decoration: new BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            child: Text(
+                              "去完善",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xff5DB1DE),
+                              ),
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+                CustomText(
+                  text: '认证信息',
+                  textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                  margin: EdgeInsets.only(left: 16),
+                ),
+                Container(
+                    height: 84,
+                    width: double.infinity,
+                    alignment: Alignment.bottomCenter,
+                    margin: EdgeInsets.only(
+                        left: 16, right: 16, top: 10, bottom: 16),
+                    decoration: new BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ItemMenu(
+                          margin: EdgeInsets.only(left: 16,right: 16),
+                          text: '实名认证',
+                          img: _mineController.userBasic.value.isCard == 1
+                              ? "assets/images/ic_card_ver.png"
+                              : "assets/images/ic_un_card_ver.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          // margin: EdgeInsets.only(left: 20),
+                          text: '头像认证',
+                          img: _mineController.userBasic.value.isHead == 1
+                              ? "assets/images/icon_verified_avatar.png"
+                              : "assets/images/icon_un_verified_avatar.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          margin: EdgeInsets.only(left: 16),
+                          text: '真人认证',
+                          img: _mineController.userBasic.value.isVideo == 1
+                              ? "assets/images/ic_verified_person1.png"
+                              : "assets/images/ic_unverified_person.png",
+                          onPressed: () {},
+                        ),
+                        ItemMenu(
+                          margin: EdgeInsets.only(left: 16,right: 16),
+                          text: '手机认证',
+                          img: "assets/images/icon_verified_phone.png",
+                          onPressed: () {},
+                        ),
+                      ],
+                    )),
+                Container(
+                  height: _mineController.isSvip.value ? 50 : 70,
+                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  padding: EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                  ),
+                  decoration: new BoxDecoration(
+                    color: Color(0xff3E321E),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _mineController.isSvip.value
+                          ? CustomText(
+                              textAlign: Alignment.center,
+                              text:
+                                  '会员有效期：${_mineController.svipEndTime.value}',
+                              textStyle: TextStyle(
+                                  fontSize: 18, color: Color(0xffF3CD8E)),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(
+                                  text: '开通SVIP会员',
+                                  textStyle: TextStyle(
+                                      fontSize: 15, color: Color(0xffF3CD8E)),
+                                ),
+                                CustomText(
+                                  text: '尊享10项专属特权，提高交友成功率',
+                                  textStyle: TextStyle(
+                                      fontSize: 10, color: Color(0xffE6E6E6)),
+                                ),
+                              ],
+                            ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => VipPage());
+                        },
+                        child: Container(
+                            padding: EdgeInsets.only(
+                                left: 12, right: 12, bottom: 5, top: 3),
+                            decoration: new BoxDecoration(
+                              color: Color(0xffF3CD8E),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16.0)),
+                            ),
+                            child: Text(
+                              _mineController.isSvip.value ? "继续购买" : "立即开通",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                              ),
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+                CustomText(
+                  text: '更多服务',
+                  textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                  margin: EdgeInsets.only(left: 16),
+                ),
+                Container(
+                  height: 240,
+                  margin:
+                      EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
+                  decoration: new BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  child: GridView.count(
+                    crossAxisCount: 4,
+                    // 设置每子元素的大小（宽高比）
+                    childAspectRatio: 1.2,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: _getMenuItem(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ));
   }
@@ -476,8 +467,7 @@ class _MinePageState extends State<MinePage> {
           img: "assets/images/mine_page.png",
           textStyle: TextStyle(fontSize: 12, color: Colors.black),
           onPressed: () {
-            Get.to(() =>
-                MyHomePage(
+            Get.to(() => MyHomePage(
                   initIndex: 2,
                 ));
           },
@@ -492,7 +482,6 @@ class _MinePageState extends State<MinePage> {
         ),
       ];
     }
-  return
-  _menuItem
-  ;
-}}
+    return _menuItem;
+  }
+}

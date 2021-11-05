@@ -748,6 +748,12 @@ class _ChatPageState extends State<ChatPage> {
       children: [
         Container(
           margin: EdgeInsets.only(right: 10),
+          child: Image.asset(_controller.hisBasic?.isCard == 1
+              ? "assets/images/ic_card_ver.png"
+              : "assets/images/ic_un_card_ver.png"),
+        ),
+        Container(
+          margin: EdgeInsets.only(right: 10),
           child: Image.asset(_controller.hisBasic?.isHead == 1
               ? "assets/images/icon_verified_avatar.png"
               : "assets/images/icon_un_verified_avatar.png"),
@@ -755,8 +761,8 @@ class _ChatPageState extends State<ChatPage> {
         Container(
           margin: EdgeInsets.only(right: 10),
           child: Image.asset(_controller.hisBasic?.isVideo == 1
-              ? "assets/images/ic_unverified_person.png"
-              : "assets/images/ic_verified_person1.png"),
+              ? "assets/images/ic_verified_person1.png"
+              : "assets/images/ic_unverified_person.png"),
         ),
         Container(
           margin: EdgeInsets.only(right: 10),

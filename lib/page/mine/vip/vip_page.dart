@@ -143,7 +143,7 @@ class _VipPageState extends State<VipPage> {
                             recognizer: _registProtocolRecognizer
                               ..onTap = () {
                                 Get.toNamed(webViewPName, arguments: {
-                                  'url': ' http://www.sancun.vip/service',
+                                  'url': 'http://www.sancun.vip/yhxy',
                                   'title': '会员服务协议'
                                 });
                               },
@@ -159,7 +159,7 @@ class _VipPageState extends State<VipPage> {
                             recognizer: _privacyProtocolRecognizer
                               ..onTap = () {
                                 Get.toNamed(webViewPName, arguments: {
-                                  'url': 'http://www.sancun.vip/yhxy',
+                                  'url': 'http://www.sancun.vip/service',
                                   'title': '自动续费协议'
                                 });
                               },
