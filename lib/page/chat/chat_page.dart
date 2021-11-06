@@ -72,7 +72,9 @@ class _ChatPageState extends State<ChatPage> {
                   color: MyColor.blackColor, fontSize: ScreenUtil().setSp(18)),
             )),
       ),
-      body: Stack(children: [
+      body:GestureDetector(
+    onTap: () => hideKeyboard(context),
+    child:  Stack(children: [
         // _userCard(),
         Container(
           width: double.infinity,
@@ -303,7 +305,7 @@ class _ChatPageState extends State<ChatPage> {
               )
             : Container()),
       ]),
-    );
+    ));
   }
 
   bool _isNoMoreData = false;
@@ -923,4 +925,12 @@ class _ChatPageState extends State<ChatPage> {
             },
           );
   }
+  /// 点击任意位置关闭键盘
+  void hideKeyboard(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
+  }
+
 }

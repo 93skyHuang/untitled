@@ -56,7 +56,7 @@ class _EditUserState extends State<EditUser> {
               Container(
                 child: TextButton(
                   onPressed: () {
-                    _editUserInfoController.setUser();
+                    _editUserInfoController.setUser(context);
                   },
                   child: Text("保存",
                       textAlign: TextAlign.center,

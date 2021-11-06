@@ -156,7 +156,7 @@ void showMyDataPicker(
             daySuffix: "日",
             maxValue: DateTime.now(),
             minValue: DateTime(1980),
-            value: value ?? DateTime.now(),
+            value: value ?? DateTime(1990,1,1),
           ),
       title: title, clickCallBack: (Picker picker, List<int> selecteds) {
     var time = (picker.adapter as DateTimePickerAdapter).value;

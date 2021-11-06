@@ -17,6 +17,7 @@ class SendFabulousMsg {
   //      * thisContent [动态内容]（imgArr-动态图片,id-动态id,type-动态类型【0-心情（只有一段文字），1-动态（有文字和图片），2-视频】）
 
   int id = -1;
+  int uid = -1;
   int isRead = -1;
   int? trendsId;
   String? headImgUrl ;

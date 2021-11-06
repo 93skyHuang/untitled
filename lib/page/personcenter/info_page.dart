@@ -42,13 +42,12 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
   String? education = '';
   int? isVideo;
   int? isHead;
+  int? isCard;
   String? expectAge = '';
   String? expectHeight = '';
   String? expectConstellation = '';
   String? expectType = '';
   String? expectRegion = '';
-  List<String> verify = [];
-  List<String> icons = [];
   List<Widget> details = [];
   List<Widget> expects = [];
   List<String> hobbies = [];
@@ -95,33 +94,59 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
                 color: Color(0xffE6E6E6),
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
               )),
-          if (verify.length > 0)
             Divider(
               color: Color(0xffE6E6E6),
             ),
-          if (verify.length > 0)
             CustomText(
               text: '个人认证',
               textStyle: TextStyle(fontSize: 14, color: Colors.black),
               margin: EdgeInsets.only(left: 16, top: 5),
             ),
-          if (verify.length > 0)
-            Container(
-              height: 75,
-              padding: EdgeInsets.only(left: 16),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return new ItemMenu(
-                    margin: EdgeInsets.only(right: 30),
-                    text: verify[index],
-                    img: icons[index],
-                    onPressed: () {},
-                  );
-                },
-                itemCount: verify.length,
+          Container(
+              height: 84,
+              width: double.infinity,
+              alignment: Alignment.bottomCenter,
+              margin: EdgeInsets.only(
+                left: 16, right: 16, top: 10,),
+              decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
               ),
-            ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ItemMenu(
+                    margin: EdgeInsets.only(left: 16,right: 16),
+                    text: '实名认证',
+                    img: isCard == 1
+                        ? "assets/images/ic_card_ver.png"
+                        : "assets/images/ic_un_card_ver.png",
+                    onPressed: () {},
+                  ),
+                  ItemMenu(
+                    // margin: EdgeInsets.only(left: 20),
+                    text: '头像认证',
+                    img: isHead == 1
+                        ? "assets/images/icon_verified_avatar.png"
+                        : "assets/images/icon_un_verified_avatar.png",
+                    onPressed: () {},
+                  ),
+                  ItemMenu(
+                    margin: EdgeInsets.only(left: 16),
+                    text: '真人认证',
+                    img: isVideo == 1
+                        ? "assets/images/ic_verified_person1.png"
+                        : "assets/images/ic_unverified_person.png",
+                    onPressed: () {},
+                  ),
+                  ItemMenu(
+                    margin: EdgeInsets.only(left: 16,right: 16),
+                    text: '手机认证',
+                    img: "assets/images/icon_verified_phone.png",
+                    onPressed: () {},
+                  ),
+                ],
+              )),
           Divider(
             color: Color(0xffE6E6E6),
           ),
@@ -195,8 +220,6 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     expects.clear();
     details.clear();
     hobbies.clear();
-    verify.clear();
-    icons.clear();
     if (userInfo.hobby!.isNotEmpty) {
       if (userInfo.hobby!.length == 1 && userInfo.hobby![0] == '') {
       } else {
@@ -252,6 +275,7 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     backgroundImage = userInfo.backgroundImage;
     isVideo = userInfo.isVideo;
     isHead = userInfo.isHead;
+    isCard=userInfo.isCard;
     expectAge = userInfo.expectAge;
     if (expectAge != null&&expectAge != '') {
       expects.add(CustomTextRadius(
@@ -282,19 +306,6 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
         text: '城市：${expectRegion}',
       ));
     }
-      //0-否，1-是]
-      verify.add('头像认证');
-      icons.add(isHead == 1
-          ? "assets/images/icon_verified_avatar.png"
-          : "assets/images/icon_un_verified_avatar.png");
-      //0-否，1-是]
-      verify.add('真人认证');
-      icons.add(isVideo == 1
-          ?  "assets/images/ic_verified_person1.png":
-      "assets/images/ic_unverified_person.png");
-    //0-否，1-是]
-    verify.add('手机认证');
-    icons.add("assets/images/icon_verified_phone.png");
     setState(() {});
   }
 }

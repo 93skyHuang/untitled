@@ -68,7 +68,7 @@ class _LikePageState extends State<LikePage>
                   info:
                       '${likes[index].region}，${likes[index].age}，${likes[index].constellation}',
                   onPressed: () {
-                    Get.to(() => UserHomePage(uid: likes[index].id));},
+                    Get.to(() => UserHomePage(uid: likes[index].uid));},
                   onMorePressed: () {
                     showBottomOpen(context, likes[index].trendsId ?? 0);
                   },

@@ -23,6 +23,7 @@ UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
     ..education = json['education'] as String?
     ..isVideo = json['isVideo'] as int?
     ..isHead = json['isHead'] as int?
+    ..isCard = json['isCard'] as int?
     ..svip = json['svip'] as int?
     ..vip = json['vip'] as int?
     ..svipEndTime = json['svipEndTime'] as String?
@@ -51,6 +52,7 @@ Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
       'backgroundImage': instance.backgroundImage,
       'isVideo': instance.isVideo,
       'isHead': instance.isHead,
+      'isCard': instance.isCard,
       'svip': instance.svip,
       'vip': instance.vip,
       'monthlyIncome': instance.monthlyIncome,

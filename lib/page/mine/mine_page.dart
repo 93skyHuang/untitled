@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/page/community/pull_dynamic_page.dart';
+import 'package:untitled/page/login/add_basic_info.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';

@@ -9,6 +9,7 @@ part of 'send_fabulous_msg.dart';
 SendFabulousMsg _$SendFabulousMsgFromJson(Map<String, dynamic> json) {
   return SendFabulousMsg()
     ..id = json['id'] as int
+    ..uid = json['uid'] as int
     ..isRead = json['isRead'] as int
     ..trendsId = json['trendsId'] as int?
     ..headImgUrl = json['headImgUrl'] as String?
@@ -27,6 +28,7 @@ SendFabulousMsg _$SendFabulousMsgFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SendFabulousMsgToJson(SendFabulousMsg instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'uid': instance.uid,
       'isRead': instance.isRead,
       'trendsId': instance.trendsId,
       'headImgUrl': instance.headImgUrl,

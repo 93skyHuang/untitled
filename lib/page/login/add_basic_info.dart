@@ -18,6 +18,7 @@ import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:untitled/utils/picker_utils.dart';
+import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/toast.dart';
 
@@ -83,7 +84,9 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                             fontSize: 17, color: MyColor.grey8C8C8C))),
               ]),
           backgroundColor: Color(0xFFF5F5F5),
-          body: SingleChildScrollView(
+          body: GestureDetector(
+    onTap: () => hideKeyboard(context),
+    child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.only(left: 16, right: 16),
               child: Column(
@@ -199,7 +202,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
               ),
             ),
           ),
-        ));
+        )));
   }
 
   final TextEditingController _controllerInfo = TextEditingController();
@@ -378,7 +381,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
     });
   }
 
-  bool isGetLocation=true;
+  bool isGetLocation=false;
   void getLocations() async {
     bool hasPermission = await checkAndRequestPermission();
     if (hasPermission) {
@@ -407,6 +410,23 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
   }
 
   void _commitInfo() async {
+    if(headerImgUrlLocal==null||headerImgUrlLocal==''){
+      MyToast.show('请完善个人信息');
+      return;
+    }
+    if(_controllerNickName.text==''){
+      MyToast.show('请完善个人信息');
+      return;
+    }
+    if(_controllerInfo.text==''){
+      MyToast.show('请完善个人信息');
+      return;
+    }
+    if(birthday==null||birthday==''){
+      MyToast.show('请完善个人信息');
+      return;
+    }
+    Loading.show(context);
     if (headerImgUrlLocal != null) {
       BasePageData<String?> basePageData =
           await fileUpload(headerImgUrlLocal ?? '');
@@ -414,37 +434,51 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
         headerImgUrl = basePageData.data;
       }
     }
-
-    if (lon != null ||lon != 0|| lat != null|| lat != 0) {
+    if (isGetLocation) {
       BasePageData basePageData = await updateUserInfo(
           headImgUrl: headerImgUrl,
           cname: _controllerNickName.text,
           birthday: birthday,
-          autograph: autograph,
+          autograph: _controllerInfo.text,
           longitude: lon,
           latitude: lat,
           sex: sex,
           monthlyIncome: monthlyIncome,
           education: education,
           height: height);
+      Loading.dismiss(context);
       if (basePageData.isOk()) {
         Get.offNamed(homePName);
       }
     }else{
+      if(city==null||city==''){
+        Loading.dismiss(context);
+        MyToast.show('请完善个人信息');
+        return;
+      }
       BasePageData basePageData = await updateUserInfo(
           headImgUrl: headerImgUrl,
           cname: _controllerNickName.text,
           birthday: birthday,
-          autograph: autograph,
+          autograph: _controllerInfo.text,
           province: province,
           region: city,
           sex: sex,
           monthlyIncome: monthlyIncome,
           education: education,
           height: height);
+    Loading.dismiss(context);
       if (basePageData.isOk()) {
         Get.offNamed(homePName);
       }
     }
   }
+  /// 点击任意位置关闭键盘
+  void hideKeyboard(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
+  }
+
 }

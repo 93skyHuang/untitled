@@ -42,6 +42,7 @@ class UserInfo {
   String? education = '';
   int? isVideo;
   int? isHead;
+  int? isCard;
   int? svip;
   int? vip;
   String? svipEndTime;

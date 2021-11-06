@@ -63,7 +63,9 @@ class _TrendDetailPageState extends State<TrendDetailPage>
         centerTitle: true,
       ),
       backgroundColor: Color(0xFFF5F5F5),
-      body: Stack(
+      body: GestureDetector(
+    onTap: () => hideKeyboard(context),
+    child: Stack(
         fit: StackFit.expand,
         children: [
           RefreshConfiguration(
@@ -180,7 +182,7 @@ class _TrendDetailPageState extends State<TrendDetailPage>
               )),
         ],
       ),
-    );
+    ));
   }
 
   void sendComment() {
@@ -193,7 +195,9 @@ class _TrendDetailPageState extends State<TrendDetailPage>
               MyToast.show('已发送'),
               _onRefresh(),
               FocusScope.of(context).requestFocus(FocusNode()),
-            }
+            }else if(value.msg.isNotEmpty){
+            MyToast.show(value.msg),
+          }
         });
   }
 
@@ -348,6 +352,14 @@ class _TrendDetailPageState extends State<TrendDetailPage>
         ),
       ],
     );
+  }
+
+  /// 点击任意位置关闭键盘
+  void hideKeyboard(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus!.unfocus();
+    }
   }
 
   @override
