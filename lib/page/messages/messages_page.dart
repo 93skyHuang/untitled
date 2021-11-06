@@ -90,6 +90,8 @@ class _MessagesPageState extends State<MessagesPage>
     _list = await _controller.querySessionList();
     _refreshController.refreshCompleted();
     setState(() {});
+    _list = await _controller.getNewInfo();
+    setState(() {});
   }
 
   Widget _getListView() {
@@ -110,7 +112,7 @@ class _MessagesPageState extends State<MessagesPage>
             visualDensity: VisualDensity.compact,
             padding: MaterialStateProperty.all(EdgeInsets.zero)),
         onPressed: () {
-          Get.to(SystemMsgPage());
+          Get.to(SystemMsgPage(_controller.systemAvatar.value));
         },
         child: Column(
           children: [
@@ -125,7 +127,9 @@ class _MessagesPageState extends State<MessagesPage>
                       children: [
                         Padding(
                           padding: EdgeInsets.only(top: 4, right: 2),
-                          child: cardNetworkImage('', ScreenUtil().setWidth(44),
+                          child: cardNetworkImage(
+                              _controller.systemAvatar.value,
+                              ScreenUtil().setWidth(44),
                               ScreenUtil().setWidth(44),
                               errorImagesUrl: 'assets/images/ic_launcher.png'),
                         ),
@@ -150,12 +154,14 @@ class _MessagesPageState extends State<MessagesPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         singeLineText(
-                            '官方小助手',
+                            _controller.systemName.value,
                             _textContextWidth,
                             TextStyle(
                                 color: Color(0xff000014),
                                 fontSize: ScreenUtil().setSp(14))),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Obx(() => singeLineText(
                             _controller.newSystemMsg.value,
                             _textContextWidth,
@@ -244,7 +250,9 @@ class _MessagesPageState extends State<MessagesPage>
                             TextStyle(
                                 color: Color(0xff000014),
                                 fontSize: ScreenUtil().setSp(14))),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         singeLineText(
                             '${info.getInfo()}',
                             _textContextWidth,

@@ -13,7 +13,9 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/personcenter/trend_detail_page.dart';
 import 'package:untitled/page/personcenter/user_home_page.dart';
+import 'package:untitled/page/video_play_page.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
 import 'package:untitled/widgets/card_image.dart';
 import 'package:untitled/widgets/divider.dart';
@@ -56,256 +58,256 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     logger.i('MessagesPage');
     return Scaffold(
-      backgroundColor: MyColor.pageBgColor,
-      appBar: AppBar(
-        elevation: 0.5,
-        leading: IconButton(
-            icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
-            onPressed: () {
-              Navigator.maybePop(context);
-            }),
-        centerTitle: true,
         backgroundColor: MyColor.pageBgColor,
-        title: Obx(() => Text(
-              _controller.hisName.value,
-              style: TextStyle(
-                  color: MyColor.blackColor, fontSize: ScreenUtil().setSp(18)),
-            )),
-      ),
-      body:GestureDetector(
-    onTap: () => hideKeyboard(context),
-    child:  Stack(children: [
-        // _userCard(),
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Color(0xFFF0F0F0),
-          child: Obx(() => Column(
-                children: <Widget>[
-                  _controller.isGetHisInfo.value ? _userCard() : Container(),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      //列表内容少的时候靠上
-                      alignment: Alignment.topCenter,
-                      child: _renderList(),
-                    ),
-                  ),
-                  Container(
-                    height: ScreenUtil().setHeight(50),
-                    margin: EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF0F0F0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x14000000),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Obx(() => InkWell(
-                              onTap: () {
-                                _controller.openOrCloseRecoding();
-                              },
-                              child: _controller.isShowRecodingBtn.value
-                                  ? Container(
-                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
-                                      decoration: BoxDecoration(
-                                        //背景
-                                        color: MyColor.mainColor,
-                                        //设置四周圆角 角度
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        //设置四周边框
-                                        border: Border(),
-                                      ),
-                                      width: 40,
-                                      height: 40,
-                                      child: Icon(
-                                        Icons.keyboard,
-                                        size: 30,
-                                      ),
-                                    )
-                                  : Container(
-                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
-                                      decoration: BoxDecoration(
-                                        //背景
-                                        color: MyColor.mainColor,
-                                        //设置四周圆角 角度
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        //设置四周边框
-                                        border: Border(),
-                                      ),
-                                      width: 40,
-                                      height: 40,
-                                      child: Icon(
-                                        Icons.mic_rounded,
-                                        size: 30,
-                                      ),
-                                    ),
-                            )),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                            constraints: BoxConstraints(
-                              maxHeight: 100.0,
-                              minHeight: 50.0,
-                            ),
-                            decoration: BoxDecoration(
-                                color: Color(0xFFF5F6FF),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(2))),
-                            child: Obx(() => _controller.isShowRecodingBtn.value
-                                ? GestureDetector(
-                                    onVerticalDragStart: (details) {
-                                      logger.i("onVerticalDragStart");
-                                      isUpCancel = false;
-                                      start = details.globalPosition.dy;
-                                      _controller.startRecoding();
-                                      _controller.cancelRecodeText.value =
-                                          "松开发送，上滑取消";
-                                    },
-                                    onVerticalDragEnd: (details) {
-                                      logger.i("onVerticalDragEnd $isUpCancel");
-                                      if (isUpCancel) {
-                                        _controller.cancelRecoding();
-                                      } else {
-                                        _controller.stopRecodingAndStartSend();
-                                      }
-                                    },
-                                    onVerticalDragUpdate: (details) {
-                                      logger.i(
-                                          "onVerticalDragUpdate $start  $offset");
-                                      offset = details.globalPosition.dy;
-                                      isUpCancel =
-                                          start - offset > 70 ? true : false;
-                                      if (isUpCancel) {
-                                        _controller.cancelRecodeText.value =
-                                            "松开取消发送";
-                                      } else {
-                                        _controller.cancelRecodeText.value =
-                                            "松开发送，上滑取消";
-                                      }
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: Text(
-                                        _controller.recodeBtnText.value,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: MyColor.mainColor,
-                                            fontSize: 16),
-                                      ),
-                                    ))
-                                : TextField(
-                                    controller: textEditingController,
-                                    maxLines: null,
-                                    maxLength: 200,
-                                    decoration: InputDecoration(
-                                      counterText: '',
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 16.0, right: 16.0, bottom: 10),
-                                      hintText: "回复",
-                                      hintStyle: TextStyle(
-                                          color: Color(0xFFADB3BA),
-                                          fontSize: 14),
-                                    ),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 14),
-                                  )),
-                          ),
-                        ),
-                        _controller.isShowRecodingBtn.value
-                            ? Container(
-                                width: 30,
-                              )
-                            : Padding(
-                                padding: EdgeInsets.only(left: 10, right: 10),
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                      //去除点击效果
-                                      // overlayColor: MaterialStateProperty.all(
-                                      //     Colors.transparent),
-                                      minimumSize: MaterialStateProperty.all(
-                                          const Size(0, 0)),
-                                      visualDensity: VisualDensity.compact,
-                                      padding: MaterialStateProperty.all(
-                                          EdgeInsets.zero),
-                                      //圆角
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(4))),
-                                      //背景
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Color(0xFFF3CD8E))),
-                                  onPressed: () {
-                                    sendTxt();
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    width: 60,
-                                    height: 40,
-                                    child: Text(
-                                      '发送',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                      ],
-                    ),
-                  ),
-                ],
+        appBar: AppBar(
+          elevation: 0.5,
+          leading: IconButton(
+              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+              onPressed: () {
+                Navigator.maybePop(context);
+              }),
+          centerTitle: true,
+          backgroundColor: MyColor.pageBgColor,
+          title: Obx(() => Text(
+                _controller.hisName.value,
+                style: TextStyle(
+                    color: MyColor.blackColor,
+                    fontSize: ScreenUtil().setSp(18)),
               )),
         ),
+        body: _child());
+  }
 
-        ///语音录制动画
-        Obx(() => _controller.isRecoding.value
-            ? Center(
-                child: Opacity(
-                  opacity: 0.5,
+  Widget _child() {
+    return Stack(children: [
+      // _userCard(),
+      Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Color(0xFFF0F0F0),
+        child: Obx(() => Column(
+              children: <Widget>[
+                _controller.isGetHisInfo.value ? _userCard() : Container(),
+                Expanded(
+                  flex: 1,
                   child: Container(
-                    width: 160,
-                    height: 160,
-                    decoration: BoxDecoration(
-                      color: Color(0xff77797A),
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: Image.asset(
-                            "assets/images/voice_volume_7.png",
-                            width: 100,
-                            height: 100,
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 10, left: 10, top: 0),
-                          child: Text(
-                            _controller.cancelRecodeText.value,
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                        )
-                      ],
-                    ),
+                    //列表内容少的时候靠上
+                    alignment: Alignment.topCenter,
+                    child: _renderList(),
                   ),
                 ),
-              )
-            : Container()),
-      ]),
-    ));
+                Container(
+                  height: ScreenUtil().setHeight(50),
+                  margin: EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF0F0F0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x14000000),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Obx(() => InkWell(
+                            onTap: () {
+                              _controller.openOrCloseRecoding();
+                            },
+                            child: _controller.isShowRecodingBtn.value
+                                ? Container(
+                                    margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                    decoration: BoxDecoration(
+                                      //背景
+                                      color: MyColor.mainColor,
+                                      //设置四周圆角 角度
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      //设置四周边框
+                                      border: Border(),
+                                    ),
+                                    width: 40,
+                                    height: 40,
+                                    child: Icon(
+                                      Icons.keyboard,
+                                      size: 30,
+                                    ),
+                                  )
+                                : Container(
+                                    margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                    decoration: BoxDecoration(
+                                      //背景
+                                      color: MyColor.mainColor,
+                                      //设置四周圆角 角度
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      //设置四周边框
+                                      border: Border(),
+                                    ),
+                                    width: 40,
+                                    height: 40,
+                                    child: Icon(
+                                      Icons.mic_rounded,
+                                      size: 30,
+                                    ),
+                                  ),
+                          )),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          constraints: BoxConstraints(
+                            maxHeight: 100.0,
+                            minHeight: 50.0,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFF5F6FF),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2))),
+                          child: Obx(() => _controller.isShowRecodingBtn.value
+                              ? GestureDetector(
+                                  onVerticalDragStart: (details) {
+                                    logger.i("onVerticalDragStart");
+                                    isUpCancel = false;
+                                    start = details.globalPosition.dy;
+                                    _controller.startRecoding();
+                                    _controller.cancelRecodeText.value =
+                                        "松开发送，上滑取消";
+                                  },
+                                  onVerticalDragEnd: (details) {
+                                    logger.i("onVerticalDragEnd $isUpCancel");
+                                    if (isUpCancel) {
+                                      _controller.cancelRecoding();
+                                    } else {
+                                      _controller.stopRecodingAndStartSend();
+                                    }
+                                  },
+                                  onVerticalDragUpdate: (details) {
+                                    logger.i(
+                                        "onVerticalDragUpdate $start  $offset");
+                                    offset = details.globalPosition.dy;
+                                    isUpCancel =
+                                        start - offset > 70 ? true : false;
+                                    if (isUpCancel) {
+                                      _controller.cancelRecodeText.value =
+                                          "松开取消发送";
+                                    } else {
+                                      _controller.cancelRecodeText.value =
+                                          "松开发送，上滑取消";
+                                    }
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      _controller.recodeBtnText.value,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: MyColor.mainColor,
+                                          fontSize: 16),
+                                    ),
+                                  ))
+                              : TextField(
+                                  controller: textEditingController,
+                                  maxLines: null,
+                                  maxLength: 200,
+                                  decoration: InputDecoration(
+                                    counterText: '',
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 16.0, right: 16.0, bottom: 10),
+                                    hintText: "回复",
+                                    hintStyle: TextStyle(
+                                        color: Color(0xFFADB3BA), fontSize: 14),
+                                  ),
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14),
+                                )),
+                        ),
+                      ),
+                      _controller.isShowRecodingBtn.value
+                          ? Container(
+                              width: 30,
+                            )
+                          : Padding(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    //去除点击效果
+                                    // overlayColor: MaterialStateProperty.all(
+                                    //     Colors.transparent),
+                                    minimumSize: MaterialStateProperty.all(
+                                        const Size(0, 0)),
+                                    visualDensity: VisualDensity.compact,
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.zero),
+                                    //圆角
+                                    shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(4))),
+                                    //背景
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Color(0xFFF3CD8E))),
+                                onPressed: () {
+                                  sendTxt();
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 60,
+                                  height: 40,
+                                  child: Text(
+                                    '发送',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+      ),
+
+      ///语音录制动画
+      Obx(() => _controller.isRecoding.value
+          ? Center(
+              child: Opacity(
+                opacity: 0.5,
+                child: Container(
+                  width: 160,
+                  height: 160,
+                  decoration: BoxDecoration(
+                    color: Color(0xff77797A),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Image.asset(
+                          "assets/images/voice_volume_7.png",
+                          width: 100,
+                          height: 100,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(right: 10, left: 10, top: 0),
+                        child: Text(
+                          _controller.cancelRecodeText.value,
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : Container()),
+    ]);
   }
 
   bool _isNoMoreData = false;
@@ -320,6 +322,7 @@ class _ChatPageState extends State<ChatPage> {
             else if (value == 1)
               {
                 _isNoMoreData = true,
+                _controller.isNoMoreData.value = true,
                 _refreshController.loadComplete(),
               }
             else
@@ -360,66 +363,72 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _receivedMsgItem(BuildContext context, NIMMessage item) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16, 0, 0, 20),
-      child: Column(
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+        onTap: () {
+          hideKeyboard(context);
+        },
+        child: Container(
+          padding: EdgeInsets.fromLTRB(16, 0, 0, 20),
+          child: Column(
             children: <Widget>[
-              //头像
-              Obx(() => cardNetworkImage2(_controller.headerUrl.value, 40, 40,
-                  errorWidget: Icon(
-                    Icons.person,
-                    size: 34,
-                    color: Colors.white,
-                  ))),
-              //内容区域
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: contentWidth,
-                        minHeight: 40,
-                      ),
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(4.0, 7.0),
-                              color: Color(0x04000000),
-                              blurRadius: 10,
-                            ),
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      margin: EdgeInsets.only(left: 10, top: 4),
-                      padding: EdgeInsets.all(10),
-                      child: item.messageType == NIMMessageType.text
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${item.content}',
-                                  softWrap: true,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 13,
-                                  ),
-                                )
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  //头像
+                  Obx(() =>
+                      cardNetworkImage2(_controller.headerUrl.value, 40, 40,
+                          errorWidget: Icon(
+                            Icons.person,
+                            size: 34,
+                            color: Colors.white,
+                          ))),
+                  //内容区域
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: contentWidth,
+                            minHeight: 40,
+                          ),
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(4.0, 7.0),
+                                  color: Color(0x04000000),
+                                  blurRadius: 10,
+                                ),
                               ],
-                            )
-                          : _receiveVoiceItem(item),
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          margin: EdgeInsets.only(left: 10, top: 4),
+                          padding: EdgeInsets.all(10),
+                          child: item.messageType == NIMMessageType.text
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${item.content}',
+                                      softWrap: true,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : _receiveVoiceItem(item),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   ///接收到的语音消息
@@ -439,14 +448,22 @@ class _ChatPageState extends State<ChatPage> {
           : second < 6
               ? contentWidth / 3
               : contentWidth / 2;
-      return InkWell(
-          onTap: () {
-            logger.i('播放语音');
-            _controller.playVoice(
-                item.messageId ?? "-2", nimAudioAttachment.path);
-          },
-          child: Container(
-            width: width,
+      return Container(
+          width: width,
+          height: ScreenUtil().setHeight(20),
+          child: TextButton(
+            style: ButtonStyle(
+              //去除点击效果
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+              visualDensity: VisualDensity.compact,
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
+            ),
+            onPressed: () {
+              logger.i('播放语音');
+              _controller.playVoice(
+                  item.messageId ?? "-2", nimAudioAttachment.path);
+            },
             child: Row(
               children: [
                 Text(
@@ -471,100 +488,105 @@ class _ChatPageState extends State<ChatPage> {
 
   ///发出去的消息
   Widget _sendMsgItem(BuildContext context, NIMMessage item) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
-      child: Column(
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            textDirection: TextDirection.rtl,
-            children: <Widget>[
-              //头像
-              Obx(() =>
-                  cardNetworkImage2(_controller.mineHeaderUrl.value, 40, 40,
-                      margin: EdgeInsets.all(0),
-                      errorWidget: Icon(
-                        Icons.person,
-                        size: 30,
-                        color: Colors.white,
-                      ))),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Row(
-                    textDirection: TextDirection.rtl,
-                    children: <Widget>[
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: contentWidth, minHeight: 40),
-                        child: Container(
-                          margin: EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: Offset(4.0, 7.0),
-                                  color: Color(0x04000000),
-                                  blurRadius: 10,
-                                ),
-                              ],
-                              color: MyColor.mainColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          padding: EdgeInsets.all(10),
-                          child: item.messageType == NIMMessageType.text
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${item.content}',
-                                      softWrap: true,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 13,
-                                      ),
-                                    )
-                                  ],
-                                )
-                              : _sendVoiceItem(item),
-                        ),
-                      ),
-
-                      ///发送消息状态
-                      Container(
-                          margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
-                          child: item.status == NIMMessageStatus.sending
-                              ? item.messageType ==
-                                      NIMMessageType.text //文字不需要加载图标
-                                  ? Container()
-                                  : ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 10, maxHeight: 10),
-                                      child: Container(
-                                        width: 10,
-                                        height: 10,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.0,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.grey),
+    return GestureDetector(
+      onTap: () {
+        hideKeyboard(context);
+      },
+      child: Container(
+        padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
+        child: Column(
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: TextDirection.rtl,
+              children: <Widget>[
+                //头像
+                Obx(() =>
+                    cardNetworkImage2(_controller.mineHeaderUrl.value, 40, 40,
+                        margin: EdgeInsets.all(0),
+                        errorWidget: Icon(
+                          Icons.person,
+                          size: 30,
+                          color: Colors.white,
+                        ))),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Row(
+                      textDirection: TextDirection.rtl,
+                      children: <Widget>[
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxWidth: contentWidth, minHeight: 40),
+                          child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(4.0, 7.0),
+                                    color: Color(0x04000000),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                                color: MyColor.mainColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            padding: EdgeInsets.all(10),
+                            child: item.messageType == NIMMessageType.text
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${item.content}',
+                                        softWrap: true,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 13,
                                         ),
-                                      ),
-                                    )
-                              : item.status == NIMMessageStatus.fail
-                                  ? Icon(
-                                      Icons.error,
-                                      color: Colors.red,
-                                      size: 11,
-                                    )
-                                  : Container()),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          )
-        ],
+                                      )
+                                    ],
+                                  )
+                                : _sendVoiceItem(item),
+                          ),
+                        ),
+
+                        ///发送消息状态
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 8, 8, 0),
+                            child: item.status == NIMMessageStatus.sending
+                                ? item.messageType ==
+                                        NIMMessageType.text //文字不需要加载图标
+                                    ? Container()
+                                    : ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                            maxWidth: 10, maxHeight: 10),
+                                        child: Container(
+                                          width: 10,
+                                          height: 10,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.0,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.grey),
+                                          ),
+                                        ),
+                                      )
+                                : item.status == NIMMessageStatus.fail
+                                    ? Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                        size: 11,
+                                      )
+                                    : Container()),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -588,15 +610,22 @@ class _ChatPageState extends State<ChatPage> {
           : second < 6
               ? contentWidth / 3
               : contentWidth / 2;
-      return InkWell(
-          onTap: () {
-            logger.i('播放语音');
-            _controller.playVoice(
-                item.messageId ?? "-2", nimAudioAttachment.path);
-          },
-          child: Container(
-            width: width,
-            height: 20,
+      return Container(
+          width: width,
+          height: ScreenUtil().setHeight(20),
+          child: TextButton(
+            style: ButtonStyle(
+              //去除点击效果
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+              visualDensity: VisualDensity.compact,
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
+            ),
+            onPressed: () {
+              logger.i('播放语音');
+              _controller.playVoice(
+                  item.messageId ?? "-2", nimAudioAttachment.path);
+            },
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -638,8 +667,9 @@ class _ChatPageState extends State<ChatPage> {
         child: Container(
           margin: EdgeInsets.fromLTRB(4, 8, 4, 0),
           width: double.infinity,
-          height:
-              ScreenUtil().setHeight(_controller.trendsLength() > 0 ? ScreenUtil().setHeight(200) : ScreenUtil().setHeight(80)),
+          constraints: BoxConstraints(
+            maxHeight: ScreenUtil().setHeight(210),
+          ),
           decoration: BoxDecoration(
             //背景
             color: Colors.white,
@@ -653,8 +683,10 @@ class _ChatPageState extends State<ChatPage> {
                 top: ScreenUtil().setWidth(8),
                 left: ScreenUtil().setWidth(4),
                 right: ScreenUtil().setWidth(10),
+                bottom: ScreenUtil().setWidth(4),
               ),
               child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
@@ -693,7 +725,8 @@ class _ChatPageState extends State<ChatPage> {
                           Expanded(child: Container()),
                           focusWidget(),
                         ]),
-                    Expanded(child: Align(alignment: Alignment.center,child: _info4(),)),
+                    _info4()
+
                     ///动态
                   ])),
         ));
@@ -791,11 +824,12 @@ class _ChatPageState extends State<ChatPage> {
             alignment: const Alignment(0, 0),
             child: TextButton(
                 style: ButtonStyle(
-                    //去除点击效果
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                    visualDensity: VisualDensity.compact,
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),),
+                  //去除点击效果
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                  visualDensity: VisualDensity.compact,
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                ),
                 onPressed: () {
                   showBottomCancelFocus(context, () {
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -832,11 +866,12 @@ class _ChatPageState extends State<ChatPage> {
             alignment: const Alignment(0, 0),
             child: TextButton(
                 style: ButtonStyle(
-                    //去除点击效果
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                    visualDensity: VisualDensity.compact,
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),),
+                  //去除点击效果
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                  visualDensity: VisualDensity.compact,
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                ),
                 onPressed: () {
                   _controller.add();
                 },
@@ -875,10 +910,12 @@ class _ChatPageState extends State<ChatPage> {
     List<Widget> listWidget = [];
     int length = _controller.trendsLength();
     if (length > 0) {
-      for (int i = 0; i < length && i < 3; i++) {
+      for (int i = 0; i < length; i++) {
         if (list![i]!.imgArr!.isNotEmpty) {
-          String url = list[i]!.imgArr!.first ?? '';
-          listWidget.add(_infoTrends(url));
+          listWidget.add(_infoTrends(list[i]!));
+          if (listWidget.length >= 3) {
+            break;
+          }
         }
       }
     }
@@ -889,7 +926,7 @@ class _ChatPageState extends State<ChatPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 4),
+                padding: EdgeInsets.only(left: 4, top: 10, bottom: 8),
                 child: singeLineText(
                     '最新个人动态',
                     ScreenUtil().screenWidth / 2,
@@ -897,10 +934,8 @@ class _ChatPageState extends State<ChatPage> {
                         color: MyColor.grey8C8C8C,
                         fontSize: ScreenUtil().setSp(12))),
               ),
-              SizedBox(height: 10),
               Row(
-
-                crossAxisAlignment:CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: listWidget.length == 3
                     ? MainAxisAlignment.spaceBetween
                     : MainAxisAlignment.start,
@@ -911,20 +946,30 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   ///动态
-  Widget _infoTrends(String url) {
+  Widget _infoTrends(Trends trends) {
+    String url = trends.imgArr!.first ?? '';
     return url.isEmpty
         ? Container()
         : InkWell(
             child: cardNetworkImage(
-                url, ScreenUtil().setWidth(ScreenUtil().setWidth(90)), ScreenUtil().setWidth(90),
+                url,
+                ScreenUtil().setWidth(ScreenUtil().setWidth(90)),
+                ScreenUtil().setWidth(90),
                 radius: 8),
             onTap: () {
-              Get.to(UserHomePage(
-                uid: _controller.hisUid,
-              ));
+              if (trends.type == 2) {
+                //视频
+                Get.to(TrendVideoPlayPage(), arguments: {
+                  "videoUrl": trends.video,
+                  "trendsId": trends.id,
+                });
+              } else {
+                Get.to(TrendDetailPage(trends.id));
+              }
             },
           );
   }
+
   /// 点击任意位置关闭键盘
   void hideKeyboard(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -932,5 +977,4 @@ class _ChatPageState extends State<ChatPage> {
       FocusManager.instance.primaryFocus!.unfocus();
     }
   }
-
 }

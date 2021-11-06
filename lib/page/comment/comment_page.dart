@@ -14,6 +14,7 @@ import 'package:untitled/widget/item_comment.dart';
 import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widget/trend_img.dart';
 import 'package:untitled/widgets/card_image.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -49,153 +50,160 @@ class _CommentPageState extends State<CommentPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.5,
-        leading: new IconButton(
-            icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
-            onPressed: () {
-              Navigator.maybePop(context);
-            }),
-        title: Text("评论", style: TextStyle(fontSize: 17, color: Colors.black)),
+        appBar: AppBar(
+          elevation: 0.5,
+          leading: new IconButton(
+              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+              onPressed: () {
+                Navigator.maybePop(context);
+              }),
+          title:
+              Text("评论", style: TextStyle(fontSize: 17, color: Colors.black)),
+          backgroundColor: Color(0xFFF5F5F5),
+          centerTitle: true,
+        ),
         backgroundColor: Color(0xFFF5F5F5),
-        centerTitle: true,
-      ),
-      backgroundColor: Color(0xFFF5F5F5),
-      body:  GestureDetector(
-    onTap: () => hideKeyboard(context),
-    child:Stack(
-        fit: StackFit.expand,
-        children: [
-          RefreshConfiguration(
-            // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
-            hideFooterWhenNotFull: true,
-            child: SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
-              header: const MyClassicHeader(),
-              footer: const MyClassicFooter(),
-              // 配置默认底部指示器
-              controller: _refreshController,
-              onRefresh: _onRefresh,
-              onLoading: _onLoading,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          cardNetworkImage(
-                              info.headImgUrl ?? '',
-                              ScreenUtil().setWidth(44),
-                              ScreenUtil().setWidth(44),
-                              margin: EdgeInsets.only(right: 16)),
-                          Expanded(
-                              child: Column(
+        body: GestureDetector(
+          onTap: () => hideKeyboard(context),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              RefreshConfiguration(
+                // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
+                hideFooterWhenNotFull: true,
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  header: const MyClassicHeader(),
+                  footer: const MyClassicFooter(),
+                  // 配置默认底部指示器
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(16),
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                  child: Row(
+                              cardNetworkImage(
+                                  info.headImgUrl ?? '',
+                                  ScreenUtil().setWidth(44),
+                                  ScreenUtil().setWidth(44),
+                                  margin: EdgeInsets.only(right: 16)),
+                              Expanded(
+                                  child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _itemName(info),
-                                  const Flexible(child: Align()),
-                                  FocusOnBtn(info),
+                                  Container(
+                                      child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _itemName(info),
+                                      const Flexible(child: Align()),
+                                      FocusOnBtn(info),
+                                    ],
+                                  )),
+                                  if (info.content != null)
+                                    CustomText(
+                                      text: "${info.content ?? ''}",
+                                      margin: EdgeInsets.only(top: 5),
+                                      textStyle: TextStyle(
+                                          color: MyColor.grey8C8C8C,
+                                          fontSize: ScreenUtil().setSp(14)),
+                                    ),
+                                  if (info.imgArr.isNotEmpty)
+                                    TrendImg(
+                                      imgs: info.imgArr,
+                                      showAll: true,
+                                      contextWidth: contextWidth,
+                                      onClick: (int index) {
+                                        Get.toNamed(photoViewPName, arguments: {
+                                          'index': index,
+                                          'photoList': info.imgArr
+                                        });
+                                      },
+                                    ),
+                                  _itemLable(info),
                                 ],
                               )),
-                              if(info.content!=null)CustomText(
-                                text: "${info.content??''}",
-                                margin: EdgeInsets.only(top: 5),
-                                textStyle: TextStyle(
-                                    color: MyColor.grey8C8C8C,
-                                    fontSize: ScreenUtil().setSp(14)),
-                              ),
-                              if (info.imgArr.isNotEmpty)
-                                TrendImg(
-                                  imgs: info.imgArr,
-                                  showAll: true,
-                                  contextWidth: contextWidth,
-                                  onClick: (int index) {
-                                    Get.toNamed(photoViewPName, arguments: {
-                                      'index': index,
-                                      'photoList': info.imgArr
-                                    });
-                                  },
-                                ),
-                              _itemLable(info),
                             ],
-                          )),
-                        ],
-                      ),
+                          ),
+                        ),
+                        HDivider(
+                          height: 8,
+                        ),
+                        getComments(),
+                      ],
                     ),
-                    HDivider(
-                      height: 8,
-                    ),
-                    getComments(),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 50,
-                width: double.infinity,
-                padding:
-                    EdgeInsets.only(left: 16, right: 16, bottom: 6, top: 6),
-                color: Color(0xffF0F0F0),
-                child: Row(
-                  children: [
-                    Expanded(child: _textField()),
-                    GestureDetector(
-                      onTap: () {
-                        sendComment();
-                      },
-                      child: Container(
-                          height: 40,
-                          width: 80,
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(left: 16),
-                          decoration: new BoxDecoration(
-                            color: Color(0xffF3CD8E),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(4.0)),
-                          ),
-                          child: Text(
-                            "发送",
-                            style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black,
-                            ),
-                          )),
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 50,
+                    width: double.infinity,
+                    padding:
+                        EdgeInsets.only(left: 16, right: 16, bottom: 6, top: 6),
+                    color: Color(0xffF0F0F0),
+                    child: Row(
+                      children: [
+                        Expanded(child: _textField()),
+                        GestureDetector(
+                          onTap: () {
+                            sendComment();
+                          },
+                          child: Container(
+                              height: 40,
+                              width: 80,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.only(left: 16),
+                              decoration: new BoxDecoration(
+                                color: Color(0xffF3CD8E),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4.0)),
+                              ),
+                              child: Text(
+                                "发送",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
+                              )),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
-        ],
-      ),
-    ));
+                  )),
+            ],
+          ),
+        ));
   }
 
   void sendComment() {
     Loading.show(context);
     addComment(info.trendsId, _controllerInfo.text).then((value) => {
-      Loading.dismiss(context),
+          Loading.dismiss(context),
           if (value.isOk())
             {
               _controllerInfo.text = '',
               MyToast.show('已发送'),
               _onRefresh(),
               FocusScope.of(context).requestFocus(FocusNode()),
-            }else if(value.msg.isNotEmpty){
-            MyToast.show(value.msg),
-          }
+            }
+          else if (value.code == 300)
+            {
+              showOpenSvipDialog(context, cancel: () {
+                Get.back();
+              }),
+            }
         });
   }
 
@@ -241,10 +249,10 @@ class _CommentPageState extends State<CommentPage>
         CommentInfo commentBean = comments[i];
         list.add(ItemComment(
           onPressed: () {
-            if(commentBean.isFabulous==1){
-              delCommentFab(commentBean.id??0,i);
-            }else{
-              addCommentFab(commentBean.id??0,i);
+            if (commentBean.isFabulous == 1) {
+              delCommentFab(commentBean.id ?? 0, i);
+            } else {
+              addCommentFab(commentBean.id ?? 0, i);
             }
           },
           comment: commentBean,
@@ -295,29 +303,43 @@ class _CommentPageState extends State<CommentPage>
             }
         });
   }
-  void addCommentFab(int commentId,int index) {
+
+  void addCommentFab(int commentId, int index) {
     Loading.show(context);
     addCommentFabulous(commentId).then((value) => {
-      Loading.dismiss(context),
-      if (value.isOk())
-        {
-        comments[index].isFabulous=1,
-          comments[index].fabulousSum=(comments[index].fabulousSum!+1),
-        setState(() {}),
-        }
-    });
+          Loading.dismiss(context),
+          if (value.isOk())
+            {
+              comments[index].isFabulous = 1,
+              comments[index].fabulousSum = (comments[index].fabulousSum! + 1),
+              setState(() {}),
+            }
+          else if (value.code == 300)
+            {
+              showOpenSvipDialog(context, cancel: () {
+                Get.back();
+              }),
+            }
+        });
   }
-  void delCommentFab(int commentId,int index) {
+
+  void delCommentFab(int commentId, int index) {
     Loading.show(context);
     deleteCommentFabulous(commentId).then((value) => {
-      Loading.dismiss(context),
-      if (value.isOk())
-        {
-          comments[index].isFabulous=0,
-          comments[index].fabulousSum=(comments[index].fabulousSum!-1),
-          setState(() {}),
-        }
-    });
+          Loading.dismiss(context),
+          if (value.isOk())
+            {
+              comments[index].isFabulous = 0,
+              comments[index].fabulousSum = (comments[index].fabulousSum! - 1),
+              setState(() {}),
+            }
+          else if (value.code == 300)
+            {
+              showOpenSvipDialog(context, cancel: () {
+                Get.back();
+              }),
+            }
+        });
   }
 
   Widget _itemName(NewTrendsInfo info) {
@@ -413,6 +435,7 @@ class _CommentPageState extends State<CommentPage>
       children: list,
     ));
   }
+
   /// 点击任意位置关闭键盘
   void hideKeyboard(BuildContext context) {
     FocusScopeNode currentFocus = FocusScope.of(context);

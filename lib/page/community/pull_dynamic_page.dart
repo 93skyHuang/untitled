@@ -11,11 +11,13 @@ import 'package:untitled/network/bean/base_page_data.dart';
 import 'package:untitled/network/bean/trends_tpoic_type_info.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/route_config.dart';
 import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/bottom_pupop.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/my_text_button.dart';
 import 'package:untitled/widgets/my_text_widget.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -704,6 +706,10 @@ class _Controller extends GetxController {
     if (r.isOk()) {
       //发布成功
       Get.back();
+    } else if (r.code == 300) {
+      showOpenSvipDialog(getApplication()!, cancel: () {
+        Get.back();
+      });
     }
   }
 
@@ -718,18 +724,18 @@ class _Controller extends GetxController {
     return topicList;
   }
 
-  bool isGetLocation=true;
+  bool isGetLocation = true;
+
   void getLocation() async {
     bool hasPermission = await checkAndRequestPermission();
     if (hasPermission) {
-      isGetLocation=false;
+      isGetLocation = false;
       MyToast.show('正在获取您的位置...');
       Future.delayed(Duration(seconds: 4)).then((value) => {
-          if(!isGetLocation)
-            MyToast.show('定位失败'),
+            if (!isGetLocation) MyToast.show('定位失败'),
           });
       Position position = await getPosition();
-      isGetLocation=true;
+      isGetLocation = true;
       logger.i(position);
       lon = position.longitude;
       lat = position.latitude;

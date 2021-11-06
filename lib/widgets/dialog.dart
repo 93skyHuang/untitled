@@ -7,7 +7,7 @@ import 'package:untitled/page/mine/avatar/video_verified_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
 import 'package:untitled/route_config.dart';
 
-showOpenSvipDialog(BuildContext context) {
+showOpenSvipDialog(BuildContext context, {VoidCallback? cancel}) {
   //设置按钮
   Widget cancelButton = TextButton(
     child: Text(
@@ -16,10 +16,10 @@ showOpenSvipDialog(BuildContext context) {
     ),
     onPressed: () {
       Navigator.pop(context);
+      cancel?.call();
     },
   );
-  Widget continueButton =
-  TextButton(
+  Widget continueButton = TextButton(
     child: Text(
       "立即开通",
       style: TextStyle(color: MyColor.grey8C8C8C),
@@ -49,8 +49,7 @@ showOpenSvipDialog(BuildContext context) {
 }
 
 showKickOutByOtherClientDialog(BuildContext context) {
-  Widget continueButton =
-  TextButton(
+  Widget continueButton = TextButton(
     child: Text(
       "重新登录",
       style: TextStyle(color: MyColor.grey8C8C8C),
@@ -77,4 +76,3 @@ showKickOutByOtherClientDialog(BuildContext context) {
     },
   );
 }
-

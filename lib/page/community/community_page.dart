@@ -22,12 +22,14 @@ class CommunityPage extends StatefulWidget {
 }
 
 class _CommunityPageState extends State<CommunityPage>
-    with AutomaticKeepAliveClientMixin , SingleTickerProviderStateMixin{
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final GlobalController _globalController = Get.find();
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length:3, vsync: this)
+    _tabController = TabController(length: 3, vsync: this)
       ..addListener(() {
         switch (_tabController.index) {
           case 0:
@@ -36,7 +38,8 @@ class _CommunityPageState extends State<CommunityPage>
           case 2:
             if (!GetStorageUtils.getSvip()) {
               _tabController.index = 0;
-              showOpenSvipDialog(context);
+              Future.delayed(Duration(milliseconds: 100))
+                  .then((value) => showOpenSvipDialog(context));
             }
             break;
         }
@@ -47,63 +50,71 @@ class _CommunityPageState extends State<CommunityPage>
   Widget build(BuildContext context) {
     logger.i('CommunityPage');
     super.build(context);
-    return   Scaffold(
+    return Obx(() => Scaffold(
+          backgroundColor: MyColor.pageBgColor,
+          appBar: AppBar(
             backgroundColor: MyColor.pageBgColor,
-            appBar: AppBar(
-              backgroundColor: MyColor.pageBgColor,
-              elevation: 0,
-              title: Row(
-                children: [
-                  Expanded(
-                    child: TabBar(
-                        controller: _tabController,
-                        labelColor: MyColor.blackColor,
-                        labelStyle: TextStyle(fontSize: ScreenUtil().setSp(20)),
-                        unselectedLabelColor: MyColor.grey8C8C8C,
-                        unselectedLabelStyle: TextStyle(fontSize: ScreenUtil().setSp(15)),
-                        indicatorWeight: 4,
-                        indicatorColor: MyColor.redFd4343,
-                        isScrollable: true,
-                        //多个按钮可以滑动
-                        tabs: const [
-                          Tab(
-                            text: '推荐',
-                          ),
-                          Tab(
-                            text: '视频',
-                          ),
-                          Tab(
-                            text: '关注',
-                          ),
-                        ]),
+            elevation: 0,
+            title: Row(
+              children: [
+                Expanded(
+                  child: TabBar(
+                      controller: _tabController,
+                      labelColor: MyColor.blackColor,
+                      labelStyle: TextStyle(fontSize: ScreenUtil().setSp(20)),
+                      unselectedLabelColor: MyColor.grey8C8C8C,
+                      unselectedLabelStyle:
+                          TextStyle(fontSize: ScreenUtil().setSp(15)),
+                      indicatorWeight: 4,
+                      indicatorColor: MyColor.redFd4343,
+                      physics: _globalController.isSvip.value
+                          ? ScrollPhysics()
+                          : NeverScrollableScrollPhysics(),
+                      isScrollable: true,
+                      //多个按钮可以滑动
+                      tabs: const [
+                        Tab(
+                          text: '推荐',
+                        ),
+                        Tab(
+                          text: '视频',
+                        ),
+                        Tab(
+                          text: '关注',
+                        ),
+                      ]),
+                ),
+                Container(
+                  width: ScreenUtil().setWidth(70),
+                  height: ScreenUtil().setWidth(30),
+                  // 边框设置
+                  decoration: const BoxDecoration(
+                    //背景
+                    color: Colors.white,
+                    //设置四周圆角 角度
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    //设置四周边框
+                    border: Border(),
                   ),
-                  Container(
-                    width: ScreenUtil().setWidth(70),
-                    height: ScreenUtil().setWidth(30),
-                    // 边框设置
-                    decoration: const BoxDecoration(
-                      //背景
-                      color: Colors.white,
-                      //设置四周圆角 角度
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      //设置四周边框
-                      border: Border(),
-                    ),
-                    // 设置 child 居中
-                    alignment: const Alignment(0, 0),
-                    child: addBtn(),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(6),
-                  )),
-                ],
-              ),
+                  // 设置 child 居中
+                  alignment: const Alignment(0, 0),
+                  child: addBtn(),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                  left: ScreenUtil().setWidth(6),
+                )),
+              ],
             ),
-            body:TabBarView(
-                controller: _tabController,
-                children: _list()),
-        );
+          ),
+          body: TabBarView(
+            controller: _tabController,
+            children: _list(),
+            physics: _globalController.isSvip.value
+                ? ScrollPhysics()
+                : NeverScrollableScrollPhysics(),
+          ),
+        ));
   }
 
   @override
@@ -132,7 +143,7 @@ class _CommunityPageState extends State<CommunityPage>
   }
 
   List<Widget> _list() {
-    return  [RecommendWidget(), VideoListPage(), FocusOnPage()];
+    return [RecommendWidget(), VideoListPage(), FocusOnPage()];
   }
 
   void _pullDynamic() {

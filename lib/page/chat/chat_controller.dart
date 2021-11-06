@@ -11,6 +11,8 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
+import 'package:untitled/route_config.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -65,8 +67,10 @@ class ChatController extends GetxController {
   void getInfo() async {
     final value = await getHomeUserData(hisUid);
     if (value.isOk()) {
-      GetStorageUtils.saveUserBasic(value.data!);
-      setUserBasic(value.data!);
+      UserBasic userBasic = value.data!;
+      GetStorageUtils.saveUserBasic(userBasic);
+      setUserBasic(userBasic);
+      updateSession(userBasic);
     }
   }
 
@@ -101,7 +105,6 @@ class ChatController extends GetxController {
           list.sort((nim1, nim2) => nim2.timestamp.compareTo(nim1.timestamp));
           nimMessageList.addAll(list);
         } else {
-          isNoMoreData.value = true;
           return 1; //没有数据
         }
       } else {
@@ -148,16 +151,36 @@ class ChatController extends GetxController {
   /**
    * 创建临时会话
    */
+
+  NIMSession? _curNimSession;
+
   void createSession() async {
     logger.i('createSession');
-    _nimNetworkManager.createSession(hisUid);
+    var r = await _nimNetworkManager.createSession(hisUid);
+    logger.i("${r.isSuccess} ----${r.code}");
+  }
+
+  void updateSession(UserBasic hisBasic) async {
+    if (_curNimSession != null) {
+      logger.i(hisBasic);
+      _curNimSession!.extension = {
+        'avatar': hisBasic.headImgUrl,
+        'name': hisBasic.cname,
+        'age': hisBasic.age,
+        'height': hisBasic.height,
+        'region': hisBasic.region,
+      };
+      _nimNetworkManager.updateSession(_curNimSession!);
+    }
   }
 
   void sendTextMessage(String content) async {
     final r = await chatMessage(hisUid, content);
     if (!r.isOk()) {
       if (r.code == 300) {
-
+        showOpenSvipDialog(getApplication()!, cancel: () {
+          Get.back();
+        });
       } else {
         MyToast.show(r.msg);
       }

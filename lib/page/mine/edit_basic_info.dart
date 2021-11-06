@@ -159,7 +159,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
               _textFieldInfo(),
               _itemArrow(
                 '城市',
-                '${province??''} ${city??''}',
+                '${province} ${city??''}',
                 () {
                   FocusScope.of(context).requestFocus(FocusNode());
                   getLocations();

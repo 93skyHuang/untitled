@@ -193,7 +193,7 @@ class _NearbyPageState extends State<NearbyPage>
                           color: MyColor.grey8C8C8C,
                           fontSize: ScreenUtil().setSp(12))),
                   SizedBox(
-                    height: 10,
+                    height: 6,
                   ),
                   _info3(info),
                 ],

@@ -15,6 +15,7 @@ import 'package:untitled/widget/item_comment.dart';
 import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widget/trend_img.dart';
 import 'package:untitled/widgets/card_image.dart';
+import 'package:untitled/widgets/dialog.dart';
 import 'package:untitled/widgets/divider.dart';
 import 'package:untitled/widgets/my_classic.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -51,138 +52,141 @@ class _TrendDetailPageState extends State<TrendDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.5,
-        leading: new IconButton(
-            icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
-            onPressed: () {
-              Navigator.maybePop(context);
-            }),
-        title: Text("动态详情", style: TextStyle(fontSize: 17, color: Colors.black)),
+        appBar: AppBar(
+          elevation: 0.5,
+          leading: new IconButton(
+              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+              onPressed: () {
+                Navigator.maybePop(context);
+              }),
+          title:
+              Text("动态详情", style: TextStyle(fontSize: 17, color: Colors.black)),
+          backgroundColor: Color(0xFFF5F5F5),
+          centerTitle: true,
+        ),
         backgroundColor: Color(0xFFF5F5F5),
-        centerTitle: true,
-      ),
-      backgroundColor: Color(0xFFF5F5F5),
-      body: GestureDetector(
-    onTap: () => hideKeyboard(context),
-    child: Stack(
-        fit: StackFit.expand,
-        children: [
-          RefreshConfiguration(
-            // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
-            hideFooterWhenNotFull: true,
-            child: SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
-              header: const MyClassicHeader(),
-              footer: const MyClassicFooter(),
-              // 配置默认底部指示器
-              controller: _refreshController,
-              onRefresh: _onRefresh,
-              onLoading: _onLoading,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          cardNetworkImage(
-                              '${trendsInfo.headImgUrl}',
-                              ScreenUtil().setWidth(44),
-                              ScreenUtil().setWidth(44),
-                              margin: EdgeInsets.only(right: 16)),
-                          Expanded(
-                              child: Column(
+        body: GestureDetector(
+          onTap: () => hideKeyboard(context),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              RefreshConfiguration(
+                // Viewport不满一屏时,禁用上拉加载更多功能,应该配置更灵活一些，比如说一页条数大于等于总条数的时候设置或者总条数等于0
+                hideFooterWhenNotFull: true,
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  header: const MyClassicHeader(),
+                  footer: const MyClassicFooter(),
+                  // 配置默认底部指示器
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.all(16),
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                  child: Row(
+                              cardNetworkImage(
+                                  '${trendsInfo.headImgUrl}',
+                                  ScreenUtil().setWidth(44),
+                                  ScreenUtil().setWidth(44),
+                                  margin: EdgeInsets.only(right: 16)),
+                              Expanded(
+                                  child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _itemName(),
-                                  const Flexible(child: Align()),
-                                  // FocusOnBtn(info),
+                                  Container(
+                                      child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _itemName(),
+                                      const Flexible(child: Align()),
+                                      // FocusOnBtn(info),
+                                    ],
+                                  )),
+                                  if (trendsInfo.content != null &&
+                                      trendsInfo.content != '')
+                                    CustomText(
+                                      text: "${trendsInfo.content ?? ''}",
+                                      margin: EdgeInsets.only(top: 5),
+                                      textStyle: TextStyle(
+                                          color: MyColor.grey8C8C8C,
+                                          fontSize: ScreenUtil().setSp(14)),
+                                    ),
+                                  if (trendsInfo.imgArr.isNotEmpty)
+                                    TrendImg(
+                                      imgs: trendsInfo.imgArr,
+                                      showAll: true,
+                                      contextWidth: contextWidth,
+                                      onClick: (int index) {
+                                        Get.toNamed(photoViewPName, arguments: {
+                                          'index': index,
+                                          'photoList': trendsInfo.imgArr
+                                        });
+                                      },
+                                    ),
                                 ],
                               )),
-                              if (trendsInfo.content != null&&trendsInfo.content != '')
-                                CustomText(
-                                  text: "${trendsInfo.content??''}",
-                                  margin: EdgeInsets.only(top: 5),
-                                  textStyle: TextStyle(
-                                      color: MyColor.grey8C8C8C,
-                                      fontSize: ScreenUtil().setSp(14)),
-                                ),
-                              if (trendsInfo.imgArr.isNotEmpty)
-                                TrendImg(
-                                  imgs: trendsInfo.imgArr,
-                                  showAll: true,
-                                  contextWidth: contextWidth,
-                                  onClick: (int index) {
-                                    Get.toNamed(photoViewPName, arguments: {
-                                      'index': index,
-                                      'photoList': trendsInfo.imgArr
-                                    });
-                                  },
-                                ),
                             ],
-                          )),
-                        ],
-                      ),
+                          ),
+                        ),
+                        HDivider(
+                          height: 8,
+                        ),
+                        getComments(),
+                      ],
                     ),
-                    HDivider(
-                      height: 8,
-                    ),
-                    getComments(),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 50,
-                width: double.infinity,
-                padding:
-                    EdgeInsets.only(left: 16, right: 16, bottom: 6, top: 6),
-                color: Color(0xffF0F0F0),
-                child: Row(
-                  children: [
-                    Expanded(child: _textField()),
-                    GestureDetector(
-                      onTap: () {
-                        sendComment();
-                      },
-                      child: Container(
-                          height: 40,
-                          width: 80,
-                          alignment: Alignment.center,
-                          margin: EdgeInsets.only(left: 16),
-                          decoration: new BoxDecoration(
-                            color: Color(0xffF3CD8E),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(4.0)),
-                          ),
-                          child: Text(
-                            "发送",
-                            style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black,
-                            ),
-                          )),
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 50,
+                    width: double.infinity,
+                    padding:
+                        EdgeInsets.only(left: 16, right: 16, bottom: 6, top: 6),
+                    color: Color(0xffF0F0F0),
+                    child: Row(
+                      children: [
+                        Expanded(child: _textField()),
+                        GestureDetector(
+                          onTap: () {
+                            sendComment();
+                          },
+                          child: Container(
+                              height: 40,
+                              width: 80,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.only(left: 16),
+                              decoration: new BoxDecoration(
+                                color: Color(0xffF3CD8E),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4.0)),
+                              ),
+                              child: Text(
+                                "发送",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
+                              )),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
-        ],
-      ),
-    ));
+                  )),
+            ],
+          ),
+        ));
   }
 
   void sendComment() {
@@ -195,9 +199,11 @@ class _TrendDetailPageState extends State<TrendDetailPage>
               MyToast.show('已发送'),
               _onRefresh(),
               FocusScope.of(context).requestFocus(FocusNode()),
-            }else if(value.msg.isNotEmpty){
-            MyToast.show(value.msg),
-          }
+            }
+          else if (value.msg.isNotEmpty)
+            {
+              MyToast.show(value.msg),
+            }
         });
   }
 
@@ -269,7 +275,7 @@ class _TrendDetailPageState extends State<TrendDetailPage>
     getCommentsInfo(isLoad: true);
   }
 
-  late TrendsDetails trendsInfo=new TrendsDetails();
+  late TrendsDetails trendsInfo = new TrendsDetails();
 
   void getDtails() {
     trendsDetails(trendsId).then((value) => {
@@ -277,6 +283,11 @@ class _TrendDetailPageState extends State<TrendDetailPage>
             {
               trendsInfo = value.data!,
               setState(() {}),
+            } else if (value.code == 300)
+            {
+              showOpenSvipDialog(getApplication()!, cancel: () {
+                Get.back();
+              }),
             }
         });
   }

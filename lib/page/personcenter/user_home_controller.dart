@@ -5,6 +5,8 @@ import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
+import 'package:untitled/route_config.dart';
+import 'package:untitled/widgets/dialog.dart';
 
 class UserHomeController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
@@ -32,6 +34,12 @@ class UserHomeController extends GetxController {
                   else
                     {trends.add(userBasic.value.trendsList![i])}
                 }
+            }
+          else if (value.code == 300)
+            {
+              showOpenSvipDialog(getApplication()!, cancel: () {
+                Get.back();
+              }),
             }
         });
   }

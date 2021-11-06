@@ -28,7 +28,7 @@ class FindPage extends StatefulWidget {
 class _FindPageState extends State<FindPage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   final FindController _findController = Get.put(FindController());
-  final GlobalController _homeController = Get.find();
+  final GlobalController _globalController = Get.find();
   late TabController _tabController;
 
   @override
@@ -44,21 +44,24 @@ class _FindPageState extends State<FindPage>
               }
           });
     });
-    _tabController = TabController(length: _findController.findTabList.length, vsync: this)
-      ..addListener(() {
-        switch (_tabController.index) {
-          case 0:
-            break;
-          case 1:
-          case 2:
-          case 3:
-            if (!GetStorageUtils.getSvip()) {
-              _tabController.index = 0;
-              showOpenSvipDialog(context);
+    _tabController =
+        TabController(length: _findController.findTabList.length, vsync: this)
+          ..addListener(() {
+            logger.i(_tabController.index);
+            switch (_tabController.index) {
+              case 0:
+                break;
+              case 1:
+              case 2:
+              case 3:
+                if (!GetStorageUtils.getSvip()) {
+                  _tabController.index = 0;
+                  Future.delayed(Duration(milliseconds: 100))
+                      .then((value) => showOpenSvipDialog(context));
+                }
+                break;
             }
-            break;
-        }
-      });
+          });
   }
 
   @override
@@ -82,6 +85,9 @@ class _FindPageState extends State<FindPage>
                       indicatorWeight: 4,
                       indicatorColor: MyColor.redFd4343,
                       isScrollable: true,
+                      physics: _globalController.isSvip.value
+                          ? ScrollPhysics()
+                          : NeverScrollableScrollPhysics(),
                       //多个按钮可以滑动
                       tabs: getTabs()),
                 ),
@@ -89,7 +95,12 @@ class _FindPageState extends State<FindPage>
             ),
             backgroundColor: MyColor.pageBgColor,
           ),
-          body: TabBarView(controller: _tabController, children: _list()),
+          body: TabBarView(
+              controller: _tabController,
+              children: _list(),
+              physics: _globalController.isSvip.value
+                  ? ScrollPhysics()
+                  : NeverScrollableScrollPhysics()),
         ));
   }
 
@@ -113,7 +124,7 @@ class _FindPageState extends State<FindPage>
       for (int i = 0; i < length; i++) {
         list.add(MyFindListWidget(
           _findController.findTabList[i].id,
-          isSvip: _homeController.isSvip.value,
+          isSvip: _globalController.isSvip.value,
         ));
       }
     }

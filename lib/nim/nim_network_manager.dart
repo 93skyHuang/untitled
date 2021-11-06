@@ -123,7 +123,7 @@ class NimNetworkManager {
     return result;
   }
 
-  void createSession(int uid) async {
+  Future<NIMResult<NIMSession>> createSession(int uid) async {
     /// [sessionId] - 会话id ，对方帐号或群组id。
     /// [sessionType] - 会话类型
     /// [tag] - 会话tag ， eg:置顶标签（UIKit中的实现： RECENT_TAG_STICKY） ，用户参照自己的tag 实现即可， 如不需要，传 0 即可
@@ -136,6 +136,12 @@ class NimNetworkManager {
             time: DateTime.now().millisecond);
     logger.i(
         '${result.isSuccess} ${result.data?.sessionId}  ${result.data?.senderNickname}');
+    return result;
+  }
+
+  ///更新聊天人信息
+  void updateSession(NIMSession nimSession) async {
+    var result = await NimCore.instance.messageService.updateSession(session: nimSession);
   }
 
   Future<NIMResult<NIMMessage>> createTextMsg(String content, int uid) async {

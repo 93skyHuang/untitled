@@ -28,7 +28,9 @@ import 'messages_controller.dart';
 
 //消息页面
 class SystemMsgPage extends StatefulWidget {
-  const SystemMsgPage({Key? key}) : super(key: key);
+  String systemAvatar;
+
+  SystemMsgPage(this.systemAvatar, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -112,34 +114,49 @@ class _SystemMsgPageState extends State<SystemMsgPage>
 
   Widget _systemItem(NIMMessage nimMessage) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(16),
+          ScreenUtil().setWidth(16), ScreenUtil().setWidth(16), ScreenUtil().setWidth(16),),
       width: double.infinity,
       child: Column(
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: ScreenUtil().screenWidth * 0.7),
-                child: Text("${nimMessage.content}",
+              cardNetworkImage2(widget.systemAvatar, ScreenUtil().setWidth(40),
+                  ScreenUtil().setWidth(40),
+                  margin: EdgeInsets.all(0),
+                  radius: 8,
+                  errorWidget: Icon(
+                    Icons.person,
+                    size: 34,
+                    color: Colors.white,
+                  )),
+              Container(
+                margin: EdgeInsets.only(left: ScreenUtil().setWidth(10)) ,
+                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(10),
+                  ScreenUtil().setHeight(6), ScreenUtil().setWidth(10), ScreenUtil().setHeight(6),),
+                constraints: BoxConstraints(
+                    minHeight: ScreenUtil().setWidth(40),
+                    maxWidth:
+                        ScreenUtil().screenWidth - ScreenUtil().setWidth(85)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Text("${nimMessage.content}",
                     textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 18, color: Colors.black)),
+                    style: TextStyle(fontSize: 18, color: Colors.black)) ,],),
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(4.0, 7.0),
+                        color: Color(0x04000000),
+                        blurRadius: 10,
+                      ),
+                    ],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
               ),
-              Expanded(
-                  child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(TimeUtils.dateAndTimeToString(nimMessage.timestamp),
-                    style: TextStyle(fontSize: 14, color: Color(0xff8C8C8C))),
-              )),
             ],
           ),
-          SizedBox(
-            height: 16,
-          ),
-          Divider(
-            height: 1,
-            color: MyColor.dividerColor2,
-          )
         ],
       ),
     );

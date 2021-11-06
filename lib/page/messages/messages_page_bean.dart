@@ -1,5 +1,6 @@
 class MsgPageBean {
   String time = '';
+  String sessionId = '';
   int unreadMsgNum = 0;
   String heardUrl = '';
   String nickName = '';
