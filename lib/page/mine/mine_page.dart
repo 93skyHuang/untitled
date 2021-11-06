@@ -4,6 +4,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
+import 'package:untitled/page/community/pull_dynamic_page.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
 import 'package:untitled/page/mine/vip/vip_page.dart';
@@ -173,12 +174,12 @@ class _MinePageState extends State<MinePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CustomText(
-                            text: '完善基本资料',
+                            text: _mineController.userBasic.value.dataPerfection==100?'如约而至':'完善基本资料',
                             textStyle:
                                 TextStyle(fontSize: 12, color: Colors.white),
                           ),
                           CustomText(
-                            text: '详细的个人资料才能得到更多关注哟',
+                            text: _mineController.userBasic.value.dataPerfection==100?'凡所际遇，绝非偶然，愿第一时间与你分享有趣的事':'详细的个人资料才能得到更多关注哟',
                             textStyle:
                                 TextStyle(fontSize: 10, color: Colors.white),
                           ),
@@ -186,8 +187,12 @@ class _MinePageState extends State<MinePage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(EditBasicInfoPage())!
-                              .then((value) => _mineController.getInfo());
+                          if(_mineController.userBasic.value.dataPerfection==100){
+                            Get.to(PullDynamicPage());
+                          }else{
+                            Get.to(EditBasicInfoPage())!
+                                .then((value) => _mineController.getInfo());
+                          }
                         },
                         child: Container(
                             padding: EdgeInsets.only(
@@ -198,7 +203,7 @@ class _MinePageState extends State<MinePage> {
                                   BorderRadius.all(Radius.circular(16.0)),
                             ),
                             child: Text(
-                              "去完善",
+                              _mineController.userBasic.value.dataPerfection==100?'立即前往':"去完善",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Color(0xff5DB1DE),

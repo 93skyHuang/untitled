@@ -313,7 +313,7 @@ class _EditUserState extends State<EditUser> {
       heightEnd = 170;
     }
     if (heightLists.isEmpty) {
-      for (int i = 50; i < 220; i++) {
+      for (int i = 150; i < 220; i++) {
         _heightStart.add(i);
         _heightEnd.add(i);
       }
