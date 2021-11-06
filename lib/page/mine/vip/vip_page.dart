@@ -396,7 +396,7 @@ class _VipPageState extends State<VipPage> {
                       Expanded(
                           child: GestureDetector(
                         onTap: () {
-                          Loading.show(getApplication()!);
+                          Loading.show(getApplication()!,isAutoDismiss:false);
                           _vipController.pay();
                         },
                         child: Container(
@@ -423,6 +423,7 @@ class _VipPageState extends State<VipPage> {
                   Platform.isIOS
                       ? TextButton(
                           onPressed: () {
+                            Loading.show(getApplication()!,isAutoDismiss:false);
                             _vipController.iosResumePurchase();
                           },
                           child: Text(

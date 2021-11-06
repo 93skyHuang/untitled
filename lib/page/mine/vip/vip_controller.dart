@@ -6,6 +6,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:untitled/network/bean/pay_list.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/route_config.dart';
 import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/toast.dart';
@@ -16,6 +17,7 @@ class VipController extends GetxController {
   List<MonthlyCard> monthlyCardList = <MonthlyCard>[].obs;
   RxInt selectedIndex = 0.obs;
   RxString money = "".obs;
+  bool _isClose=false;
 
   void closeIosConnection() async {
     await FlutterInappPurchase.instance.endConnection;
@@ -62,21 +64,19 @@ class VipController extends GetxController {
     /// 初始化连接
     await FlutterInappPurchase.instance.initConnection;
     logger.i('初始化连接');
-
     /// 连接状态监听
     FlutterInappPurchase.connectionUpdated.listen((connected) {
       /// 调起苹果支付，这时候可以关闭toast
       ///
-      Loading.dismiss(getApplication()!);
-      logger.i('链接状态监听$connected');
+      logger.i('-------connectionUpdated$connected');
     });
 
     /// appStore购买状态监听
     FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
       logger.i('购买状态监听----$productItem');
       //自有服务器校验
-      if (productItem != null) {
-        logger.i('transactionStateIOS===${productItem.transactionStateIOS}');
+      if (productItem != null&&!_isClose) {
+        logger.i('transactionStateIOS===${productItem.transactionStateIOS} --- ${productItem.transactionId}');
         switch (productItem.transactionStateIOS) {
           case TransactionState.purchasing: // 购买中
             // TODO: Handle this case.
@@ -86,14 +86,17 @@ class VipController extends GetxController {
             // TODO: Handle this case.
             break;
           case TransactionState.purchased: //购买完成
-            logger.i('${productItem.originalTransactionIdentifierIOS}');
+            logger.i('${productItem.originalTransactionIdentifierIOS} ----${productItem.originalTransactionDateIOS}');
+            String transactionId = productItem.transactionId ?? '';
             if (productItem.originalTransactionIdentifierIOS != null) {
               //自动续费订单
               logger.e('自动续费订单 message');
+              // transactionId = productItem.originalTransactionIdentifierIOS ?? '';
             } else {
               //普通购买或第一次购买
+
             }
-            String transactionId = productItem.transactionId ?? '';
+            transactionId = productItem.transactionId ?? '';
             String receiptData = productItem.transactionReceipt ?? '';
             final r = await verifyOrder(
               orderid,
@@ -101,8 +104,11 @@ class VipController extends GetxController {
               transactionId,
             );
             logger.i('${r.isOk()}  ${r.msg}');
+            Loading.dismiss(getApplication()!);
             if (r.isOk()) {
               MyToast.show(r.msg);
+              FlutterInappPurchase.instance.endConnection;
+              GetStorageUtils.saveSvip(true);
               Get.back();
             } else {
               MyToast.show(r.msg);
@@ -120,7 +126,8 @@ class VipController extends GetxController {
 
     /// 错误监听
     FlutterInappPurchase.purchaseError.listen((purchaseError) async {
-      print('监听到错误 purchase-error: $purchaseError');
+      logger.e('监听到错误 purchase-error: $purchaseError');
+      Loading.dismiss(getApplication()!);
       await clearTransaction();
       await FlutterInappPurchase.instance.endConnection;
 
@@ -137,8 +144,12 @@ class VipController extends GetxController {
   }
 
   void iosResumePurchase() async {
-    resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey)
-        .then((value) => MyToast.show(value.msg));
+  final r=await  resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey);
+  Loading.dismiss(getApplication()!);
+  MyToast.show(r.msg);
+  if(r.isOk()){
+    Get.back();
+  }
   }
 
   Future _getPurchaseHistory() async {
@@ -181,6 +192,7 @@ class VipController extends GetxController {
   void onClose() {
     logger.i("onClose");
     FlutterInappPurchase.instance.endConnection;
+    _isClose=true;
   }
 
   @override

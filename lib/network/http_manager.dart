@@ -408,7 +408,14 @@ Future<BasePageData<PayTime?>> resumePurchaseIOS(String product_id) async {
   BasePageData<PayTime?> basePageData;
   try {
     int uid = GetStorageUtils.getUID();
-    Response response = await getDio().post('/index/Pay/resumePurchase',
+    Dio _dio = Dio();
+    _dio.interceptors.add(EncryptionAndDecryptionInterceptors());
+    _dio.options = BaseOptions(
+      baseUrl: "http://www.sancun.vip",
+      connectTimeout: 60000,
+      receiveTimeout: 20000,
+    );
+    Response response = await _dio.post('/index/Pay/resumePurchase',
         data: {'uid': uid, "product_id": product_id});
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
@@ -1356,8 +1363,8 @@ Future<BasePageData> verifyOrder(
     _dio.interceptors.add(EncryptionAndDecryptionInterceptors());
     _dio.options = BaseOptions(
       baseUrl: "http://www.sancun.vip",
-      connectTimeout: 20000,
-      receiveTimeout: 20000,
+      connectTimeout: 60000,
+      receiveTimeout: 60000,
     );
     Response response = await _dio.post('/index/Pay/verifyOrder', data: {
       'uid': uid,
