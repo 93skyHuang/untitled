@@ -56,268 +56,258 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     logger.i('MessagesPage');
     return Scaffold(
+      backgroundColor: MyColor.pageBgColor,
+      appBar: AppBar(
+        elevation: 0.5,
+        leading: IconButton(
+            icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+            onPressed: () {
+              Navigator.maybePop(context);
+            }),
+        centerTitle: true,
         backgroundColor: MyColor.pageBgColor,
-        appBar: AppBar(
-          elevation: 0.5,
-          leading: IconButton(
-              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
-              onPressed: () {
-                Navigator.maybePop(context);
-              }),
-          centerTitle: true,
-          backgroundColor: MyColor.pageBgColor,
-          title: Obx(() => Text(
-                _controller.hisName.value,
-                style: TextStyle(
-                    color: MyColor.blackColor,
-                    fontSize: ScreenUtil().setSp(18)),
-              )),
-        ),
-        body: Stack(children: [
-          // _userCard(),
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Color(0xFFF0F0F0),
-            child: Obx(() => Column(
-                  children: <Widget>[
-                    _controller.isGetHisInfo.value ? _userCard() : Container(),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        //列表内容少的时候靠上
-                        alignment: Alignment.topCenter,
-                        child: _renderList(),
-                      ),
-                    ),
-                    Container(
-                      height: ScreenUtil().setHeight(50),
-                      margin: EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF0F0F0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x14000000),
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Obx(() => GestureDetector(
-                                onTap: () {
-                                  _controller.openOrCloseRecoding();
-                                },
-                                child: _controller.isShowRecodingBtn.value
-                                    ? Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(12, 0, 10, 0),
-                                        decoration: BoxDecoration(
-                                          //背景
-                                          color: MyColor.mainColor,
-                                          //设置四周圆角 角度
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                          //设置四周边框
-                                          border: Border(),
-                                        ),
-                                        width: 40,
-                                        height: 40,
-                                        child: Icon(
-                                          Icons.keyboard,
-                                          size: 30,
-                                        ),
-                                      )
-                                    : Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(12, 0, 10, 0),
-                                        decoration: BoxDecoration(
-                                          //背景
-                                          color: MyColor.mainColor,
-                                          //设置四周圆角 角度
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                          //设置四周边框
-                                          border: Border(),
-                                        ),
-                                        width: 40,
-                                        height: 40,
-                                        child: Icon(
-                                          Icons.mic_rounded,
-                                          size: 30,
-                                        ),
-                                      ),
-                              )),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                              constraints: BoxConstraints(
-                                maxHeight: 100.0,
-                                minHeight: 50.0,
-                              ),
-                              decoration: BoxDecoration(
-                                  color: Color(0xFFF5F6FF),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2))),
-                              child:
-                                  Obx(() => _controller.isShowRecodingBtn.value
-                                      ? GestureDetector(
-                                          onVerticalDragStart: (details) {
-                                            logger.i("onVerticalDragStart");
-                                            isUpCancel = false;
-                                            start = details.globalPosition.dy;
-                                            _controller.startRecoding();
-                                            _controller.cancelRecodeText.value =
-                                                "松开发送，上滑取消";
-                                          },
-                                          onVerticalDragEnd: (details) {
-                                            logger.i(
-                                                "onVerticalDragEnd $isUpCancel");
-                                            if (isUpCancel) {
-                                              _controller.cancelRecoding();
-                                            } else {
-                                              _controller
-                                                  .stopRecodingAndStartSend();
-                                            }
-                                          },
-                                          onVerticalDragUpdate: (details) {
-                                            logger.i(
-                                                "onVerticalDragUpdate $start  $offset");
-                                            offset = details.globalPosition.dy;
-                                            isUpCancel = start - offset > 70
-                                                ? true
-                                                : false;
-                                            if (isUpCancel) {
-                                              _controller.cancelRecodeText
-                                                  .value = "松开取消发送";
-                                            } else {
-                                              _controller.cancelRecodeText
-                                                  .value = "松开发送，上滑取消";
-                                            }
-                                          },
-                                          child: Container(
-                                            width: double.infinity,
-                                            child: Text(
-                                              _controller.recodeBtnText.value,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: MyColor.mainColor,
-                                                  fontSize: 16),
-                                            ),
-                                          ))
-                                      : TextField(
-                                          controller: textEditingController,
-                                          maxLines: null,
-                                          maxLength: 200,
-                                          decoration: InputDecoration(
-                                            counterText: '',
-                                            border: InputBorder.none,
-                                            contentPadding: EdgeInsets.only(
-                                                left: 16.0,
-                                                right: 16.0,
-                                                bottom: 10),
-                                            hintText: "回复",
-                                            hintStyle: TextStyle(
-                                                color: Color(0xFFADB3BA),
-                                                fontSize: 14),
-                                          ),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14),
-                                        )),
-                            ),
-                          ),
-                          _controller.isShowRecodingBtn.value
-                              ? Container(
-                                  width: 30,
-                                )
-                              : Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 10),
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                        //去除点击效果
-                                        // overlayColor: MaterialStateProperty.all(
-                                        //     Colors.transparent),
-                                        minimumSize: MaterialStateProperty.all(
-                                            const Size(0, 0)),
-                                        visualDensity: VisualDensity.compact,
-                                        padding: MaterialStateProperty.all(
-                                            EdgeInsets.zero),
-                                        //圆角
-                                        shape: MaterialStateProperty.all(
-                                            RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(4))),
-                                        //背景
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Color(0xFFF3CD8E))),
-                                    onPressed: () {
-                                      sendTxt();
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      width: 60,
-                                      height: 40,
-                                      child: Text(
-                                        '发送',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                  )),
-                        ],
-                      ),
-                    ),
-                  ],
-                )),
-          ),
-
-          ///语音录制动画
-          Obx(() => _controller.isRecoding.value
-              ? Center(
-                  child: Opacity(
-                    opacity: 0.5,
+        title: Obx(() => Text(
+              _controller.hisName.value,
+              style: TextStyle(
+                  color: MyColor.blackColor, fontSize: ScreenUtil().setSp(18)),
+            )),
+      ),
+      body: Stack(children: [
+        // _userCard(),
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Color(0xFFF0F0F0),
+          child: Obx(() => Column(
+                children: <Widget>[
+                  _controller.isGetHisInfo.value ? _userCard() : Container(),
+                  Expanded(
+                    flex: 1,
                     child: Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: Color(0xff77797A),
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: Image.asset(
-                              "assets/images/voice_volume_7.png",
-                              width: 100,
-                              height: 100,
-                            ),
-                          ),
-                          Container(
-                            padding:
-                                EdgeInsets.only(right: 10, left: 10, top: 0),
-                            child: Text(
-                              _controller.cancelRecodeText.value,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          )
-                        ],
-                      ),
+                      //列表内容少的时候靠上
+                      alignment: Alignment.topCenter,
+                      child: _renderList(),
                     ),
                   ),
-                )
-              : Container()),
-        ]));
+                  Container(
+                    height: ScreenUtil().setHeight(50),
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF0F0F0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x14000000),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Obx(() => InkWell(
+                              onTap: () {
+                                _controller.openOrCloseRecoding();
+                              },
+                              child: _controller.isShowRecodingBtn.value
+                                  ? Container(
+                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        //背景
+                                        color: MyColor.mainColor,
+                                        //设置四周圆角 角度
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                        //设置四周边框
+                                        border: Border(),
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      child: Icon(
+                                        Icons.keyboard,
+                                        size: 30,
+                                      ),
+                                    )
+                                  : Container(
+                                      margin: EdgeInsets.fromLTRB(12, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        //背景
+                                        color: MyColor.mainColor,
+                                        //设置四周圆角 角度
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
+                                        //设置四周边框
+                                        border: Border(),
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                      child: Icon(
+                                        Icons.mic_rounded,
+                                        size: 30,
+                                      ),
+                                    ),
+                            )),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                            constraints: BoxConstraints(
+                              maxHeight: 100.0,
+                              minHeight: 50.0,
+                            ),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFF5F6FF),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2))),
+                            child: Obx(() => _controller.isShowRecodingBtn.value
+                                ? GestureDetector(
+                                    onVerticalDragStart: (details) {
+                                      logger.i("onVerticalDragStart");
+                                      isUpCancel = false;
+                                      start = details.globalPosition.dy;
+                                      _controller.startRecoding();
+                                      _controller.cancelRecodeText.value =
+                                          "松开发送，上滑取消";
+                                    },
+                                    onVerticalDragEnd: (details) {
+                                      logger.i("onVerticalDragEnd $isUpCancel");
+                                      if (isUpCancel) {
+                                        _controller.cancelRecoding();
+                                      } else {
+                                        _controller.stopRecodingAndStartSend();
+                                      }
+                                    },
+                                    onVerticalDragUpdate: (details) {
+                                      logger.i(
+                                          "onVerticalDragUpdate $start  $offset");
+                                      offset = details.globalPosition.dy;
+                                      isUpCancel =
+                                          start - offset > 70 ? true : false;
+                                      if (isUpCancel) {
+                                        _controller.cancelRecodeText.value =
+                                            "松开取消发送";
+                                      } else {
+                                        _controller.cancelRecodeText.value =
+                                            "松开发送，上滑取消";
+                                      }
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                        _controller.recodeBtnText.value,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: MyColor.mainColor,
+                                            fontSize: 16),
+                                      ),
+                                    ))
+                                : TextField(
+                                    controller: textEditingController,
+                                    maxLines: null,
+                                    maxLength: 200,
+                                    decoration: InputDecoration(
+                                      counterText: '',
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 16.0, right: 16.0, bottom: 10),
+                                      hintText: "回复",
+                                      hintStyle: TextStyle(
+                                          color: Color(0xFFADB3BA),
+                                          fontSize: 14),
+                                    ),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 14),
+                                  )),
+                          ),
+                        ),
+                        _controller.isShowRecodingBtn.value
+                            ? Container(
+                                width: 30,
+                              )
+                            : Padding(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      //去除点击效果
+                                      // overlayColor: MaterialStateProperty.all(
+                                      //     Colors.transparent),
+                                      minimumSize: MaterialStateProperty.all(
+                                          const Size(0, 0)),
+                                      visualDensity: VisualDensity.compact,
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.zero),
+                                      //圆角
+                                      shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      //背景
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Color(0xFFF3CD8E))),
+                                  onPressed: () {
+                                    sendTxt();
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: 60,
+                                    height: 40,
+                                    child: Text(
+                                      '发送',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+        ),
+
+        ///语音录制动画
+        Obx(() => _controller.isRecoding.value
+            ? Center(
+                child: Opacity(
+                  opacity: 0.5,
+                  child: Container(
+                    width: 160,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      color: Color(0xff77797A),
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: Image.asset(
+                            "assets/images/voice_volume_7.png",
+                            width: 100,
+                            height: 100,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(right: 10, left: 10, top: 0),
+                          child: Text(
+                            _controller.cancelRecodeText.value,
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Container()),
+      ]),
+    );
   }
 
   bool _isNoMoreData = false;
+
   _onLoad() {
     if (!_isNoMoreData) {
       _controller.queryMoreHistoryMsg().then((value) => {
@@ -335,7 +325,7 @@ class _ChatPageState extends State<ChatPage> {
                 _refreshController.loadComplete(),
               }
           });
-    }else{
+    } else {
       _refreshController.loadComplete();
     }
   }
@@ -638,64 +628,73 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _userCard() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(4, 8, 4, 0),
-      width: double.infinity,
-      height: ScreenUtil().setHeight(_controller.trendsLength() > 0 ? 210 : 80),
-      decoration: BoxDecoration(
-        //背景
-        color: Colors.white,
-        //设置四周圆角 角度
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        //设置四周边框
-        border: Border(),
-      ),
-      child: Padding(
-          padding: EdgeInsets.only(
-            top: ScreenUtil().setWidth(8),
-            left: ScreenUtil().setWidth(4),
-            right: ScreenUtil().setWidth(10),
+    return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          margin: EdgeInsets.fromLTRB(4, 8, 4, 0),
+          width: double.infinity,
+          height:
+              ScreenUtil().setHeight(_controller.trendsLength() > 0 ? ScreenUtil().setHeight(200) : ScreenUtil().setHeight(80)),
+          decoration: BoxDecoration(
+            //背景
+            color: Colors.white,
+            //设置四周圆角 角度
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            //设置四周边框
+            border: Border(),
           ),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              GestureDetector(
-                child: _headImg(_controller.hisBasic?.headImgUrl ?? ''),
-                onTap: () {
-                  Get.to(UserHomePage(
-                    uid: _controller.hisUid,
-                    initialIndex: 2,
-                  ));
-                },
+          child: Padding(
+              padding: EdgeInsets.only(
+                top: ScreenUtil().setWidth(8),
+                left: ScreenUtil().setWidth(4),
+                right: ScreenUtil().setWidth(10),
               ),
-              Padding(
-                padding: EdgeInsets.only(left: ScreenUtil().setWidth(6)),
-                child: Column(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    singeLineText(
-                        '${_controller.hisBasic?.cname}',
-                        ScreenUtil().setWidth(90),
-                        TextStyle(
-                            color: MyColor.blackColor,
-                            fontSize: ScreenUtil().setSp(14))),
-                    Padding(
-                        padding: EdgeInsets.only(top: 4, bottom: 6),
-                        child: _info2()), //信息
-                    _info3(), //认证
-                  ],
-                ),
-              ),
-              Expanded(child: Container()),
-              focusWidget(),
-            ]),
-            SizedBox(height: 10),
-
-            ///动态
-            _info4(),
-          ])),
-    );
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            child: _headImg(
+                                _controller.hisBasic?.headImgUrl ?? ''),
+                            onTap: () {
+                              Get.to(UserHomePage(
+                                uid: _controller.hisUid,
+                                initialIndex: 2,
+                              ));
+                            },
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsets.only(left: ScreenUtil().setWidth(6)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                singeLineText(
+                                    '${_controller.hisBasic?.cname}',
+                                    ScreenUtil().setWidth(90),
+                                    TextStyle(
+                                        color: MyColor.blackColor,
+                                        fontSize: ScreenUtil().setSp(14))),
+                                Padding(
+                                    padding: EdgeInsets.only(top: 4, bottom: 6),
+                                    child: _info2()), //信息
+                                _info3(), //认证
+                              ],
+                            ),
+                          ),
+                          Expanded(child: Container()),
+                          focusWidget(),
+                        ]),
+                    Expanded(child: Align(alignment: Alignment.center,child: _info4(),)),
+                    ///动态
+                  ])),
+        ));
   }
 
   Widget _info2() {
@@ -788,9 +787,16 @@ class _ChatPageState extends State<ChatPage> {
             ),
             // 设置 child 居中
             alignment: const Alignment(0, 0),
-            child: InkWell(
-                onTap: () {
+            child: TextButton(
+                style: ButtonStyle(
+                    //去除点击效果
+                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                    visualDensity: VisualDensity.compact,
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),),
+                onPressed: () {
                   showBottomCancelFocus(context, () {
+                    FocusScope.of(context).requestFocus(FocusNode());
                     _controller.del();
                   });
                 },
@@ -822,8 +828,14 @@ class _ChatPageState extends State<ChatPage> {
             ),
             // 设置 child 居中
             alignment: const Alignment(0, 0),
-            child: InkWell(
-                onTap: () {
+            child: TextButton(
+                style: ButtonStyle(
+                    //去除点击效果
+                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
+                    visualDensity: VisualDensity.compact,
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),),
+                onPressed: () {
                   _controller.add();
                 },
                 child:
@@ -883,8 +895,10 @@ class _ChatPageState extends State<ChatPage> {
                         color: MyColor.grey8C8C8C,
                         fontSize: ScreenUtil().setSp(12))),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 10),
               Row(
+
+                crossAxisAlignment:CrossAxisAlignment.end,
                 mainAxisAlignment: listWidget.length == 3
                     ? MainAxisAlignment.spaceBetween
                     : MainAxisAlignment.start,
@@ -898,9 +912,9 @@ class _ChatPageState extends State<ChatPage> {
   Widget _infoTrends(String url) {
     return url.isEmpty
         ? Container()
-        : GestureDetector(
+        : InkWell(
             child: cardNetworkImage(
-                url, ScreenUtil().setWidth(100), ScreenUtil().setWidth(100),
+                url, ScreenUtil().setWidth(ScreenUtil().setWidth(90)), ScreenUtil().setWidth(90),
                 radius: 8),
             onTap: () {
               Get.to(UserHomePage(

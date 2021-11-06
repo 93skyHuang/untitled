@@ -6,6 +6,8 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:untitled/network/bean/pay_list.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/route_config.dart';
+import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/toast.dart';
 
 class VipController extends GetxController {
@@ -33,6 +35,7 @@ class VipController extends GetxController {
     if (Platform.isIOS) {
       _iosPay(monthlyCardList[selectedIndex.value]);
     } else if (Platform.isAndroid) {
+      Loading.dismiss(getApplication()!);
       _andPay();
     }
   }
@@ -64,6 +67,7 @@ class VipController extends GetxController {
     FlutterInappPurchase.connectionUpdated.listen((connected) {
       /// 调起苹果支付，这时候可以关闭toast
       ///
+      Loading.dismiss(getApplication()!);
       logger.i('链接状态监听$connected');
     });
 
@@ -73,42 +77,42 @@ class VipController extends GetxController {
       //自有服务器校验
       if (productItem != null) {
         logger.i('transactionStateIOS===${productItem.transactionStateIOS}');
-        switch(productItem.transactionStateIOS){
-          case TransactionState.purchasing:// 购买中
+        switch (productItem.transactionStateIOS) {
+          case TransactionState.purchasing: // 购买中
             // TODO: Handle this case.
             await clearTransaction();
             break;
-          case TransactionState.restored://恢复用户先前购买的交易
-          // TODO: Handle this case.
+          case TransactionState.restored: //恢复用户先前购买的交易
+            // TODO: Handle this case.
             break;
-          case TransactionState.purchased://购买完成
-          logger.i('${productItem.originalTransactionIdentifierIOS}');
-            if(productItem.originalTransactionIdentifierIOS!=null){
-             //自动续费订单
+          case TransactionState.purchased: //购买完成
+            logger.i('${productItem.originalTransactionIdentifierIOS}');
+            if (productItem.originalTransactionIdentifierIOS != null) {
+              //自动续费订单
               logger.e('自动续费订单 message');
-            }else {
+            } else {
               //普通购买或第一次购买
             }
-          String transactionId = productItem.transactionId ?? '';
-          String receiptData = productItem.transactionReceipt ?? '';
-          final r = await verifyOrder(
-            orderid,
-            receiptData,
-            transactionId,
-          );
-          logger.i('${r.isOk()}  ${r.msg}');
-          if (r.isOk()) {
-            MyToast.show(r.msg);
-            Get.back();
-          } else {
-            MyToast.show(r.msg);
-          }
-          await clearTransaction();
-            break;
-          case TransactionState.failed://失败的交易
+            String transactionId = productItem.transactionId ?? '';
+            String receiptData = productItem.transactionReceipt ?? '';
+            final r = await verifyOrder(
+              orderid,
+              receiptData,
+              transactionId,
+            );
+            logger.i('${r.isOk()}  ${r.msg}');
+            if (r.isOk()) {
+              MyToast.show(r.msg);
+              Get.back();
+            } else {
+              MyToast.show(r.msg);
+            }
             await clearTransaction();
             break;
-          case TransactionState.deferred://队列中的交易
+          case TransactionState.failed: //失败的交易
+            await clearTransaction();
+            break;
+          case TransactionState.deferred: //队列中的交易
             break;
         }
       }
@@ -119,6 +123,7 @@ class VipController extends GetxController {
       print('监听到错误 purchase-error: $purchaseError');
       await clearTransaction();
       await FlutterInappPurchase.instance.endConnection;
+
       /// 购买错误回调
     });
 
@@ -129,6 +134,11 @@ class VipController extends GetxController {
     } else {
       logger.e('null items  IAPItem');
     }
+  }
+
+  void iosResumePurchase() async {
+    resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey)
+        .then((value) => MyToast.show(value.msg));
   }
 
   Future _getPurchaseHistory() async {

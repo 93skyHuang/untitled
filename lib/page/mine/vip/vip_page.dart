@@ -11,6 +11,7 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/pay_list.dart';
 import 'package:untitled/page/mine/vip/vip_controller.dart';
 import 'package:untitled/widget/custom_text.dart';
+import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/card_image.dart';
 
 import '../../../route_config.dart';
@@ -367,51 +368,72 @@ class _VipPageState extends State<VipPage> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.center,
-                          height: 60,
-                          margin:
-                              EdgeInsets.only(left: 16, bottom: 30, top: 30),
-                          decoration: new BoxDecoration(
-                            color: Color(0xff212121),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30.0),
-                                bottomLeft: Radius.circular(30.0)),
-                          ),
-                          child: Obx(() => Text(
-                                _vipController.money.value,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Color(0xffF3CD8E),
-                                ),
-                              )))),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      _vipController.pay();
-                    },
-                    child: Container(
-                        height: 60,
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(right: 16, bottom: 30, top: 30),
-                        decoration: new BoxDecoration(
-                          color: Color(0xffF3CD8E),
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(30.0),
-                              bottomRight: Radius.circular(30.0)),
-                        ),
-                        child: Text(
-                          "立即开通",
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.black,
-                          ),
-                        )),
-                  ))
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Container(
+                              alignment: Alignment.center,
+                              height: 60,
+                              margin: EdgeInsets.only(
+                                  left: 16, bottom: 10, top: 30),
+                              decoration: new BoxDecoration(
+                                color: Color(0xff212121),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30.0),
+                                    bottomLeft: Radius.circular(30.0)),
+                              ),
+                              child: Obx(() => Text(
+                                    _vipController.money.value,
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Color(0xffF3CD8E),
+                                    ),
+                                  )))),
+                      Expanded(
+                          child: GestureDetector(
+                        onTap: () {
+                          Loading.show(getApplication()!);
+                          _vipController.pay();
+                        },
+                        child: Container(
+                            height: 60,
+                            alignment: Alignment.center,
+                            margin:
+                                EdgeInsets.only(right: 16, bottom: 10, top: 30),
+                            decoration: new BoxDecoration(
+                              color: Color(0xffF3CD8E),
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(30.0),
+                                  bottomRight: Radius.circular(30.0)),
+                            ),
+                            child: Text(
+                              "立即开通",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.black,
+                              ),
+                            )),
+                      )),
+                    ],
+                  ),
+                  Platform.isIOS
+                      ? TextButton(
+                          onPressed: () {
+                            _vipController.iosResumePurchase();
+                          },
+                          child: Text(
+                            '恢复购买',
+                            style: TextStyle(
+                                color: MyColor.mainColor, fontSize: 16),
+                          ))
+                      : Container(),
+                  Container(
+                    height: Platform.isIOS ? 20 : 0,
+                  )
                 ],
               ),
             ),

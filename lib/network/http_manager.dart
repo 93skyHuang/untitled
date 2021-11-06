@@ -398,6 +398,27 @@ Future<BasePageData<PayTime?>> getPayTime() async {
   return basePageData;
 }
 
+/// * 恢复购买
+//      * index/Pay/resumePurchase
+//      * uid [充值人UID]
+//      * product_id [产品ID]
+//      * 返回数据
+//      * 无
+Future<BasePageData<PayTime?>> resumePurchaseIOS(String product_id) async {
+  BasePageData<PayTime?> basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response = await getDio().post('/index/Pay/resumePurchase',
+        data: {'uid': uid, "product_id": product_id});
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
 /// 获取访客 应该是个列表，接口测试通过
 Future<BasePageData<List<VisitorInfo>?>> getVisitor(int pageNum) async {
   BasePageData<List<VisitorInfo>?> basePageData;

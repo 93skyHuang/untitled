@@ -58,7 +58,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
           ShaderMask(
             shaderCallback: (Rect bounds) {
               return RadialGradient(
-                center: Alignment.center,
+                center: Alignment(0.0, -0.2),
                 radius: .7,
                 colors: <Color>[
                   Colors.transparent,
@@ -87,7 +87,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                       fontWeight: FontWeight.bold)),
               CustomText(
                   text: "拍摄真实信息，获取“真人”标签",
-                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(20), bottom: ScreenUtil().setHeight(20)),
+                  margin: EdgeInsets.only(top: ScreenUtil().setHeight(30), bottom: ScreenUtil().setHeight(30)),
                   textAlign: Alignment.center,
                   textStyle: TextStyle(
                     fontSize: 15,
@@ -147,7 +147,7 @@ class _VideoVerifiedPageState extends State<VideoVerifiedPage> {
                         TextStyle(fontSize: 12, color: Color(0xff8C8C8C))),
               ),
               SizedBox(
-                height: ScreenUtil().setHeight(30),
+                height: ScreenUtil().setHeight(40),
               ),
             ]),
           ),

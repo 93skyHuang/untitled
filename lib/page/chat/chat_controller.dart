@@ -123,6 +123,7 @@ class ChatController extends GetxController {
             {}
           else
             {
+              MyToast.show(value.msg),
               hisBasic?.isFollow = 0,
               isFollow.value = false,
             }
@@ -134,9 +135,12 @@ class ChatController extends GetxController {
     isFollow.value = false;
     delFollow(hisUid).then((value) => {
           if (value.isOk())
+            {}
+          else
             {
               hisBasic?.isFollow = 1,
               isFollow.value = true,
+              MyToast.show(value.msg),
             }
         });
   }

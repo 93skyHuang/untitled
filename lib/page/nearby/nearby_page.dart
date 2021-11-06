@@ -176,16 +176,25 @@ class _NearbyPageState extends State<NearbyPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 10,
+                    height: 4,
                   ),
                   _info1(info),
+                  SizedBox(
+                    height: 2,
+                  ),
                   _info2(info),
+                  SizedBox(
+                    height: 2,
+                  ),
                   singeLineText(
                       '${info.autograph}',
                       ScreenUtil().setWidth(130),
                       TextStyle(
                           color: MyColor.grey8C8C8C,
                           fontSize: ScreenUtil().setSp(12))),
+                  SizedBox(
+                    height: 10,
+                  ),
                   _info3(info),
                 ],
               ),
@@ -311,7 +320,7 @@ class _NearbyPageState extends State<NearbyPage>
     return GestureDetector(
       child: cardNetworkImage(trendsImg.imgArr, ScreenUtil().setWidth(45),
           ScreenUtil().setWidth(45),
-          radius: 8),
+          radius: 8, margin: EdgeInsets.only(right: 6)),
       onTap: () {
         logger.i(trendsImg);
         bool isSvip = GetStorageUtils.getSvip();
