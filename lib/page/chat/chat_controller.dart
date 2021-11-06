@@ -156,7 +156,11 @@ class ChatController extends GetxController {
   void sendTextMessage(String content) async {
     final r = await chatMessage(hisUid, content);
     if (!r.isOk()) {
-      MyToast.show(r.msg);
+      if (r.code == 300) {
+
+      } else {
+        MyToast.show(r.msg);
+      }
       return;
     }
     NimCore.instance.messageService.onMessageStatus.listen((event) {

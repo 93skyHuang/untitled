@@ -51,7 +51,7 @@ final List<int> _heights = [];
 void showHeightPicker(BuildContext context,
     {int choice = 170, required _SingleClickCallBack clickCallBack}) {
   if (_heights.isEmpty) {
-    for (int i = 50; i < 220; i++) {
+    for (int i = 150; i < 220; i++) {
       _heights.add(i);
     }
   }

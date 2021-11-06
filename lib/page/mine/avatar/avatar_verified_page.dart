@@ -284,7 +284,7 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                       GestureDetector(
                         onTap: () async {
                           Navigator.pop(context);
-                          XFile? f = await getImageFromGallery();
+                          XFile? f = await getPhoto();
                           headerImgUrlLocal = f?.path;
                           setState(() {});
                         },
@@ -298,9 +298,31 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                             color: Color(0xffF3CD8E),
                           ),
                           alignment: Alignment.center,
-                          child: Text('从相册选择',
+                          child: Text('拍照',
                               style:
                                   TextStyle(color: Colors.black, fontSize: 17)),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          XFile? f = await getImageFromGallery();
+                          headerImgUrlLocal = f?.path;
+                          setState(() {});
+                        },
+                        child: Container(
+                          width: 214,
+                          height: 40,
+                          margin: EdgeInsets.only( bottom: 16),
+                          decoration: new BoxDecoration(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(40.0)),
+                            color: Color(0xffF3CD8E),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text('从相册选择',
+                              style:
+                              TextStyle(color: Colors.black, fontSize: 17)),
                         ),
                       ),
                       GestureDetector(

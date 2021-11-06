@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Loading extends StatelessWidget {
+  static bool isShow=false;
   static void show(BuildContext context, {bool isAutoDismiss = true}) {
+    isShow=true;
     if (isAutoDismiss) {
       Future.delayed(Duration(seconds: 10)).then((value) => {
             dismiss(context),
@@ -24,9 +26,11 @@ class Loading extends StatelessWidget {
   }
 
   static void dismiss(context) {
-    if (context != null) {
+    if (context != null&&isShow) {
+      isShow=false;
       Navigator.pop(context);
     }
+    isShow=false;
   }
 
   @override
