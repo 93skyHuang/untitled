@@ -20,6 +20,8 @@ import 'messages_page_bean.dart';
 const int sysUid = 10000;
 const String sysSession = "ll10000";
 
+typedef NIMSessionUpdate = Function(List<MsgPageBean> list);
+
 class MessagesController extends GetxController {
   RxString systemName = '官方客服'.obs;
   RxString newSystemMsg = ''.obs;
@@ -29,20 +31,76 @@ class MessagesController extends GetxController {
           .obs;
   RxInt unReadSystemMsg = 0.obs;
   final List<MsgPageBean> _listBean = [];
-  final RxList<MsgPageBean> listPage = <MsgPageBean>[].obs;
   List<NIMSession> nIMSessionList = [];
   List<String> sessionIdList = [];
+  NIMSessionUpdate? _nimSessionUpdate;
 
-  void newSystemMessageOnReceiver() {
-    NimCore.instance.messageService.onMessage.listen((List<NIMMessage> list) {
-      // 处理新收到的消息，为了上传处理方便，SDK 保证参数 messages 全部来自同一个聊天对象。
-      NIMMessage message = list[0];
-      if (message.fromAccount == "ll10000") {
-        newSystemMsg.value = message.content ?? "";
-        newSystemMsgTime.value =
-            TimeUtils.dateAndTimeToString(message.timestamp);
+  void pageChangeListener(NIMSessionUpdate nimSessionUpdate) {
+    _nimSessionUpdate = nimSessionUpdate;
+  }
+
+  void _onSessionUpdate() {
+    NimCore.instance.messageService.onSessionUpdate
+        .listen((List<NIMSession> list) {
+      int length = list.length;
+      logger.i(list.length);
+      for (int i = 0; i < length; i++) {
+        NIMSession session = list[i];
+        if (session.sessionId == sysSession) {
+          ///系统消息
+          newSystemMsg.value = session.lastMessageContent ?? "";
+          newSystemMsgTime.value =
+              TimeUtils.dateAndTimeToString(session.lastMessageTime);
+          unReadSystemMsg.value = session.unreadCount;
+          systemName.value = session.senderNickname ?? "官方客服";
+        } else {
+          _sessionChange(session);
+        }
+      }
+      if (_nimSessionUpdate != null) {
+        _nimSessionUpdate!(_listBean);
       }
     });
+  }
+
+  void _sessionChange(NIMSession chageSession) {
+    for (int i = 0; i < nIMSessionList.length; i++) {
+      NIMSession session = nIMSessionList[i];
+      if (session.sessionId == chageSession.sessionId) {
+        session = chageSession;
+        _updatePageData(chageSession);
+        return;
+      }
+    }
+    _updatePageData(chageSession);
+    nIMSessionList.add(chageSession);
+    sessionIdList.add(chageSession.sessionId);
+  }
+
+  void _updatePageData(NIMSession session) {
+    for (int i = 0; i < _listBean.length; i++) {
+      MsgPageBean msgPageBean = _listBean[i];
+      if (session.sessionId == msgPageBean.sessionId) {
+        msgPageBean = setMsgPageBean(msgPageBean, session);
+        return;
+      }
+    }
+    MsgPageBean msgPageBean = MsgPageBean();
+    _listBean.add(setMsgPageBean(msgPageBean, session));
+  }
+
+  MsgPageBean setMsgPageBean(MsgPageBean msgPageBean, NIMSession session) {
+    msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
+    msgPageBean.unreadMsgNum = session.unreadCount;
+    msgPageBean.nickName = session.senderNickname ?? "";
+    msgPageBean.sessionId = session.sessionId;
+    if (session.extension != null) {
+      msgPageBean.heardUrl = session.extension!['avatar'] ?? '';
+      msgPageBean.age = session.extension!['age'];
+      msgPageBean.height = session.extension!['height'];
+      msgPageBean.region = session.extension!['region'];
+    }
+    return msgPageBean;
   }
 
   /**
@@ -69,31 +127,22 @@ class MessagesController extends GetxController {
       MsgPageBean msgPageBean = MsgPageBean();
       logger.i('extension${session.extension}');
       sessionIdList.add(session.sessionId);
-      msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
-      msgPageBean.unreadMsgNum = session.unreadCount;
-      msgPageBean.sessionId = session.sessionId;
-      int uid = int.parse(
-          session.sessionId.substring(session.sessionId.lastIndexOf('l') + 1));
-      if (uid == sysUid) {
+      if (session.sessionId == sysSession) {
         newSystemMsg.value = session.lastMessageContent ?? "";
         newSystemMsgTime.value =
             TimeUtils.dateAndTimeToString(session.lastMessageTime);
         unReadSystemMsg.value = session.unreadCount;
-        systemName.value = session.senderNickname ?? "官方小助手";
+        systemName.value = session.senderNickname ?? "官方客服";
+        NimCore.instance.userService
+            .getUserInfo(session.sessionId)
+            .then((value) => {
+                  if (value.isSuccess)
+                    {systemAvatar.value = value.data?.avatar ?? ""}
+                });
       } else {
-        logger.i("---extension${session.extension}");
-        if (session.extension != null) {
-          msgPageBean.heardUrl = session.extension!['avatar'] ?? '';
-          msgPageBean.nickName = session.extension!['name'] ?? '';
-          msgPageBean.age = session.extension!['age'];
-          msgPageBean.uid = uid;
-          msgPageBean.height = session.extension!['height'];
-          msgPageBean.region = session.extension!['region'];
-          _listBean.add(msgPageBean);
-        } else {
-          msgPageBean.nickName = session.senderNickname ?? "";
-          _listBean.add(msgPageBean);
-        }
+        logger.i("---extension${session.extension} ${session.sessionId}");
+        msgPageBean.sessionId = session.sessionId;
+        _listBean.add(setMsgPageBean(msgPageBean, session));
       }
     }
     return _listBean;
@@ -166,12 +215,12 @@ class MessagesController extends GetxController {
   @override
   void onClose() {
     logger.i("onClose");
+    _nimSessionUpdate = null;
   }
 
   @override
   void onReady() {
     logger.i("onReady");
-    // querySystemMsg();
-    newSystemMessageOnReceiver();
+    _onSessionUpdate();
   }
 }

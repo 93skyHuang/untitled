@@ -5,9 +5,12 @@ class MsgPageBean {
   String heardUrl = '';
   String nickName = '';
   int? age;
-  int uid=-1;
   int? height;
   String? region;
+
+  int getUid() {
+    return int.parse(sessionId.substring(sessionId.lastIndexOf('l') + 1));
+  }
 
   String getInfo() {
     String ageS = age == null ? '' : '$age 岁';

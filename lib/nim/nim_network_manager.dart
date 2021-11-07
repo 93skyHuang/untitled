@@ -98,10 +98,13 @@ class NimNetworkManager {
   }
 
   Future<NIMResult<void>> sendMessageReceipt(
-      int uid, NIMMessage message) async {
-    logger.i(message);
-    return await NimCore.instance.messageService
-        .sendMessageReceipt(sessionId: 'll$uid', message: message);
+      int uid) async {
+    List<NIMSessionInfo> sessionInfoList =[];
+    NIMSessionInfo nimSessionInfo=NIMSessionInfo(sessionId: 'll$uid', sessionType: NIMSessionType.p2p);
+    sessionInfoList.add(nimSessionInfo);
+    final result =  await NimCore.instance.messageService.clearSessionUnreadCount(sessionInfoList);
+    logger.i('--${result.isSuccess} --$uid');
+    return  result;
   }
 
   /**

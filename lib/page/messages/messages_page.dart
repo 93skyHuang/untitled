@@ -52,6 +52,10 @@ class _MessagesPageState extends State<MessagesPage>
     super.initState();
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       _onRefresh();
+      _controller.pageChangeListener((listBean) {
+        _list = listBean;
+        setState(() {});
+      });
     });
   }
 
@@ -201,7 +205,7 @@ class _MessagesPageState extends State<MessagesPage>
           if (!isSvip) {
             showOpenSvipDialog(context);
           } else {
-            _goToChatPage(info.uid);
+            _goToChatPage(info.getUid());
           }
         },
         child: Column(

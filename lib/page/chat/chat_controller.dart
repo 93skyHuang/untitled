@@ -88,6 +88,7 @@ class ChatController extends GetxController {
       List<NIMMessage> list = result.data ?? [];
       if (list.isNotEmpty) {
         list.sort((nim1, nim2) => nim2.timestamp.compareTo(nim1.timestamp));
+        NimNetworkManager.instance.sendMessageReceipt(hisUid);
         nimMessageList.addAll(list);
       }
     }

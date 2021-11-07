@@ -26,7 +26,7 @@ import 'package:untitled/widgets/null_list_widget.dart';
 
 import 'messages_controller.dart';
 
-//消息页面
+//系统消息页面
 class SystemMsgPage extends StatefulWidget {
   String systemAvatar;
 
@@ -44,9 +44,6 @@ class _SystemMsgPageState extends State<SystemMsgPage>
       RefreshController(initialRefresh: false);
   List<NIMMessage> _list = [];
 
-  final double _textContextWidth =
-      ScreenUtil().screenWidth - ScreenUtil().setWidth(180);
-
   @override
   void initState() {
     logger.i('initState');
@@ -58,7 +55,6 @@ class _SystemMsgPageState extends State<SystemMsgPage>
 
   @override
   Widget build(BuildContext context) {
-    logger.i('MessagesPage');
     super.build(context);
     return Scaffold(
         backgroundColor: MyColor.pageBgColor,
@@ -172,7 +168,7 @@ class _SystemMsgPageState extends State<SystemMsgPage>
         list.sort((nim1, nim2) => nim2.timestamp.compareTo(nim1.timestamp));
         _list.addAll(list);
         setState(() {});
-        NimNetworkManager.instance.sendMessageReceipt(sysUid, _list[0]);
+        NimNetworkManager.instance.sendMessageReceipt(sysUid);
       }
     } else {
       _refreshController.refreshFailed();
