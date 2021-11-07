@@ -186,9 +186,6 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               height: 365,
               alignment: Alignment.topLeft,
               width: double.infinity,
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-              ),
               child: GestureDetector(
                 onTap: () {
                   Get.toNamed(photoViewPName, arguments: {
