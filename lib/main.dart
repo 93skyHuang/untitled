@@ -11,6 +11,8 @@ import 'basic/include.dart';
 import 'messages.dart';
 import 'network/http_manager.dart';
 
+bool isIOSAutoPayListener=true;///iOS自动订阅购买监听
+
 void main() async {
   await _init();
   runApp(GetMaterialApp(
@@ -51,6 +53,7 @@ Future<void> _init() async {
       // DeviceOrientation.landscapeRight,
     ],
   );
+  isIOSAutoPayListener=true;
 }
 
 Future<void> _autoLogin() async {
