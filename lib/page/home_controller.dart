@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:get/get.dart';
@@ -15,7 +17,7 @@ import '../route_config.dart';
 
 class HomeController extends GetxController {
   late final StreamSubscription nimEventSubscription;
-
+  bool isClose=false;
   void nimEventListener() {
     nimEventSubscription =
         NimCore.instance.authService.authStatus.listen((event) {
@@ -44,13 +46,16 @@ class HomeController extends GetxController {
   void onClose() {
     logger.i("onClose");
     nimEventSubscription.cancel();
+    isClose=true;
   }
 
   @override
   void onReady() {
     logger.i("onReady");
     nimEventListener();
-    Future.delayed(Duration(seconds: 10)).then((value) => {_getLocation()});
+    Future.delayed(Duration(seconds: 10)).then((value) => {
+      if(!isClose){ _getLocation(),_getId()}
+     });
   }
 
   void _getLocation() async {
@@ -58,5 +63,20 @@ class HomeController extends GetxController {
     if (hasPermission) {
       await getPosition();
     }
+  }
+
+  void _getId() async {
+    String deviceId=GetStorageUtils.getDeviceId();
+    if(deviceId.isNotEmpty){
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      if (Platform.isIOS) {
+        IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+        deviceId= iosDeviceInfo.identifierForVendor; // unique ID on iOS
+      } else {
+        AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+        deviceId= androidDeviceInfo.androidId; // unique ID on Android
+      }
+    }
+
   }
 }

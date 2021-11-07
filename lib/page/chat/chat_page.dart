@@ -368,6 +368,7 @@ class _ChatPageState extends State<ChatPage> {
           hideKeyboard(context);
         },
         child: Container(
+          color: MyColor.pageBgColor,
           padding: EdgeInsets.fromLTRB(16, 0, 0, 20),
           child: Column(
             children: <Widget>[
@@ -462,9 +463,9 @@ class _ChatPageState extends State<ChatPage> {
             onPressed: () {
               logger.i('播放语音');
               _controller.playVoice(
-                  item.messageId ?? "-2", nimAudioAttachment.path);
+                  item.messageId ?? "-2",  nimAudioAttachment.url);
             },
-            child: Row(
+            child:Obx(() => Row(
               children: [
                 Text(
                   '$second"',
@@ -480,7 +481,7 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ],
             ),
-          ));
+          )));
     } else {
       return Container();
     }
@@ -493,6 +494,7 @@ class _ChatPageState extends State<ChatPage> {
         hideKeyboard(context);
       },
       child: Container(
+        color: MyColor.pageBgColor,
         padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
         child: Column(
           children: <Widget>[
@@ -622,9 +624,9 @@ class _ChatPageState extends State<ChatPage> {
               padding: MaterialStateProperty.all(EdgeInsets.zero),
             ),
             onPressed: () {
-              logger.i('播放语音');
+              logger.i('播放语音${nimAudioAttachment.url}');
               _controller.playVoice(
-                  item.messageId ?? "-2", nimAudioAttachment.path);
+                  item.messageId ?? "-2", nimAudioAttachment.url);
             },
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.end,

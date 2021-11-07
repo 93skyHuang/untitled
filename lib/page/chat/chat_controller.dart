@@ -257,7 +257,7 @@ class ChatController extends GetxController {
     }
     isRecoding.value = true;
     recodeBtnText.value = "松开发送";
-    String path = "${DateTime.now().millisecondsSinceEpoch}.mp4";
+    String path ="${DateTime.now().millisecondsSinceEpoch}.mp4";
     record(path);
 
     // /// 启动(开始)录音，如果成功，会按照顺序回调onRecordReady和onRecordStart。
