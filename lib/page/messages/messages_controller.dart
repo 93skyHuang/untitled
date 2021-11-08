@@ -51,7 +51,7 @@ class MessagesController extends GetxController {
           newSystemMsg.value = session.lastMessageContent ?? "";
           newSystemMsgTime.value =
               TimeUtils.dateAndTimeToString(session.lastMessageTime);
-          unReadSystemMsg.value = session.unreadCount;
+          unReadSystemMsg.value = session.unreadCount??0;
           systemName.value = session.senderNickname ?? "官方客服";
         } else {
           _sessionChange(session);
@@ -91,7 +91,7 @@ class MessagesController extends GetxController {
 
   MsgPageBean setMsgPageBean(MsgPageBean msgPageBean, NIMSession session) {
     msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
-    msgPageBean.unreadMsgNum = session.unreadCount;
+    msgPageBean.unreadMsgNum = session.unreadCount??0;
     msgPageBean.nickName = session.senderNickname ?? "";
     msgPageBean.sessionId = session.sessionId;
     if (session.extension != null) {
@@ -131,7 +131,7 @@ class MessagesController extends GetxController {
         newSystemMsg.value = session.lastMessageContent ?? "";
         newSystemMsgTime.value =
             TimeUtils.dateAndTimeToString(session.lastMessageTime);
-        unReadSystemMsg.value = session.unreadCount;
+        unReadSystemMsg.value = session.unreadCount??0;
         systemName.value = session.senderNickname ?? "官方客服";
         NimCore.instance.userService
             .getUserInfo(session.sessionId)
