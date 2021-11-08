@@ -121,21 +121,22 @@ class _MessagesPageState extends State<MessagesPage>
         child: Column(
           children: [
             Container(
-              height: ScreenUtil().setHeight(76),
+              height: ScreenUtil().setHeight(82),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(12, 16, 16, 16),
+                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(12), ScreenUtil().setHeight(16), ScreenUtil().setWidth(16), ScreenUtil().setHeight(16)),
                 child: Row(
                   children: [
                     Stack(
                       alignment: AlignmentDirectional.topEnd,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(top: 4, right: 2),
+                          padding: EdgeInsets.only(top: ScreenUtil().setHeight(6), right: ScreenUtil().setWidth(6)),
                           child: cardNetworkImage(
-                              _controller.systemAvatar.value,
-                              ScreenUtil().setWidth(44),
-                              ScreenUtil().setWidth(44),
-                              errorImagesUrl: 'assets/images/ic_launcher.png'),
+                            _controller.systemAvatar.value,
+                            ScreenUtil().setWidth(44),
+                            ScreenUtil().setWidth(44),
+                            margin:EdgeInsets.all(0),
+                          ),
                         ),
                         Obx(() => _controller.unReadSystemMsg > 0
                             ? Container(
@@ -152,6 +153,9 @@ class _MessagesPageState extends State<MessagesPage>
                                     borderRadius: BorderRadius.circular(8)))
                             : Container()),
                       ],
+                    ),
+                    SizedBox(
+                      width: 2,
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -211,20 +215,21 @@ class _MessagesPageState extends State<MessagesPage>
         child: Column(
           children: [
             Container(
-              height: ScreenUtil().setHeight(76),
+              height: ScreenUtil().setHeight(82),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(12, 16, 16, 16),
+                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(12), ScreenUtil().setHeight(16), ScreenUtil().setWidth(16), ScreenUtil().setHeight(16)),
                 child: Row(
                   children: [
                     Stack(
                       alignment: AlignmentDirectional.topEnd,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(top: 4, right: 2),
+                          padding: EdgeInsets.only(top: ScreenUtil().setHeight(6), right: ScreenUtil().setWidth(6)),
                           child: cardNetworkImage(
                               info.heardUrl,
                               ScreenUtil().setWidth(44),
                               ScreenUtil().setWidth(44),
+                              margin:EdgeInsets.all(0),
                               errorImagesUrl: 'assets/images/user_icon.png'),
                         ),
                         info.unreadMsgNum > 0
@@ -243,6 +248,9 @@ class _MessagesPageState extends State<MessagesPage>
                                     borderRadius: BorderRadius.circular(8)))
                             : Container()
                       ],
+                    ),
+                    SizedBox(
+                      width: 2,
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -291,27 +299,6 @@ class _MessagesPageState extends State<MessagesPage>
             ),
           ],
         ));
-  }
-
-  Widget headImg(String imaUrl) {
-    return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusDirectional.circular(4)),
-      clipBehavior: Clip.antiAlias,
-      color: Colors.white,
-      child: SizedBox(
-          width: ScreenUtil().setWidth(100),
-          height: ScreenUtil().setWidth(114),
-          child: CachedNetworkImage(
-            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-            imageUrl: imaUrl,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Image.asset(
-              'assets/images/image_load_failed.png',
-              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
-            ),
-          )),
-    );
   }
 
   void _goToChatPage(int uid) async {

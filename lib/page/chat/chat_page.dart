@@ -97,8 +97,8 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
                 Container(
-                  height: ScreenUtil().setHeight(50),
-                  margin: EdgeInsets.only(bottom: 16),
+                  height: ScreenUtil().setHeight(60),
+                  margin: EdgeInsets.only(bottom: 0),
                   decoration: BoxDecoration(
                     color: Color(0xFFF0F0F0),
                     boxShadow: [
@@ -368,7 +368,7 @@ class _ChatPageState extends State<ChatPage> {
           hideKeyboard(context);
         },
         child: Container(
-          color: MyColor.pageBgColor,
+          color: Colors.transparent,
           padding: EdgeInsets.fromLTRB(16, 0, 0, 20),
           child: Column(
             children: <Widget>[
@@ -494,7 +494,7 @@ class _ChatPageState extends State<ChatPage> {
         hideKeyboard(context);
       },
       child: Container(
-        color: MyColor.pageBgColor,
+        color: Colors.transparent,
         padding: EdgeInsets.fromLTRB(0, 0, 16, 20),
         child: Column(
           children: <Widget>[
@@ -667,10 +667,10 @@ class _ChatPageState extends State<ChatPage> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
-          margin: EdgeInsets.fromLTRB(4, 8, 4, 0),
+          margin: EdgeInsets.fromLTRB(4, ScreenUtil().setHeight(8), 4, 0),
           width: double.infinity,
           constraints: BoxConstraints(
-            maxHeight: ScreenUtil().setHeight(210),
+            maxHeight: ScreenUtil().setHeight(230),
           ),
           decoration: BoxDecoration(
             //背景
@@ -682,10 +682,10 @@ class _ChatPageState extends State<ChatPage> {
           ),
           child: Padding(
               padding: EdgeInsets.only(
-                top: ScreenUtil().setWidth(8),
+                top: ScreenUtil().setHeight(8),
                 left: ScreenUtil().setWidth(4),
                 right: ScreenUtil().setWidth(10),
-                bottom: ScreenUtil().setWidth(4),
+                bottom: ScreenUtil().setHeight(4),
               ),
               child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -928,7 +928,7 @@ class _ChatPageState extends State<ChatPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 4, top: 10, bottom: 8),
+                padding: EdgeInsets.only(left: 4, top: ScreenUtil().setHeight(10), bottom:ScreenUtil().setHeight(8)),
                 child: singeLineText(
                     '最新个人动态',
                     ScreenUtil().screenWidth / 2,
@@ -950,13 +950,14 @@ class _ChatPageState extends State<ChatPage> {
   ///动态
   Widget _infoTrends(Trends trends) {
     String url = trends.imgArr!.first ?? '';
+    double size=min(ScreenUtil().setWidth(90), ScreenUtil().setHeight(90));
     return url.isEmpty
         ? Container()
         : InkWell(
             child: cardNetworkImage(
                 url,
-                ScreenUtil().setWidth(ScreenUtil().setWidth(90)),
-                ScreenUtil().setWidth(90),
+                size,
+                size,
                 radius: 8),
             onTap: () {
               if (trends.type == 2) {

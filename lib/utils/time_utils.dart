@@ -1,5 +1,3 @@
-
-
 /*  时间戳转字符串
 * timestamp 时间戳
 * formart ："y-m":年和月之间的符号,
@@ -8,64 +6,36 @@
 * "m-s":分和秒之间的符号；
 * "m-a":是否显示上午和下午
 */
+import 'package:untitled/basic/include.dart';
+
+const OneMinuteMILL = 1000 * 60;
+const OneHourMILL = OneMinuteMILL * 60; //一小时
+const OneDayMILL = OneHourMILL * 24; //一天
+const OneWeekMILL = OneDayMILL * 7; //一周
+const OneMoonMILL = OneDayMILL * 30; //一月
+const OneYearMILL = OneDayMILL * 365; //一年
 
 class TimeUtils {
-  static String dateAndTimeToString(var timestamp,
-      {Map<String, String> formart = const {"y-m": "/", "m-d": "/"}}) {
+  static String dateAndTimeToString(int? timestamp) {
     if (timestamp == null || timestamp == "") {
       return "";
     }
+    logger.i('$timestamp ---${DateTime.now()}');
     String targetString = "";
-    final date = DateTime.fromMicrosecondsSinceEpoch(timestamp * 1000);
-// final String tmp = date.toString();
-    String year = date.year.toString();
-    String month = date.month.toString();
-    if (date.month <= 9) {
-      month = "0" + month;
-    }
-    String day = date.day.toString();
-    if (date.day <= 9) {
-      day = "0" + day;
-    }
-    String hour = date.hour.toString();
-    if (date.hour <= 9) {
-      hour = "0" + hour;
-    }
-    String minute = date.minute.toString();
-    if (date.minute <= 9) {
-      minute = "0" + minute;
-    }
-    String second = date.second.toString();
-    if (date.second <= 9) {
-      second = "0" + second;
-    }
-// String millisecond = date.millisecond.toString();
-    String morningOrafternoon = "上午";
-    if (date.hour >= 12) {
-      morningOrafternoon = "下午";
-    }
-
-    if (formart["y-m"] != null && formart["m-d"] != null) {
-      targetString =
-          '$year${formart["y-m"]}$month${formart["m-d"]}$day';
-    } else if (formart["y-m"] == null && formart["m-d"] != null) {
-      targetString = month + '${formart["m-d"]}' + day;
-    } else if (formart["y-m"] != null && formart["m-d"] == null) {
-      targetString = year + '${formart["y-m"]}' + month;
-    }
-
-    targetString += " ";
-
-    if (formart["m-a"] != null) {
-      targetString += morningOrafternoon + " ";
-    }
-
-    if (formart["h-m"] != null && formart["m-s"] != null) {
-      targetString += hour + '${formart["h-m"]}' + minute +'${formart["m-s"]}'  + second;
-    } else if (formart["h-m"] == null && formart["m-s"] != null) {
-      targetString += minute +'${formart["m-s"]}'+ second;
-    } else if (formart["h-m"] != null && formart["m-s"] == null) {
-      targetString += hour + '${formart["h-m"]}' + minute;
+    int timeDiff = DateTime.now().millisecondsSinceEpoch - timestamp;
+    logger.i(timeDiff);
+    if (timeDiff < OneMinuteMILL * 3) {
+      return "刚刚";
+    } else if (timeDiff < OneDayMILL) {
+      return "${(timeDiff / OneHourMILL).truncate()}小时以前";
+    } else if (timeDiff < OneWeekMILL) {
+      return "${(timeDiff / OneDayMILL).truncate()}天以前";
+    } else if (timeDiff < OneMoonMILL) {
+      return "一周以前";
+    } else if (timeDiff < OneYearMILL) {
+      return "一月以前";
+    } else if (timeDiff >= OneYearMILL) {
+      return "一年以前";
     }
 
     return targetString;
