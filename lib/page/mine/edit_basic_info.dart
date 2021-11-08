@@ -390,7 +390,7 @@ class _EditBasicInfoPageState extends State<EditBasicInfoPage> {
   }
 
   void _commitInfo() async {
-    if(headerImgUrlLocal==null||headerImgUrlLocal==''){
+    if((headerImgUrl==null||headerImgUrl=='')&&(headerImgUrlLocal==null||headerImgUrlLocal=='')){
       MyToast.show('请完善个人信息');
       return;
     }

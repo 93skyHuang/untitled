@@ -13,8 +13,8 @@ class MsgPageBean {
   }
 
   String getInfo() {
-    String ageS = age == null ? '' : '$age 岁';
-    String heightS = height == null ? '' : '·$height cm';
+    String ageS = age == null ? '' : '$age岁';
+    String heightS = height == null ? '' : '·${height}cm';
     String regionS = region == null ? '' : '·$region';
     return ageS + heightS + regionS;
   }

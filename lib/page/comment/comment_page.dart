@@ -320,6 +320,10 @@ class _CommentPageState extends State<CommentPage>
                 Get.back();
               }),
             }
+          else
+            {
+              MyToast.show(value.msg),
+            }
         });
   }
 

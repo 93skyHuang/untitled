@@ -6,6 +6,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:untitled/network/bean/pay_list.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/home_controller.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/route_config.dart';
 import 'package:untitled/widget/loading.dart';
@@ -35,6 +36,7 @@ class VipController extends GetxController {
 
   void pay() {
     if (Platform.isIOS) {
+      Get.find<HomeController>().clearIOSPayListener();
       _iosPay(monthlyCardList[selectedIndex.value]);
     } else if (Platform.isAndroid) {
       Loading.dismiss(getApplication()!);
@@ -76,6 +78,7 @@ class VipController extends GetxController {
       logger.i('购买状态监听----$productItem');
       //自有服务器校验
       if (productItem != null&&!_isClose) {
+        logger.i(_toString(productItem));
         logger.i('transactionStateIOS===${productItem.transactionStateIOS} --- ${productItem.transactionId}');
         switch (productItem.transactionStateIOS) {
           case TransactionState.purchasing: // 购买中
@@ -87,16 +90,14 @@ class VipController extends GetxController {
             break;
           case TransactionState.purchased: //购买完成
             logger.i('${productItem.originalTransactionIdentifierIOS} ----${productItem.originalTransactionDateIOS}');
-            String transactionId = productItem.transactionId ?? '';
             if (productItem.originalTransactionIdentifierIOS != null) {
               //自动续费订单
               logger.e('自动续费订单 message');
               // transactionId = productItem.originalTransactionIdentifierIOS ?? '';
             } else {
               //普通购买或第一次购买
-
             }
-            transactionId = productItem.transactionId ?? '';
+            String transactionId = productItem.transactionId ?? '';
             String receiptData = productItem.transactionReceipt ?? '';
             final r = await verifyOrder(
               orderid,
@@ -106,14 +107,14 @@ class VipController extends GetxController {
             logger.i('${r.isOk()}  ${r.msg}');
             Loading.dismiss(getApplication()!);
             if (r.isOk()) {
+              await clearTransaction();
+              await FlutterInappPurchase.instance.endConnection;
               MyToast.show(r.msg);
-              FlutterInappPurchase.instance.endConnection;
               GetStorageUtils.saveSvip(true);
               Get.back();
             } else {
               MyToast.show(r.msg);
             }
-            await clearTransaction();
             break;
           case TransactionState.failed: //失败的交易
             await clearTransaction();
@@ -137,14 +138,28 @@ class VipController extends GetxController {
     if (items.isNotEmpty) {
       /// 发起支付请求，传递iosProductId
       ///
+      logger.i(card.iosKey);
       FlutterInappPurchase.instance.requestPurchase(card.iosKey);
     } else {
       logger.e('null items  IAPItem');
     }
   }
 
+  String _toString(PurchasedItem i){
+    return 'productId: ${i.productId}, '
+        'transactionId: ${i.transactionId}, '
+        'transactionDate: ${i.transactionDate?.toIso8601String()}, '
+        'purchaseToken: ${i.purchaseToken}, '
+        'orderId: ${i.orderId},'
+
+    /// ios specific
+        'originalTransactionDateIOS: ${i.originalTransactionDateIOS?.toIso8601String()}, '
+        'originalTransactionIdentifierIOS: ${i.originalTransactionIdentifierIOS}, '
+        'transactionStateIOS: ${i.transactionStateIOS}';
+  }
+
   void iosResumePurchase() async {
-  final r=await  resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey);
+    final r=await  resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey);
   Loading.dismiss(getApplication()!);
   MyToast.show(r.msg);
   if(r.isOk()){
@@ -159,7 +174,7 @@ class VipController extends GetxController {
     logger.i('_getPurchaseHistory${items?.length}');
     int l = items?.length ?? 0;
     for (int i = 0; i < l; i++) {
-      logger.i('${items![i].transactionStateIOS}');
+      logger.i('${items![i].transactionStateIOS} --${items![i].orderId} ');
       logger.i('${items![i].toString()}');
     }
   }
@@ -198,5 +213,6 @@ class VipController extends GetxController {
   @override
   void onReady() {
     logger.i("onReady");
+    _getPurchaseHistory();
   }
 }

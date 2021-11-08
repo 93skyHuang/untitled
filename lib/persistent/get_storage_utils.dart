@@ -29,6 +29,15 @@ class GetStorageUtils {
     return _firstInitStorage.write('nimToken', nimToken);
   }
 
+  static String getDeviceId() {
+    return _firstInitStorage.read('deviceId') ?? '';
+  }
+
+  ///云信im token
+  static Future<void> saveDeviceId(String deviceId) {
+    return _firstInitStorage.write('deviceId', deviceId);
+  }
+
   static int getUID() {
     return _firstInitStorage.read('uid') ?? -1;
   }

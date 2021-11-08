@@ -22,7 +22,9 @@ Widget cardNetworkImage(String url, double widget, double height,
         width: widget,
         height: height,
         child: CachedNetworkImage(
-          fit: Platform.isIOS ? BoxFit.cover : BoxFit.cover,
+          fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          width: widget,
+          height: height,
           imageUrl: url,
           // placeholder: (context, url) => Container(
           //   width: 30,

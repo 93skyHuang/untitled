@@ -26,7 +26,7 @@ Future<void> nimSdkInit() async {
           autoLoginInfo: auto)
       : NIMIOSSDKOptions(
           appKey: 'a43f20db62b5b8d8debdb207e01cdb47', autoLoginInfo: auto,
-
+          apnsCername:'freedom push',  //推送证书名
           /// 其他通用配置/iOS 配置
         );
   NimCore.instance.initialize(options).then((result) {
