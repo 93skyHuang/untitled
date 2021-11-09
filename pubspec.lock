@@ -645,28 +645,28 @@ packages:
       name: nim_core
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.13"
+    version: "1.0.0-rc.15"
   nim_core_macos:
     dependency: transitive
     description:
       name: nim_core_macos
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.14"
+    version: "1.0.0-rc.15"
   nim_core_platform_interface:
     dependency: transitive
     description:
       name: nim_core_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.13"
+    version: "1.0.0-rc.15"
   nim_core_windows:
     dependency: transitive
     description:
       name: nim_core_windows
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0-rc.14"
+    version: "1.0.0-rc.15"
   octo_image:
     dependency: transitive
     description:

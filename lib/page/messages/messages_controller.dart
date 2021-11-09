@@ -211,7 +211,6 @@ class MessagesController extends GetxController {
   void onInit() {
     super.onInit();
     logger.i("onInit");
-    nimEventSubscription.cancel();
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:untitled/basic/common_config.dart';
+import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/comment_info.dart';
 import 'package:untitled/network/bean/new_trends_info.dart';
 import 'package:untitled/network/http_manager.dart';
@@ -203,6 +204,10 @@ class _CommentPageState extends State<CommentPage>
               showOpenSvipDialog(context, cancel: () {
                 Get.back();
               }),
+            }
+          else
+            {
+              MyToast.show(value.msg),
             }
         });
   }

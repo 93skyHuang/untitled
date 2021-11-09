@@ -108,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             Container(
-              height: ScreenUtil().setHeight(60),
+              height: ScreenUtil().setHeight(54),
               margin: EdgeInsets.only(bottom: 0),
               decoration: BoxDecoration(
                 color: Color(0xFFF0F0F0),
@@ -166,12 +166,9 @@ class _ChatPageState extends State<ChatPage> {
                       )),
                   Expanded(
                     child: Container(
+                      height: ScreenUtil().setHeight(40),
                       alignment: Alignment.center,
                       margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                      constraints: BoxConstraints(
-                        maxHeight: 100.0,
-                        minHeight: 50.0,
-                      ),
                       decoration: BoxDecoration(
                           color: Color(0xFFF5F6FF),
                           borderRadius: BorderRadius.all(Radius.circular(2))),
