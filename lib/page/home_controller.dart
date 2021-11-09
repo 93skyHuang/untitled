@@ -136,7 +136,7 @@ class HomeController extends GetxController {
             );
             if (r.isOk()) {
               GetStorageUtils.saveSvip(true);
-              await finishTransactionIOS(transactionId);
+              await _finishTransaction(productItem);
             }
           }
         }
@@ -163,9 +163,10 @@ class HomeController extends GetxController {
     logger.i(r);
   }
 
-  /// 完成订单
-  Future finishTransactionIOS(String transactionId) async {
-    final r = await FlutterInappPurchase.instance.finishTransactionIOS(transactionId);
+  /// 完成订单2
+  Future _finishTransaction(PurchasedItem purchasedItem) async {
+    final r =
+    await FlutterInappPurchase.instance.finishTransaction(purchasedItem);
     logger.i(r);
   }
 }

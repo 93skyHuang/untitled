@@ -97,6 +97,7 @@ class NimNetworkManager {
     return result;
   }
 
+  ///消息已读
   Future<NIMResult<void>> sendMessageReceipt(
       int uid) async {
     List<NIMSessionInfo> sessionInfoList =[];
@@ -112,7 +113,7 @@ class NimNetworkManager {
    */
   Future<NIMResult<List<NIMMessage>>> queryHistoryMsg(int uid) async {
     final result = await NimCore.instance.messageService
-        .queryMessageList('ll$uid', NIMSessionType.p2p, 10);
+        .queryMessageList('ll$uid', NIMSessionType.p2p, 20);
     return result;
   }
 

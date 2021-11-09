@@ -176,7 +176,7 @@ class _NearbyPageState extends State<NearbyPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 4,
+                    height: 2,
                   ),
                   _info1(info),
                   SizedBox(
@@ -193,7 +193,7 @@ class _NearbyPageState extends State<NearbyPage>
                           color: MyColor.grey8C8C8C,
                           fontSize: ScreenUtil().setSp(12))),
                   SizedBox(
-                    height: 6,
+                    height: 4,
                   ),
                   _info3(info),
                 ],

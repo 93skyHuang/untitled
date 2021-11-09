@@ -43,7 +43,6 @@ Future<void> _init() async {
   Get.put(GlobalController());
   await GetStorage.init('firstInitStorage');
   await _autoLogin();
-  nimSdkInit();
   await GetStorage.init();
   await SystemChrome.setPreferredOrientations(
     [
@@ -62,6 +61,7 @@ Future<void> _autoLogin() async {
     final v = await autoLogin();
     if (v.isOk()) {
       isAutoLoginSuccess = true;
+      nimSdkInit();
     } else {
       isAutoLoginSuccess = false;
     }

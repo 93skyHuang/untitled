@@ -52,7 +52,6 @@ class ChatController extends GetxController {
     } else {
       setUserBasic(u);
     }
-    createSession();
   }
 
   void setUserBasic(UserBasic hisBasic) {
@@ -70,7 +69,6 @@ class ChatController extends GetxController {
       UserBasic userBasic = value.data!;
       GetStorageUtils.saveUserBasic(userBasic);
       setUserBasic(userBasic);
-      updateSession(userBasic);
     }
   }
 
@@ -155,9 +153,15 @@ class ChatController extends GetxController {
 
   NIMSession? _curNimSession;
 
-  void createSession() async {
+  void _createSession() async {
     var r = await _nimNetworkManager.createSession(hisUid);
     logger.i("${r.isSuccess} ----${r.code}");
+    if(r.isSuccess) {
+      _curNimSession=r.data;
+      if(hisBasic!=null) {
+        updateSession(hisBasic!);
+      }
+    }
   }
 
   void updateSession(UserBasic hisBasic) async {
@@ -194,6 +198,9 @@ class ChatController extends GetxController {
     });
     final result = await _nimNetworkManager.createTextMsg(content, hisUid);
     if (result.isSuccess) {
+      if(_curNimSession==null){
+        _createSession();
+      }
       NIMMessage msg = result.data!;
       final s = await _nimNetworkManager.sendMsg(msg);
       if (s.isSuccess) {
@@ -296,6 +303,9 @@ class ChatController extends GetxController {
       final r = await _nimNetworkManager.createAudioMessage(
           filePath, hisUid, duration);
       if (r.isSuccess) {
+        if(_curNimSession==null){
+          _createSession();
+        }
         NIMMessage msg = r.data!;
         final s = await _nimNetworkManager.sendMsg(msg);
         if (s.isSuccess) {

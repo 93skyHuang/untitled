@@ -36,9 +36,16 @@ class VipController extends GetxController {
   }
 
   /// 完成订单
-  Future finishTransactionIOS(String transactionId) async {
+  Future _finishTransactionIOS(String transactionId) async {
     final r =
         await FlutterInappPurchase.instance.finishTransactionIOS(transactionId);
+    logger.i(r);
+  }
+
+  /// 完成订单2
+  Future _finishTransaction(PurchasedItem purchasedItem) async {
+    final r =
+        await FlutterInappPurchase.instance.finishTransaction(purchasedItem);
     logger.i(r);
   }
 
@@ -118,8 +125,7 @@ class VipController extends GetxController {
             logger.i('${r.isOk()}  ${r.msg}');
             Loading.dismiss(getApplication()!);
             if (r.isOk()) {
-              await finishTransactionIOS(transactionId);
-              await clearTransaction();
+              await _finishTransaction(productItem);
               await FlutterInappPurchase.instance.endConnection;
               MyToast.show(r.msg);
               GetStorageUtils.saveSvip(true);
@@ -127,6 +133,7 @@ class VipController extends GetxController {
             } else {
               MyToast.show(r.msg);
             }
+            await clearTransaction();
             break;
           case TransactionState.failed: //失败的交易
             await clearTransaction();
@@ -141,16 +148,16 @@ class VipController extends GetxController {
     FlutterInappPurchase.purchaseError.listen((purchaseError) async {
       logger.e('监听到错误 purchase-error: $purchaseError');
       Loading.dismiss(getApplication()!);
-      await clearTransaction();
-      await FlutterInappPurchase.instance.endConnection;
-
+      if(!_isClose){
+        await clearTransaction();
+      }
       /// 购买错误回调
     });
 
     if (items.isNotEmpty) {
       /// 发起支付请求，传递iosProductId
-      ///
       logger.i(card.iosKey);
+      await clearTransaction();
       FlutterInappPurchase.instance.requestPurchase(card.iosKey);
     } else {
       logger.e('null items  IAPItem');
@@ -226,6 +233,6 @@ class VipController extends GetxController {
   @override
   void onReady() {
     logger.i("onReady");
-    _getPurchaseHistory();
+    // _getPurchaseHistory();
   }
 }

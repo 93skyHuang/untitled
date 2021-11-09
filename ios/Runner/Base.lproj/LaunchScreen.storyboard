@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
@@ -10,27 +10,28 @@
         <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
             <objects>
-                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="01J-lp-oVM" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ydg-fD-yQy"/>
                         <viewControllerLayoutGuide type="bottom" id="xbc-2k-c8Z"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="Awp-kv-NDY">
-                                <rect key="frame" x="-4" y="0.0" width="383" height="667"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="Awp-kv-NDY">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="Awp-kv-NDY" secondAttribute="trailing" constant="-20" id="BYJ-3N-DPA"/>
-                            <constraint firstAttribute="bottom" secondItem="Awp-kv-NDY" secondAttribute="bottom" id="ckD-BS-xa7"/>
-                            <constraint firstItem="Awp-kv-NDY" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="pnu-PA-w3v"/>
-                            <constraint firstItem="Awp-kv-NDY" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="sx1-6n-BuA"/>
+                            <constraint firstItem="Awp-kv-NDY" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="2UI-hG-WTN"/>
+                            <constraint firstAttribute="bottom" secondItem="Awp-kv-NDY" secondAttribute="bottom" id="MLd-MJ-8MS"/>
+                            <constraint firstItem="Awp-kv-NDY" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="YGY-IJ-lbx"/>
+                            <constraint firstAttribute="trailing" secondItem="Awp-kv-NDY" secondAttribute="trailing" id="quw-Di-kCX"/>
                         </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
