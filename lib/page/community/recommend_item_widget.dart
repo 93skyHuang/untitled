@@ -24,7 +24,6 @@ class FocusOnBtn extends StatefulWidget {
 class _FocusOnBtnState extends State<FocusOnBtn> {
   @override
   Widget build(BuildContext context) {
-    logger.i("FocusOnBtn${widget.info.isFollow} ${widget.info.cname}");
     if (widget.info.isFollow == 1) {
       return Container(
         width: ScreenUtil().setWidth(60),
@@ -223,7 +222,6 @@ class _LikeAndCommentWidgetState extends State<LikeAndCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    logger.i("LikeAndCommentWidget${widget.info.isFollow} ${widget.info.cname}");
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,

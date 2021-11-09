@@ -51,7 +51,7 @@ class _NearbyPageState extends State<NearbyPage>
 
   @override
   Widget build(BuildContext context) {
-    logger.i('CommunityPage');
+    logger.i('NearbyPage');
     super.build(context);
     return Scaffold(
         backgroundColor: MyColor.pageBgColor,
@@ -213,14 +213,14 @@ class _NearbyPageState extends State<NearbyPage>
       color: Colors.white,
       child: SizedBox(
           width: ScreenUtil().setWidth(100),
-          height: ScreenUtil().setWidth(114),
+          height: ScreenUtil().setHeight(112),
           child: CachedNetworkImage(
-            fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+            fit: BoxFit.cover,
             imageUrl: imaUrl,
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => Image.asset(
               'assets/images/image_load_failed.png',
-              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+              fit: BoxFit.cover,
             ),
           )),
     );
@@ -236,24 +236,24 @@ class _NearbyPageState extends State<NearbyPage>
                 color: MyColor.blackColor, fontSize: ScreenUtil().setSp(14))),
         info.isCard == 1
             ? Container(
-                width: 16,
-                height: 12,
+                width: ScreenUtil().setWidth(16),
+                height: ScreenUtil().setWidth(12),
                 margin: EdgeInsets.only(right: 4, left: 4),
                 child: Image.asset("assets/images/ic_card_ver.png"),
               )
             : Container(),
         info.isHead == 1
             ? Container(
-                width: 12,
-                height: 12,
+                width: ScreenUtil().setWidth(12),
+                height: ScreenUtil().setWidth(12),
                 margin: EdgeInsets.only(right: 4, left: 4),
                 child: Image.asset("assets/images/icon_verified_avatar.png"),
               )
             : Container(),
         info.isVideo == 1
             ? Container(
-                width: 12,
-                height: 12,
+                width: ScreenUtil().setWidth(12),
+                height: ScreenUtil().setWidth(12),
                 margin: EdgeInsets.only(right: 4, left: 4),
                 child: Image.asset("assets/images/ic_verified_person1.png"),
               )
@@ -317,10 +317,10 @@ class _NearbyPageState extends State<NearbyPage>
 
   //动态
   Widget _infoTrends(TrendsImg trendsImg) {
+    double size = min(ScreenUtil().setWidth(45), ScreenUtil().setHeight(45));
     return GestureDetector(
-      child: cardNetworkImage(trendsImg.imgArr, ScreenUtil().setWidth(45),
-          ScreenUtil().setWidth(45),
-          radius: 8, margin: EdgeInsets.only(right: 6)),
+      child: cardNetworkImage(trendsImg.imgArr, size, size,
+          radius: 8, margin: EdgeInsets.only(right: 6),fit:BoxFit.cover),
       onTap: () {
         logger.i(trendsImg);
         bool isSvip = GetStorageUtils.getSvip();

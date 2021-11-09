@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -218,12 +219,14 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                         ]
                       });
                     },
-                    child: cardNetworkImage(
-                        '${_userHomeController.userBasic.value.headImgUrl}',
-                        double.infinity,
-                        365,
-                        radius: 0,
-                        margin: EdgeInsets.all(0)),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      width:  double.infinity,
+                      imageUrl: '${_userHomeController.userBasic.value.headImgUrl}',
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/image_default.png',
+                      ),
+                    )
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.min,

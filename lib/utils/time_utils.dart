@@ -20,24 +20,21 @@ class TimeUtils {
     if (timestamp == null || timestamp == "") {
       return "";
     }
-    logger.i('$timestamp ---${DateTime.now()}');
     String targetString = "";
     int timeDiff = DateTime.now().millisecondsSinceEpoch - timestamp;
-    logger.i(timeDiff);
     if (timeDiff < OneMinuteMILL * 3) {
       return "刚刚";
     } else if (timeDiff < OneDayMILL) {
-      return "${(timeDiff / OneHourMILL).truncate()}小时以前";
+      return "${(timeDiff / OneHourMILL).truncate()}小时前";
     } else if (timeDiff < OneWeekMILL) {
-      return "${(timeDiff / OneDayMILL).truncate()}天以前";
+      return "${(timeDiff / OneDayMILL).truncate()}天前";
     } else if (timeDiff < OneMoonMILL) {
-      return "一周以前";
+      return "一周前";
     } else if (timeDiff < OneYearMILL) {
-      return "一月以前";
+      return "一月前";
     } else if (timeDiff >= OneYearMILL) {
-      return "一年以前";
+      return "一年前";
     }
-
     return targetString;
   }
 }

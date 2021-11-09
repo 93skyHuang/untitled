@@ -188,15 +188,13 @@ class NimNetworkManager {
 //   }
 
   Future<NIMResult<NIMMessage>> createAudioMessage(
-      String filePath, int uid) async {
+      String filePath, int uid,Duration duration) async {
     // 该帐号为示例
     String account = 'll$uid';
 // 以单聊类型为例
     NIMSessionType sessionType = NIMSessionType.p2p;
 // 示例音频，需要开发者在相应目录下有文件
     File file = File(filePath);
-    final player = AudioPlayer();
-    var duration = await player.setFilePath(filePath);
     logger.i(duration);
 // 发送语音消息
     Future<NIMResult<NIMMessage>> result = MessageBuilder.createAudioMessage(
@@ -204,7 +202,7 @@ class NimNetworkManager {
         sessionType: sessionType,
         filePath: file.path,
         fileSize: file.lengthSync(),
-        duration: duration?.inMilliseconds ?? 0);
+        duration: duration.inMilliseconds);
     return result;
     // Map<String,dynamic> map={"file":file,"duration":duration?.inMilliseconds ?? 0,"type":"Audio"};
     // Future<NIMResult<NIMMessage>> result = MessageBuilder.createCustomMessage(

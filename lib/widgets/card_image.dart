@@ -10,7 +10,8 @@ Widget cardNetworkImage(String url, double widget, double height,
     {ShapeBorder? shape,
     EdgeInsetsGeometry? margin,
     double radius = 4,
-    String errorImagesUrl = 'assets/images/image_default.png'}) {
+    String errorImagesUrl = 'assets/images/image_default.png',
+    BoxFit? fit}) {
   return Card(
     margin: margin ?? EdgeInsets.all(4),
     shape: shape ??
@@ -22,7 +23,11 @@ Widget cardNetworkImage(String url, double widget, double height,
         width: widget,
         height: height,
         child: CachedNetworkImage(
-          fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+          fit: fit == null
+              ? Platform.isIOS
+                  ? BoxFit.cover
+                  : BoxFit.fill
+              : fit,
           width: widget,
           height: height,
           imageUrl: url,

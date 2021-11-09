@@ -200,7 +200,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                     double.infinity,
                     365,
                     radius: 0,
-                    margin: EdgeInsets.all(0)),
+                    margin: EdgeInsets.all(0),fit:BoxFit.cover),
               )),
         ],
       ),
