@@ -149,7 +149,7 @@ class MessagesController extends GetxController {
     return _listBean;
   }
 
-  ///获取最新数据
+  ///获取会话成员的最新数据
   Future<List<MsgPageBean>> getNewInfo() async {
     await _fetchUserInfoList(nIMSessionList, sessionIdList);
     return _listBean;
@@ -211,6 +211,7 @@ class MessagesController extends GetxController {
   void onInit() {
     super.onInit();
     logger.i("onInit");
+    _nimEventListener();
   }
 
   @override
@@ -224,25 +225,29 @@ class MessagesController extends GetxController {
   void onReady() {
     logger.i("onReady");
     _onSessionUpdate();
-    _nimEventListener();
   }
 
   late final StreamSubscription nimEventSubscription;
 
-  ///如果跳转到手动支付页面这个页面的请求不能使用
   void _nimEventListener() {
     nimEventSubscription =
         NimCore.instance.authService.authStatus.listen((event) {
-      if (event is NIMKickOutByOtherClientEvent) {
+      logger.e(event.status);
+      if (event is NIMKickOutByOtherClientEvent) {    /// 监听到被踢事件
         logger.e('监听到被踢事件${event.status}');
         if (getApplication() != null) {
           NimNetworkManager.instance.logout();
           showKickOutByOtherClientDialog(getApplication()!);
         }
-        /// 监听到被踢事件
-      } else if (event is NIMAuthStatusEvent) {
-        /// 监听到其他事件
-        logger.e(event.status);
+      } else if (event is NIMAuthStatusEvent) {    /// 监听到其他事件
+        if (event is NIMDataSyncStatusEvent) { /// 监听到数据同步事件
+
+          if (event.status == NIMAuthStatus.dataSyncStart) {
+            /// 数据同步开始
+          } else if (event.status == NIMAuthStatus.dataSyncFinish) {
+            /// 数据同步完成
+          }
+        }
       }
     });
   }

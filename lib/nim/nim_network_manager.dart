@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:just_audio/just_audio.dart';
 import 'package:nim_core/nim_core.dart';
+import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
@@ -24,6 +25,7 @@ class NimNetworkManager {
       (result) {
         if (result.isSuccess) {
           logger.i('云信登录成功uid=$uid token=$token');
+          onlineClientsListener();
         } else {
           logger.e('云信登录失败uid$uid token=$token      '
               'errorDetails${result.errorDetails}'
@@ -46,6 +48,49 @@ class NimNetworkManager {
       if (result.isSuccess) {
         /// 成功
       } else {
+        /// 失败
+      }
+    });
+  }
+
+  StreamSubscription? _onlineClientsSubscription;
+
+  void onlineClientsListener() {
+    _onlineClientsSubscription =
+        NimCore.instance.authService.onlineClients.listen((clients) {
+      clients.forEach((client) {
+        logger.i(client);
+        switch (client.clientType) {
+          case NIMClientType.ios:
+          case NIMClientType.android:
+            NimNetworkManager.instance.kickOutOtherOnlineClient(client);
+            break;
+          default:
+            // 未知
+            break;
+        }
+      });
+    });
+  }
+
+  void _cancelOnlineClientsSubscription() {
+    _onlineClientsSubscription?.cancel();
+    _onlineClientsSubscription = null;
+  }
+
+  void kickOutOtherOnlineClient(NIMOnlineClient client) {
+    NimCore.instance.authService
+        .kickOutOtherOnlineClient(client)
+        .then((result) {
+      if (result.isSuccess) {
+        logger.i('kickOutOtherOnlineClient success $client');
+        _cancelOnlineClientsSubscription();
+
+        /// 成功
+      } else {
+        logger.e('kickOutOtherOnlineClient $client');
+        _cancelOnlineClientsSubscription();
+
         /// 失败
       }
     });
@@ -97,15 +142,15 @@ class NimNetworkManager {
     return result;
   }
 
-  ///消息已读
-  Future<NIMResult<void>> sendMessageReceipt(
-      int uid) async {
-    List<NIMSessionInfo> sessionInfoList =[];
-    NIMSessionInfo nimSessionInfo=NIMSessionInfo(sessionId: 'll$uid', sessionType: NIMSessionType.p2p);
+  Future<NIMResult<void>> sendMessageReceipt(int uid) async {
+    List<NIMSessionInfo> sessionInfoList = [];
+    NIMSessionInfo nimSessionInfo =
+        NIMSessionInfo(sessionId: 'll$uid', sessionType: NIMSessionType.p2p);
     sessionInfoList.add(nimSessionInfo);
-    final result =  await NimCore.instance.messageService.clearSessionUnreadCount(sessionInfoList);
+    final result = await NimCore.instance.messageService
+        .clearSessionUnreadCount(sessionInfoList);
     logger.i('--${result.isSuccess} --$uid');
-    return  result;
+    return result;
   }
 
   /**
@@ -145,7 +190,8 @@ class NimNetworkManager {
 
   ///更新聊天人信息
   void updateSession(NIMSession nimSession) async {
-    var result = await NimCore.instance.messageService.updateSession(session: nimSession);
+    var result = await NimCore.instance.messageService
+        .updateSession(session: nimSession);
   }
 
   Future<NIMResult<NIMMessage>> createTextMsg(String content, int uid) async {
@@ -189,7 +235,7 @@ class NimNetworkManager {
 //   }
 
   Future<NIMResult<NIMMessage>> createAudioMessage(
-      String filePath, int uid,Duration duration) async {
+      String filePath, int uid, Duration duration) async {
     // 该帐号为示例
     String account = 'll$uid';
 // 以单聊类型为例
