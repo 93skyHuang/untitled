@@ -1369,8 +1369,8 @@ Future<BasePageData> verifyOrder(
     Response response = await _dio.post('/index/Pay/verifyOrder', data: {
       'uid': uid,
       'orderId': orderId,
+      'transactionID': transactionID,
       'receipt_data': receiptData,
-      'transactionID': transactionID
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);

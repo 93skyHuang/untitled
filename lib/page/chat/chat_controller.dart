@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:nim_core/nim_core.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
@@ -41,7 +42,6 @@ class ChatController extends GetxController {
   FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
-  RxBool isNoMoreData = false.obs;
 
   void setUserUid(int uid) {
     hisUid = uid;
@@ -80,9 +80,8 @@ class ChatController extends GetxController {
     return '$account'.contains('$hisUid');
   }
 
-  void queryHistoryMsg() async {
+  Future<List<NIMMessage>> queryHistoryMsg() async {
     nimMessageList.clear();
-    isNoMoreData.value = false;
     final result = await _nimNetworkManager.queryHistoryMsg(hisUid);
     if (result.isSuccess) {
       List<NIMMessage> list = result.data ?? [];
@@ -92,6 +91,7 @@ class ChatController extends GetxController {
         nimMessageList.addAll(list);
       }
     }
+    return nimMessageList.value;
   }
 
   Future<int> queryMoreHistoryMsg() async {
@@ -156,7 +156,6 @@ class ChatController extends GetxController {
   NIMSession? _curNimSession;
 
   void createSession() async {
-    logger.i('createSession');
     var r = await _nimNetworkManager.createSession(hisUid);
     logger.i("${r.isSuccess} ----${r.code}");
   }
@@ -257,7 +256,7 @@ class ChatController extends GetxController {
     }
     isRecoding.value = true;
     recodeBtnText.value = "松开发送";
-    String path ="${DateTime.now().millisecondsSinceEpoch}.mp4";
+    String path = "${DateTime.now().millisecondsSinceEpoch}.mp4";
     record(path);
 
     // /// 启动(开始)录音，如果成功，会按照顺序回调onRecordReady和onRecordStart。
@@ -288,7 +287,14 @@ class ChatController extends GetxController {
   ///发送语音
   void _sendAudio(String filePath) async {
     if (filePath.isNotEmpty) {
-      final r = await _nimNetworkManager.createAudioMessage(filePath, hisUid);
+      final player = AudioPlayer();
+      var duration = await player.setFilePath(filePath);
+      if (duration == null || duration.inMilliseconds < 800) {
+        deleteFile(filePath);
+        return;
+      }
+      final r = await _nimNetworkManager.createAudioMessage(
+          filePath, hisUid, duration);
       if (r.isSuccess) {
         NIMMessage msg = r.data!;
         final s = await _nimNetworkManager.sendMsg(msg);
@@ -334,11 +340,15 @@ class ChatController extends GetxController {
         if (isSend) {
           _sendAudio(path);
         } else {
-          File file = File(path);
-          file.exists().then((value) => {if (value) file.delete()});
+          deleteFile(path);
         }
       }
     });
+  }
+
+  void deleteFile(String path) {
+    File file = File(path);
+    file.exists().then((value) => {if (value) file.delete()});
   }
 
   Future<void> playVoice(String msgId, String? path) async {

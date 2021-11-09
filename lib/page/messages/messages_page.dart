@@ -121,9 +121,9 @@ class _MessagesPageState extends State<MessagesPage>
         child: Column(
           children: [
             Container(
-              height: ScreenUtil().setHeight(82),
+              height: ScreenUtil().setHeight(70),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(12), ScreenUtil().setHeight(16), ScreenUtil().setWidth(16), ScreenUtil().setHeight(16)),
+                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(12), ScreenUtil().setHeight(8), ScreenUtil().setWidth(16), ScreenUtil().setHeight(8)),
                 child: Row(
                   children: [
                     Stack(
@@ -215,9 +215,9 @@ class _MessagesPageState extends State<MessagesPage>
         child: Column(
           children: [
             Container(
-              height: ScreenUtil().setHeight(82),
+              height: ScreenUtil().setHeight(66),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(12), ScreenUtil().setHeight(16), ScreenUtil().setWidth(16), ScreenUtil().setHeight(16)),
+                padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(12), ScreenUtil().setHeight(8), ScreenUtil().setWidth(16), ScreenUtil().setHeight(8)),
                 child: Row(
                   children: [
                     Stack(

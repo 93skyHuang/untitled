@@ -40,6 +40,7 @@ class _MinePageState extends State<MinePage> {
 
   @override
   Widget build(BuildContext context) {
+    logger.i('MinePage');
     return Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         appBar: PreferredSize(

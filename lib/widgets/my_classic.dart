@@ -60,11 +60,14 @@ class MsgClassicFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return const ClassicFooter(
+        loadStyle:LoadStyle.HideAlways,
         idleText: '',
         loadingText: '',
         canLoadingText: '',
         noDataText: '',
-        canLoadingIcon: Icon(Icons.autorenew, color: MyColor.mainColor),
+        canLoadingIcon: null,
+        noMoreIcon: null,
+        failedIcon: null,
         idleIcon: null);
   }
 }

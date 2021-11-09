@@ -18,7 +18,7 @@ class VipController extends GetxController {
   List<MonthlyCard> monthlyCardList = <MonthlyCard>[].obs;
   RxInt selectedIndex = 0.obs;
   RxString money = "".obs;
-  bool _isClose=false;
+  bool _isClose = false;
 
   void closeIosConnection() async {
     await FlutterInappPurchase.instance.endConnection;
@@ -31,7 +31,15 @@ class VipController extends GetxController {
 
   /// 销毁之前的订单，否则无法多次购买
   Future clearTransaction() async {
-    return FlutterInappPurchase.instance.clearTransactionIOS();
+    final r = await FlutterInappPurchase.instance.clearTransactionIOS();
+    logger.i(r);
+  }
+
+  /// 完成订单
+  Future finishTransactionIOS(String transactionId) async {
+    final r =
+        await FlutterInappPurchase.instance.finishTransactionIOS(transactionId);
+    logger.i(r);
   }
 
   void pay() {
@@ -66,6 +74,7 @@ class VipController extends GetxController {
     /// 初始化连接
     await FlutterInappPurchase.instance.initConnection;
     logger.i('初始化连接');
+
     /// 连接状态监听
     FlutterInappPurchase.connectionUpdated.listen((connected) {
       /// 调起苹果支付，这时候可以关闭toast
@@ -77,9 +86,10 @@ class VipController extends GetxController {
     FlutterInappPurchase.purchaseUpdated.listen((productItem) async {
       logger.i('购买状态监听----$productItem');
       //自有服务器校验
-      if (productItem != null&&!_isClose) {
+      if (productItem != null && !_isClose) {
         logger.i(_toString(productItem));
-        logger.i('transactionStateIOS===${productItem.transactionStateIOS} --- ${productItem.transactionId}');
+        logger.i(
+            'transactionStateIOS===${productItem.transactionStateIOS} --- ${productItem.transactionId}');
         switch (productItem.transactionStateIOS) {
           case TransactionState.purchasing: // 购买中
             // TODO: Handle this case.
@@ -89,7 +99,8 @@ class VipController extends GetxController {
             // TODO: Handle this case.
             break;
           case TransactionState.purchased: //购买完成
-            logger.i('${productItem.originalTransactionIdentifierIOS} ----${productItem.originalTransactionDateIOS}');
+            logger.i(
+                '${productItem.originalTransactionIdentifierIOS} ----${productItem.originalTransactionDateIOS}');
             if (productItem.originalTransactionIdentifierIOS != null) {
               //自动续费订单
               logger.e('自动续费订单 message');
@@ -107,6 +118,7 @@ class VipController extends GetxController {
             logger.i('${r.isOk()}  ${r.msg}');
             Loading.dismiss(getApplication()!);
             if (r.isOk()) {
+              await finishTransactionIOS(transactionId);
               await clearTransaction();
               await FlutterInappPurchase.instance.endConnection;
               MyToast.show(r.msg);
@@ -145,26 +157,27 @@ class VipController extends GetxController {
     }
   }
 
-  String _toString(PurchasedItem i){
+  String _toString(PurchasedItem i) {
     return 'productId: ${i.productId}, '
         'transactionId: ${i.transactionId}, '
         'transactionDate: ${i.transactionDate?.toIso8601String()}, '
         'purchaseToken: ${i.purchaseToken}, '
         'orderId: ${i.orderId},'
 
-    /// ios specific
+        /// ios specific
         'originalTransactionDateIOS: ${i.originalTransactionDateIOS?.toIso8601String()}, '
         'originalTransactionIdentifierIOS: ${i.originalTransactionIdentifierIOS}, '
         'transactionStateIOS: ${i.transactionStateIOS}';
   }
 
   void iosResumePurchase() async {
-    final r=await  resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey);
-  Loading.dismiss(getApplication()!);
-  MyToast.show(r.msg);
-  if(r.isOk()){
-    Get.back();
-  }
+    final r =
+        await resumePurchaseIOS(monthlyCardList[selectedIndex.value].iosKey);
+    Loading.dismiss(getApplication()!);
+    MyToast.show(r.msg);
+    if (r.isOk()) {
+      Get.back();
+    }
   }
 
   Future _getPurchaseHistory() async {
@@ -207,7 +220,7 @@ class VipController extends GetxController {
   void onClose() {
     logger.i("onClose");
     FlutterInappPurchase.instance.endConnection;
-    _isClose=true;
+    _isClose = true;
   }
 
   @override

@@ -9,7 +9,9 @@ import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
+import 'package:untitled/route_config.dart';
 import 'package:untitled/utils/time_utils.dart';
+import 'package:untitled/widgets/dialog.dart';
 
 import 'messages_page_bean.dart';
 
@@ -51,7 +53,7 @@ class MessagesController extends GetxController {
           newSystemMsg.value = session.lastMessageContent ?? "";
           newSystemMsgTime.value =
               TimeUtils.dateAndTimeToString(session.lastMessageTime);
-          unReadSystemMsg.value = session.unreadCount;
+          unReadSystemMsg.value = session.unreadCount ?? 0;
           systemName.value = session.senderNickname ?? "官方客服";
         } else {
           _sessionChange(session);
@@ -91,7 +93,7 @@ class MessagesController extends GetxController {
 
   MsgPageBean setMsgPageBean(MsgPageBean msgPageBean, NIMSession session) {
     msgPageBean.time = TimeUtils.dateAndTimeToString(session.lastMessageTime);
-    msgPageBean.unreadMsgNum = session.unreadCount;
+    msgPageBean.unreadMsgNum = session.unreadCount ?? 0;
     msgPageBean.nickName = session.senderNickname ?? "";
     msgPageBean.sessionId = session.sessionId;
     if (session.extension != null) {
@@ -120,18 +122,18 @@ class MessagesController extends GetxController {
   Future<List<MsgPageBean>> querySessionList() async {
     final result = await NimCore.instance.messageService.querySessionList();
     nIMSessionList = result.data ?? [];
-    logger.i("$result  length=${nIMSessionList.length}");
+    logger.i("querySessionList length=${nIMSessionList.length}");
     _listBean.clear();
     for (int i = 0; i < nIMSessionList.length; i++) {
       NIMSession session = nIMSessionList[i];
       MsgPageBean msgPageBean = MsgPageBean();
-      logger.i('extension${session.extension}');
+      logger.i('${session.sessionId}extension${session.extension}');
       sessionIdList.add(session.sessionId);
       if (session.sessionId == sysSession) {
         newSystemMsg.value = session.lastMessageContent ?? "";
         newSystemMsgTime.value =
             TimeUtils.dateAndTimeToString(session.lastMessageTime);
-        unReadSystemMsg.value = session.unreadCount;
+        unReadSystemMsg.value = session.unreadCount ?? 0;
         systemName.value = session.senderNickname ?? "官方客服";
         NimCore.instance.userService
             .getUserInfo(session.sessionId)
@@ -140,7 +142,6 @@ class MessagesController extends GetxController {
                     {systemAvatar.value = value.data?.avatar ?? ""}
                 });
       } else {
-        logger.i("---extension${session.extension} ${session.sessionId}");
         msgPageBean.sessionId = session.sessionId;
         _listBean.add(setMsgPageBean(msgPageBean, session));
       }
@@ -210,17 +211,40 @@ class MessagesController extends GetxController {
   void onInit() {
     super.onInit();
     logger.i("onInit");
+    nimEventSubscription.cancel();
   }
 
   @override
   void onClose() {
     logger.i("onClose");
     _nimSessionUpdate = null;
+    nimEventSubscription.cancel();
   }
 
   @override
   void onReady() {
     logger.i("onReady");
     _onSessionUpdate();
+    _nimEventListener();
+  }
+
+  late final StreamSubscription nimEventSubscription;
+
+  ///如果跳转到手动支付页面这个页面的请求不能使用
+  void _nimEventListener() {
+    nimEventSubscription =
+        NimCore.instance.authService.authStatus.listen((event) {
+      if (event is NIMKickOutByOtherClientEvent) {
+        logger.e('监听到被踢事件${event.status}');
+        if (getApplication() != null) {
+          NimNetworkManager.instance.logout();
+          showKickOutByOtherClientDialog(getApplication()!);
+        }
+        /// 监听到被踢事件
+      } else if (event is NIMAuthStatusEvent) {
+        /// 监听到其他事件
+        logger.e(event.status);
+      }
+    });
   }
 }
