@@ -9,7 +9,10 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/pay_list.dart';
+import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/mine/vip/failed_order_bean.dart';
 import 'package:untitled/page/mine/vip/vip_controller.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/loading.dart';
 import 'package:untitled/widgets/card_image.dart';
@@ -110,69 +113,9 @@ class _VipPageState extends State<VipPage> {
                           children: _list(_vipController.monthlyCardList),
                         ),
                       )),
-                  CustomText(
-                    text: '自动续费，可随时取消',
-                    textStyle:
-                        TextStyle(fontSize: 10, color: Color(0xff8C8C8C)),
-                    margin: EdgeInsets.only(top: 10, left: 16, bottom: 16),
-                  ),
-                  CustomText(
-                    text: '自动续费服务声明：',
-                    textStyle:
-                        TextStyle(fontSize: 10, color: Color(0xff8C8C8C)),
-                    margin: EdgeInsets.only(left: 16, bottom: 2),
-                  ),
-                  CustomText(
-                    text:
-                        '用户确认购买并付款后计入iTunes账户，如果需要取消订阅，请在当前订阅周期到期前24小时以前，手动在iTunes或Apple ID设置管理中关闭自动续费功能，到期前24小时内取消，将会收取订阅费用。苹果iTunes账户对于自动续费项目会在到期前24小时内扣费，扣费成功后订阅周期顺延于下一个计费周期。',
-                    textStyle:
-                        TextStyle(fontSize: 10, color: Color(0xff8C8C8C)),
-                    margin: EdgeInsets.only(
-                      left: 16,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10, left: 16),
-                    child: RichText(
-                      text: TextSpan(
-                        text: "开通前请阅读",
-                        style: TextStyle(fontSize: 10, color: Colors.grey),
-                        children: [
-                          TextSpan(
-                            text: "《会员服务协议》",
-                            style: TextStyle(color: Colors.white),
-                            recognizer: _registProtocolRecognizer
-                              ..onTap = () {
-                                Get.toNamed(webViewPName, arguments: {
-                                  'url': 'http://www.sancun.vip/yhxy',
-                                  'title': '会员服务协议'
-                                });
-                              },
-                          ),
-                          TextSpan(
-                            text: "及",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          TextSpan(
-                            text: "《自动续费协议》",
-                            style: TextStyle(color: Colors.white),
-                            //点击事件
-                            recognizer: _privacyProtocolRecognizer
-                              ..onTap = () {
-                                Get.toNamed(webViewPName, arguments: {
-                                  'url': 'http://www.sancun.vip/service',
-                                  'title': '自动续费协议'
-                                });
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                   Container(
                     height: 8.0,
-                    color: Color(0xff212121),
-                    margin: EdgeInsets.only(top: 20, bottom: 20),
+                    margin: EdgeInsets.only(top: 20),
                   ),
                   CustomText(
                     text: '超级会员特权',
@@ -420,18 +363,6 @@ class _VipPageState extends State<VipPage> {
                       )),
                     ],
                   ),
-                  Platform.isIOS
-                      ? TextButton(
-                          onPressed: () {
-                            Loading.show(getApplication()!,isAutoDismiss:false);
-                            _vipController.iosResumePurchase();
-                          },
-                          child: Text(
-                            '恢复购买',
-                            style: TextStyle(
-                                color: MyColor.mainColor, fontSize: 16),
-                          ))
-                      : Container(),
                   Container(
                     height: Platform.isIOS ? 20 : 0,
                   )

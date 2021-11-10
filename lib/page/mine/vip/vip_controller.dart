@@ -7,6 +7,7 @@ import 'package:untitled/network/bean/pay_list.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/page/home_controller.dart';
+import 'package:untitled/page/mine/vip/failed_order_bean.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/route_config.dart';
 import 'package:untitled/widget/loading.dart';
@@ -51,7 +52,7 @@ class VipController extends GetxController {
 
   void pay() {
     if (Platform.isIOS) {
-      Get.find<HomeController>().clearIOSPayListener();
+      // Get.find<HomeController>().clearIOSPayListener();
       _iosPay(monthlyCardList[selectedIndex.value]);
     } else if (Platform.isAndroid) {
       Loading.dismiss(getApplication()!);
@@ -74,12 +75,18 @@ class VipController extends GetxController {
     for (int i = 0; i < monthlyCardList.length; i++) {
       key.add(monthlyCardList[i].iosKey);
     }
-    List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(key);
-    logger.i('苹果支付开始 ${items.length}');
+    List<IAPItem> items = await FlutterInappPurchase.instance.getProducts([card.iosKey]);
+    if(items.isNotEmpty){
+      logger.i('苹果支付开始初始化 ${items.first.toString()}');
+    }else{
+      MyToast.show('获取商品订单失败,请重新尝试');
+      return;
+    }
+
 
     /// 初始化连接
-    await FlutterInappPurchase.instance.initConnection;
-    logger.i('初始化连接');
+    final initConnection=await FlutterInappPurchase.instance.initConnection;
+    logger.i('初始化连接$initConnection');
 
     /// 连接状态监听
     FlutterInappPurchase.connectionUpdated.listen((connected) {
@@ -99,7 +106,7 @@ class VipController extends GetxController {
         switch (productItem.transactionStateIOS) {
           case TransactionState.purchasing: // 购买中
             // TODO: Handle this case.
-            await clearTransaction();
+            // await clearTransaction();
             break;
           case TransactionState.restored: //恢复用户先前购买的交易
             // TODO: Handle this case.
@@ -116,6 +123,7 @@ class VipController extends GetxController {
             }
             String transactionId = productItem.transactionId ?? '';
             String receiptData = productItem.transactionReceipt ?? '';
+            GetStorageUtils.saveFailedOrder(FailedOrderBean(orderid,receiptData,transactionId));
             final r = await verifyOrder(
               orderid,
               receiptData,
@@ -128,6 +136,7 @@ class VipController extends GetxController {
               await FlutterInappPurchase.instance.endConnection;
               MyToast.show(r.msg);
               GetStorageUtils.saveSvip(true);
+              GetStorageUtils.clearFailedOrder();
               Get.back();
             } else {
               MyToast.show(r.msg);
@@ -147,16 +156,12 @@ class VipController extends GetxController {
     FlutterInappPurchase.purchaseError.listen((purchaseError) async {
       logger.e('监听到错误 purchase-error: $purchaseError');
       Loading.dismiss(getApplication()!);
-      if(!_isClose){
-        await clearTransaction();
-      }
       /// 购买错误回调
     });
 
     if (items.isNotEmpty) {
       /// 发起支付请求，传递iosProductId
-      logger.i(card.iosKey);
-      await clearTransaction();
+      logger.i('开始下单${card.iosKey}');
       FlutterInappPurchase.instance.requestPurchase(card.iosKey);
     } else {
       logger.e('null items  IAPItem');
@@ -193,8 +198,7 @@ class VipController extends GetxController {
     logger.i('_getPurchaseHistory${items?.length}');
     int l = items?.length ?? 0;
     for (int i = 0; i < l; i++) {
-      logger.i('${items![i].transactionStateIOS} --${items![i].orderId} ');
-      logger.i('${items![i].toString()}');
+      logger.i(_toString(items![i]));
     }
   }
 

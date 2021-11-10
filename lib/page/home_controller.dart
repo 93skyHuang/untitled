@@ -11,6 +11,7 @@ import 'package:untitled/main.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/nim/nim_network_manager.dart';
+import 'package:untitled/page/mine/vip/failed_order_bean.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widgets/dialog.dart';
@@ -30,17 +31,29 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     logger.i("onClose");
-    FlutterInappPurchase.instance.endConnection;
+    // FlutterInappPurchase.instance.endConnection;
     isClose = true;
   }
 
   @override
   void onReady() {
     logger.i("onReady");
-    if (Platform.isIOS && isIOSAutoPayListener) {
-      isIOSAutoPayListener = false;
-      _iOSAutoPayListener();
+    FailedOrderBean? failedOrderBean=  GetStorageUtils.getVerFailedOrder();
+    if(failedOrderBean!=null){
+      verifyOrder(
+        failedOrderBean.orderid,
+        failedOrderBean.receiptData,
+        failedOrderBean.transactionID,
+      ).then((value) =>{
+        if(value.isOk()){
+          GetStorageUtils.clearFailedOrder(),
+        }
+      } );
     }
+    // if (Platform.isIOS && isIOSAutoPayListener) {
+    //   isIOSAutoPayListener = false;
+    //   // _iOSAutoPayListener();
+    // }
     Future.delayed(Duration(seconds: 10)).then((value) => {
           if (!isClose) {_getLocation()}
         });
