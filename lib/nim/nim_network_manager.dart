@@ -184,7 +184,7 @@ class NimNetworkManager {
             sessionType: NIMSessionType.p2p,
             time: DateTime.now().millisecond);
     logger.i(
-        '${result.isSuccess} ${result.data?.sessionId}  ${result.data?.senderNickname}');
+        '${result.toString()} uid=$uid');
     return result;
   }
 

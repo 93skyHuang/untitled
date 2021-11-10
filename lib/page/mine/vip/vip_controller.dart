@@ -74,7 +74,6 @@ class VipController extends GetxController {
     for (int i = 0; i < monthlyCardList.length; i++) {
       key.add(monthlyCardList[i].iosKey);
     }
-
     List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(key);
     logger.i('苹果支付开始 ${items.length}');
 

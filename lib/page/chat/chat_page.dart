@@ -108,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             Container(
-              height: ScreenUtil().setHeight(54),
+              height: ScreenUtil().setHeight(52),
               margin: EdgeInsets.only(bottom: 0),
               decoration: BoxDecoration(
                 color: Color(0xFFF0F0F0),
@@ -138,8 +138,8 @@ class _ChatPageState extends State<ChatPage> {
                                   //设置四周边框
                                   border: Border(),
                                 ),
-                                width: 40,
-                                height: 40,
+                                width: ScreenUtil().setWidth(36),
+                                height: ScreenUtil().setWidth(36),
                                 child: Icon(
                                   Icons.keyboard,
                                   size: 30,
@@ -156,8 +156,8 @@ class _ChatPageState extends State<ChatPage> {
                                   //设置四周边框
                                   border: Border(),
                                 ),
-                                width: 40,
-                                height: 40,
+                                width: ScreenUtil().setWidth(36),
+                                height: ScreenUtil().setWidth(36),
                                 child: Icon(
                                   Icons.mic_rounded,
                                   size: 30,
@@ -166,7 +166,7 @@ class _ChatPageState extends State<ChatPage> {
                       )),
                   Expanded(
                     child: Container(
-                      height: ScreenUtil().setHeight(40),
+                      height: ScreenUtil().setHeight(36),
                       alignment: Alignment.center,
                       margin: EdgeInsets.fromLTRB(0, 8, 0, 8),
                       decoration: BoxDecoration(
@@ -219,7 +219,7 @@ class _ChatPageState extends State<ChatPage> {
                                 counterText: '',
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.only(
-                                    left: 16.0, right: 16.0, bottom: 10),
+                                    left: ScreenUtil().setWidth(16.0), right: ScreenUtil().setWidth(16.0), bottom: ScreenUtil().setHeight(10)),
                                 hintText: "回复",
                                 hintStyle: TextStyle(
                                     color: Color(0xFFADB3BA), fontSize: 14),
@@ -231,7 +231,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   _controller.isShowRecodingBtn.value
                       ? Container(
-                          width: 30,
+                          width: ScreenUtil().setWidth(30),
                         )
                       : Padding(
                           padding: EdgeInsets.only(left: 10, right: 10),
@@ -258,8 +258,8 @@ class _ChatPageState extends State<ChatPage> {
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              width: 60,
-                              height: 40,
+                              width: ScreenUtil().setWidth(56),
+                              height: ScreenUtil().setHeight(36),
                               child: Text(
                                 '发送',
                                 style: TextStyle(
@@ -676,7 +676,8 @@ class _ChatPageState extends State<ChatPage> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Container(
-          margin: EdgeInsets.fromLTRB(4, ScreenUtil().setHeight(8), 4, 0),
+          margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(4),
+              ScreenUtil().setHeight(8), ScreenUtil().setWidth(4), 0),
           width: double.infinity,
           constraints: BoxConstraints(
             maxHeight: ScreenUtil().setHeight(230),
@@ -693,8 +694,8 @@ class _ChatPageState extends State<ChatPage> {
               padding: EdgeInsets.only(
                 top: ScreenUtil().setHeight(8),
                 left: ScreenUtil().setWidth(4),
-                right: ScreenUtil().setWidth(10),
-                bottom: ScreenUtil().setHeight(4),
+                right: ScreenUtil().setWidth(4),
+                bottom: ScreenUtil().setHeight(8),
               ),
               child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -822,6 +823,7 @@ class _ChatPageState extends State<ChatPage> {
         ? Container(
             width: ScreenUtil().setWidth(60),
             height: ScreenUtil().setWidth(30),
+            margin: EdgeInsets.only(right: ScreenUtil().setWidth(6)),
             // 边框设置
             decoration: const BoxDecoration(
               //背景
@@ -863,7 +865,7 @@ class _ChatPageState extends State<ChatPage> {
             //关注按钮
             width: ScreenUtil().setWidth(60),
             height: ScreenUtil().setWidth(30),
-
+            margin: EdgeInsets.only(right: ScreenUtil().setWidth(6)),
             // 边框设置
             decoration: const BoxDecoration(
               //背景
@@ -924,7 +926,7 @@ class _ChatPageState extends State<ChatPage> {
       for (int i = 0; i < length; i++) {
         if (list![i]!.imgArr!.isNotEmpty) {
           listWidget.add(_infoTrends(list[i]!));
-          if (listWidget.length >= 3) {
+          if (listWidget.length >= 4) {
             break;
           }
         }
@@ -950,9 +952,7 @@ class _ChatPageState extends State<ChatPage> {
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: listWidget.length == 3
-                    ? MainAxisAlignment.spaceBetween
-                    : MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: listWidget,
               )
             ],
@@ -962,11 +962,14 @@ class _ChatPageState extends State<ChatPage> {
   ///动态
   Widget _infoTrends(Trends trends) {
     String url = trends.imgArr!.first ?? '';
-    double size = min(ScreenUtil().setWidth(90), ScreenUtil().setHeight(90));
+    double size = (ScreenUtil().screenWidth - ScreenUtil().setWidth(50)) / 4;
     return url.isEmpty
         ? Container()
         : InkWell(
-            child: cardNetworkImage(url, size, size, radius: 8),
+            child: cardNetworkImage(url, size, size,
+                radius: 8,
+                fit:BoxFit.cover,
+                margin: EdgeInsets.only(left: ScreenUtil().setWidth(4),right: ScreenUtil().setWidth(4))),
             onTap: () {
               if (trends.type == 2) {
                 //视频

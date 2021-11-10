@@ -52,6 +52,7 @@ class ChatController extends GetxController {
     } else {
       setUserBasic(u);
     }
+    _createSession();
   }
 
   void setUserBasic(UserBasic hisBasic) {
@@ -69,6 +70,7 @@ class ChatController extends GetxController {
       UserBasic userBasic = value.data!;
       GetStorageUtils.saveUserBasic(userBasic);
       setUserBasic(userBasic);
+      updateSession(userBasic);
     }
   }
 
@@ -198,9 +200,6 @@ class ChatController extends GetxController {
     });
     final result = await _nimNetworkManager.createTextMsg(content, hisUid);
     if (result.isSuccess) {
-      if(_curNimSession==null){
-        _createSession();
-      }
       NIMMessage msg = result.data!;
       final s = await _nimNetworkManager.sendMsg(msg);
       if (s.isSuccess) {
@@ -303,9 +302,6 @@ class ChatController extends GetxController {
       final r = await _nimNetworkManager.createAudioMessage(
           filePath, hisUid, duration);
       if (r.isSuccess) {
-        if(_curNimSession==null){
-          _createSession();
-        }
         NIMMessage msg = r.data!;
         final s = await _nimNetworkManager.sendMsg(msg);
         if (s.isSuccess) {
