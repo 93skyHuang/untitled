@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/page/community/pull_dynamic_page.dart';
+import 'package:untitled/page/global_controller.dart';
 import 'package:untitled/page/login/add_basic_info.dart';
 import 'package:untitled/page/mine/setting_page.dart';
 import 'package:untitled/page/mine/verify_center_page.dart';
@@ -36,6 +37,7 @@ class MinePage extends StatefulWidget {
 
 class _MinePageState extends State<MinePage> {
   final MineController _mineController = Get.put(MineController());
+  final GlobalController _globalController = Get.find<GlobalController>();
   List<Widget> _menuItem = [];
 
   @override
@@ -53,12 +55,11 @@ class _MinePageState extends State<MinePage> {
         ),
         body: SingleChildScrollView(
           child: Obx(
-                () =>
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin:
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin:
                       EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 16),
                   child: Row(
                     children: [
@@ -78,12 +79,28 @@ class _MinePageState extends State<MinePage> {
                                       '${_mineController.userBasic.value.cname}',
                                   margin: EdgeInsets.only(left: 10, right: 10),
                                 ),
-                                _mineController.userBasic.value.svip == 1
-                                    ? Image(
-                                        image: AssetImage(
-                                            "assets/images/icon_vip.png"),
-                                      )
-                                    : Container(),
+                                Obx(() => Container(
+                                      decoration: BoxDecoration(
+                                        //背景
+                                        color: _globalController.isSvip.value
+                                            ? Colors.redAccent
+                                            : Colors.grey,
+                                        //设置四周圆角 角度
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(6)),
+                                        //设置四周边框
+                                        border: Border(),
+                                      ),
+                                      width: ScreenUtil().setWidth(28),
+                                      height: ScreenUtil().setHeight(14),
+                                      child:
+                                        Align(alignment: Alignment.center,child:Text(
+                                          'SVIP',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 10, color: Colors.white) ,),
+                                      ),
+                                    )),
                               ],
                             ),
                             CustomText(
@@ -176,12 +193,20 @@ class _MinePageState extends State<MinePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CustomText(
-                            text: _mineController.userBasic.value.dataPerfection==100?'如约而至':'完善基本资料',
+                            text: _mineController
+                                        .userBasic.value.dataPerfection ==
+                                    100
+                                ? '如约而至'
+                                : '完善基本资料',
                             textStyle:
                                 TextStyle(fontSize: 12, color: Colors.white),
                           ),
                           CustomText(
-                            text: _mineController.userBasic.value.dataPerfection==100?'凡所际遇，绝非偶然，愿第一时间与你分享有趣的事':'详细的个人资料才能得到更多关注哟',
+                            text: _mineController
+                                        .userBasic.value.dataPerfection ==
+                                    100
+                                ? '凡所际遇，绝非偶然，愿第一时间与你分享有趣的事'
+                                : '详细的个人资料才能得到更多关注哟',
                             textStyle:
                                 TextStyle(fontSize: 10, color: Colors.white),
                           ),
@@ -189,9 +214,10 @@ class _MinePageState extends State<MinePage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if(_mineController.userBasic.value.dataPerfection==100){
+                          if (_mineController.userBasic.value.dataPerfection ==
+                              100) {
                             Get.to(PullDynamicPage());
-                          }else{
+                          } else {
                             Get.to(EditBasicInfoPage())!
                                 .then((value) => _mineController.getInfo());
                           }
@@ -205,7 +231,10 @@ class _MinePageState extends State<MinePage> {
                                   BorderRadius.all(Radius.circular(16.0)),
                             ),
                             child: Text(
-                              _mineController.userBasic.value.dataPerfection==100?'立即前往':"去完善",
+                              _mineController.userBasic.value.dataPerfection ==
+                                      100
+                                  ? '立即前往'
+                                  : "去完善",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Color(0xff5DB1DE),
@@ -234,7 +263,7 @@ class _MinePageState extends State<MinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ItemMenu(
-                          margin: EdgeInsets.only(left: 16,right: 16),
+                          margin: EdgeInsets.only(left: 16, right: 16),
                           text: '实名认证',
                           img: _mineController.userBasic.value.isCard == 1
                               ? "assets/images/ic_card_ver.png"
@@ -258,7 +287,7 @@ class _MinePageState extends State<MinePage> {
                           onPressed: () {},
                         ),
                         ItemMenu(
-                          margin: EdgeInsets.only(left: 16,right: 16),
+                          margin: EdgeInsets.only(left: 16, right: 16),
                           text: '手机认证',
                           img: "assets/images/icon_verified_phone.png",
                           onPressed: () {},
@@ -266,7 +295,7 @@ class _MinePageState extends State<MinePage> {
                       ],
                     )),
                 Container(
-                  height: _mineController.isSvip.value ? 50 : 70,
+                  height: _globalController.isSvip.value ? 50 : 70,
                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   padding: EdgeInsets.only(
                     left: 10,
@@ -279,7 +308,7 @@ class _MinePageState extends State<MinePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _mineController.isSvip.value
+                      _globalController.isSvip.value
                           ? CustomText(
                               textAlign: Alignment.center,
                               text:
@@ -305,7 +334,8 @@ class _MinePageState extends State<MinePage> {
                             ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => VipPage());
+                          Get.to(() => VipPage())
+                              ?.then((value) => _mineController.getPTime());
                         },
                         child: Container(
                             padding: EdgeInsets.only(
@@ -315,13 +345,13 @@ class _MinePageState extends State<MinePage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(16.0)),
                             ),
-                            child: Text(
-                              _mineController.isSvip.value ? "继续购买" : "立即开通",
+                            child: Obx(()=>Text(
+                              _globalController.isSvip.value ? "继续购买" : "立即开通",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.black,
                               ),
-                            )),
+                            ))),
                       )
                     ],
                   ),

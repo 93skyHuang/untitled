@@ -16,6 +16,7 @@ import 'package:untitled/widgets/toast.dart';
 class VipController extends GetxController {
   RxString imgurl = ''.obs;
   RxString name = ''.obs;
+  RxInt svip = 0.obs;
   List<MonthlyCard> monthlyCardList = <MonthlyCard>[].obs;
   RxInt selectedIndex = 0.obs;
   RxString money = "".obs;
@@ -217,6 +218,7 @@ class VipController extends GetxController {
                 {
                   imgurl.value = '${paylist?.headImgUrl}',
                   name.value = '${paylist?.cname}',
+                  svip.value=paylist!.svip??0,
                   list = paylist?.monthlyCardList ?? [],
                   monthlyCardList.addAll(list),
                   setSelectedCard(0),
