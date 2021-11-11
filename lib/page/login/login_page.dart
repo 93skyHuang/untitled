@@ -30,7 +30,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    init(context);
+    // init(context);
     return Scaffold(
       //键盘弹起不顶起布局
       resizeToAvoidBottomInset: false,

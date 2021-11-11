@@ -27,7 +27,7 @@ class LoginController extends GetxController {
     phoneLogin(phone, code).then((value) => {
           if (value.isOk())
             {
-              if (value.data?.isNewUser == 1)
+              if (value.data?.isNewUser == 1||value.data?.sex==0)
                 {
                   Get.offNamed(addBasicInfoPName),
                   GetStorageUtils.saveIsShowVerifiedTipsInHomePage(true)

@@ -11,10 +11,12 @@ Future<Position> getPosition() async {
   if (lastP == null) {
     Position position = await getCurrentPosition();
     logger.i(position);
-    GetStorageUtils.saveLocation(position);
+    GetStorageUtils.saveLatitude(position.latitude);
+    GetStorageUtils.saveLongitude(position.longitude);
     return position;
   }
-  GetStorageUtils.saveLocation(lastP);
+  GetStorageUtils.saveLatitude(lastP.latitude);
+  GetStorageUtils.saveLongitude(lastP.longitude);
   return lastP;
 }
 

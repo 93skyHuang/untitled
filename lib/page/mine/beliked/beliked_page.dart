@@ -125,7 +125,9 @@ class _BelikedPageState extends State<BelikedPage>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 belikes.addAll(value.data ?? []),
                 updatePage(),
               }

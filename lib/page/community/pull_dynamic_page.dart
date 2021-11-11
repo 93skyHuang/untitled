@@ -95,7 +95,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
                   )),
             ]),
         backgroundColor: Color(0xFFF5F5F5),
-        body: _child(),
+        body:  _child(),
       ),
 // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -104,13 +104,10 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
   Widget _child() {
     return Column(
       children: [
-        Expanded(
-          child: Column(
+        Column(
             children: [
-              SizedBox(
-                height: 30,
-              ),
               Container(
+                margin: EdgeInsets.only(top: 20),
                 child: TextField(
                   onChanged: (text) {
                     //输入框内容变化回调
@@ -121,10 +118,10 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
                   minLines: 6,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 0),
+                      borderSide: BorderSide(color: Colors.transparent, width: 0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 0),
+                      borderSide: BorderSide(color: Colors.transparent, width: 0),
                     ),
                     fillColor: Color(0xffF5F5F5),
                     filled: true,
@@ -137,19 +134,24 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
               ),
             ],
           ),
+
+     Expanded(
+    child:
+        Column(
+    mainAxisAlignment:MainAxisAlignment.end,
+          children: [_photoAndVideoGridView(),  SizedBox(
+          height: 16,
         ),
-        _photoAndVideoGridView(),
-        SizedBox(
-          height: 20,
+          _locationAndTopic(),
+          SizedBox(
+            height: 16,
+          ),
+          _action(),
+          SizedBox(
+            height: 60,
+          ),],)
         ),
-        _locationAndTopic(),
-        SizedBox(
-          height: 20,
-        ),
-        _action(),
-        SizedBox(
-          height: 70,
-        ),
+
       ],
     );
   }
@@ -667,6 +669,7 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
         _type = 0;
       }
     }
+    FocusScope.of(context).requestFocus(FocusNode());
     Loading.show(context);
     await _controller.pullTrends(_type, _textFieldController.text,
         localUrl: urls);

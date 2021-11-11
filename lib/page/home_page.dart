@@ -86,7 +86,7 @@ class _HomeState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    init(context);
+    // init(context);
     return Scaffold(
       ///使用这个才能保证子页面持久化
       body: IndexedStack(

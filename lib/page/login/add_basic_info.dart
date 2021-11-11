@@ -13,6 +13,7 @@ import 'package:untitled/network/bean/address.dart';
 import 'package:untitled/network/bean/base_page_data.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/mine/nickname_page.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/utils/image_picker_util.dart';
 import 'package:untitled/utils/location_util.dart';
 import 'package:untitled/widget/custom_text.dart';
@@ -94,6 +95,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
                 children: <Widget>[
                   TextButton(
                       onPressed: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
                         showBottomImageSource(
                             context, _choicePicture, _tokePhoto);
                       },
@@ -469,6 +471,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
           height: height);
     Loading.dismiss(context);
       if (basePageData.isOk()) {
+        GetStorageUtils.saveSex(sex);
         Get.offNamed(homePName);
       }
     }

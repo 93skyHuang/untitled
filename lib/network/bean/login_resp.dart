@@ -6,7 +6,7 @@ part 'login_resp.g.dart';
 class LoginResp {
   LoginResp();
   int uid = 0;
-  int? sex = 1;
+  int? sex ;
   int? svip = 0;
   int? isNewUser = 0;
   String? loginToken = '';

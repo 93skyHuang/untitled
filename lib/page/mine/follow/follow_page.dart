@@ -171,7 +171,9 @@ class _FollowPageState extends State<FollowPage>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 follows.addAll(value.data ?? []),
                 updatePage(),
               }

@@ -100,13 +100,26 @@ class GetStorageUtils {
     _firstInitStorage.write('isVideo', isVideo);
   }
 
-  static Position? getLocation() {
-    _firstInitStorage.read('position');
+  static double? getLatitude() {
+   final po=_firstInitStorage.read('latitude');
+   logger.i(po);
+   return po;
   }
 
-  static void saveLocation(Position position) {
-    _firstInitStorage.write('position', position);
+  static void saveLatitude(double latitude) {
+    _firstInitStorage.write('latitude', latitude);
   }
+
+  static double? getLongitude() {
+    final po=_firstInitStorage.read('longitude');
+    logger.i(po);
+    return po;
+  }
+
+  static void saveLongitude(double longitude) {
+    _firstInitStorage.write('longitude', longitude);
+  }
+
 
   static FailedOrderBean? getVerFailedOrder(){
     return _commonStorage.read('failedOrder');

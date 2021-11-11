@@ -124,7 +124,9 @@ class _FanPageState extends State<FanPage> with AutomaticKeepAliveClientMixin {
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 fans.addAll(value.data ?? []),
                 updatePage(),
               }

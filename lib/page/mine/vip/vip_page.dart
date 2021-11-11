@@ -99,13 +99,13 @@ class _VipPageState extends State<VipPage> {
                                 border: Border(),
                               ),
                               width: ScreenUtil().setWidth(28),
-                              height: ScreenUtil().setHeight(14),
+                              height: ScreenUtil().setHeight(12),
                               child:
                               Align(alignment: Alignment.center,child:Text(
                                 'SVIP',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 10, color: Colors.white) ,),
+                                    fontSize: ScreenUtil().setSp(10), color: Colors.white) ,),
                               ),
                             )),
                           ],

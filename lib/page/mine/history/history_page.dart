@@ -96,7 +96,9 @@ class _HistoryPageState extends State<HistoryPage>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 historys.addAll(value.data ?? []),
                 updatePage(),
               }
