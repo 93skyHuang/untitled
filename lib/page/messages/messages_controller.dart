@@ -50,7 +50,7 @@ class MessagesController extends GetxController {
         NIMSession session = list[i];
         if (session.sessionId == sysSession) {
           ///系统消息
-          newSystemMsg.value = session.lastMessageContent ?? "";
+          newSystemMsg.value = session.lastMessageContent ?? newSystemMsg.value;
           newSystemMsgTime.value =
               TimeUtils.dateAndTimeToString(session.lastMessageTime);
           unReadSystemMsg.value = session.unreadCount ?? 0;
