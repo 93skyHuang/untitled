@@ -202,13 +202,8 @@ class MessagesController extends GetxController {
             'height': json.decode(user.ext!)['height'],
             'region': json.decode(user.ext!)['region'],
           };
-        }else{
-          session.extension = {
-            'avatar': user.avatar ?? "",
-            'name': user.nick ?? ""};
+          NimNetworkManager.instance.updateSession(session);
         }
-
-        NimNetworkManager.instance.updateSession(session);
         break;
       }
     }
@@ -253,9 +248,18 @@ class MessagesController extends GetxController {
             /// 数据同步开始
           } else if (event.status == NIMAuthStatus.dataSyncFinish) {
             /// 数据同步完成
+            dataRefresh();
           }
         }
       }
     });
+  }
+
+  void  dataRefresh() async{
+   await querySessionList();
+   await getNewInfo();
+    if (_nimSessionUpdate != null) {
+      _nimSessionUpdate!(_listBean);
+    }
   }
 }

@@ -1153,7 +1153,6 @@ Future<BasePageData> addTrends(
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
-  MyToast.show(basePageData.msg);
   return basePageData;
 }
 

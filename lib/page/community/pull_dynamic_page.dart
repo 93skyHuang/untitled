@@ -670,10 +670,8 @@ class _PullDynamicPageState extends State<PullDynamicPage> {
       }
     }
     FocusScope.of(context).requestFocus(FocusNode());
-    Loading.show(context);
     await _controller.pullTrends(_type, _textFieldController.text,
         localUrl: urls);
-    Loading.dismiss(context);
   }
 }
 
@@ -701,18 +699,23 @@ class _Controller extends GetxController {
 
   Future<void> pullTrends(int type, String content,
       {List<String> localUrl = const []}) async {
+    Loading.show(getApplication()!);
     final r = await addTrends(type,
         content: content,
         localUrls: localUrl,
         topicId: _choiceTopic?.id,
         topicName: _choiceTopic?.title);
+    Loading.dismiss(getApplication()!);
     if (r.isOk()) {
+      MyToast.show(r.msg);
       //发布成功
       Get.back();
     } else if (r.code == 300) {
       showOpenSvipDialog(getApplication()!, cancel: () {
         Get.back();
       });
+    }else{
+      MyToast.show(r.msg);
     }
   }
 

@@ -451,6 +451,7 @@ class _AddBasicInfoPageState extends State<AddBasicInfoPage> {
       Loading.dismiss(context);
       if (basePageData.isOk()) {
         Get.offNamed(homePName);
+        GetStorageUtils.saveSex(sex);
       }
     }else{
       if(city==null||city==''){
