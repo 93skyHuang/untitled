@@ -15,6 +15,7 @@ import 'package:untitled/widgets/toast.dart';
 class VipController extends GetxController {
   RxString imgurl = ''.obs;
   RxString name = ''.obs;
+  RxInt svip = 0.obs;
   List<MonthlyCard> monthlyCardList = <MonthlyCard>[].obs;
   RxInt selectedIndex = 0.obs;
   RxString money = "".obs;
@@ -193,8 +194,8 @@ class VipController extends GetxController {
     logger.i('_getPurchaseHistory${items?.length}');
     int l = items?.length ?? 0;
     for (int i = 0; i < l; i++) {
-      logger.i('${items![i].transactionStateIOS} --${items![i].orderId} ');
-      logger.i('${items![i].toString()}');
+      logger.i('${items![i].transactionStateIOS} --${items[i].orderId} ');
+      logger.i('${items[i].toString()}');
     }
   }
 
@@ -213,6 +214,7 @@ class VipController extends GetxController {
                 {
                   imgurl.value = '${paylist?.headImgUrl}',
                   name.value = '${paylist?.cname}',
+                  svip.value=paylist!.svip??0,
                   list = paylist?.monthlyCardList ?? [],
                   monthlyCardList.addAll(list),
                   setSelectedCard(0),

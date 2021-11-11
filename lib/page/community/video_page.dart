@@ -57,6 +57,7 @@ class _VideoListPageState extends State<VideoListPage>
   void _onRefresh() async {
     logger.i("_onRefresh");
     pageNo = 1;
+    _refreshController.resetNoData();
     getData();
   }
 

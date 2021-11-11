@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -82,10 +83,28 @@ class _VipPageState extends State<VipPage> {
                                   margin: EdgeInsets.only(
                                       top: 10, bottom: 10, right: 10),
                                 )),
-                            Image(
-                              image:
-                                  AssetImage("assets/images/vip_uncharge.png"),
-                            ),
+                            Obx(() => Container(
+                              decoration: BoxDecoration(
+                                //背景
+                                color: _vipController.svip.value==1
+                                    ? Colors.redAccent
+                                    : Colors.grey,
+                                //设置四周圆角 角度
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(6)),
+                                //设置四周边框
+                                border: Border(),
+                              ),
+                              width: ScreenUtil().setWidth(28),
+                              height: ScreenUtil().setHeight(14),
+                              child:
+                              Align(alignment: Alignment.center,child:Text(
+                                'SVIP',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 10, color: Colors.white) ,),
+                              ),
+                            )),
                           ],
                         ),
                         Text("尊享10项专属特权，提高交友成功率",
