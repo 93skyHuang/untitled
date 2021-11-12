@@ -161,7 +161,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: MyColor.redFd4343,
               controller: tabController,
-              padding: EdgeInsets.only(right: 120),
+              padding: EdgeInsets.only(right: ScreenUtil().setWidth(100)),
               tabs: <Widget>[
                 new Tab(
                   text: "动态",

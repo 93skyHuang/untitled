@@ -302,6 +302,8 @@ class _MessagesPageState extends State<MessagesPage>
   }
 
   void _goToChatPage(int uid) async {
-    Get.to(ChatPage(), arguments: {'uid': uid});
+    Get.to(ChatPage(), arguments: {'uid': uid})?.then((value) => {
+
+    });
   }
 }

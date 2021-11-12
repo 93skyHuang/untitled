@@ -17,12 +17,9 @@ import 'persistent/get_storage_utils.dart';
 var isAutoLoginSuccess = false;
 
 var getRouterPage = [
-  GetPage(
-      name: isAutoLoginSuccess ? homePName : loginPName,
-      page: () => isAutoLoginSuccess ? const HomePage() : LoginPage()),
-  GetPage(
-      name: isAutoLoginSuccess ? loginPName : homePName,
-      page: () => isAutoLoginSuccess ? LoginPage() : HomePage()),
+  GetPage(name: splashPName, page: () => const SplashPage()),
+  GetPage(name: homePName, page: () => const HomePage()),
+  GetPage(name: loginPName, page: () => LoginPage()),
   GetPage(name: webViewPName, page: () => WebViewPage()),
   GetPage(name: MinePName, page: () => MinePage()),
   GetPage(name: photoViewPName, page: () => PhotoViewPage()),
@@ -31,9 +28,9 @@ var getRouterPage = [
 ];
 
 //导航个页面name 调用Get.toName('/login') 即可进行页面跳转
-const splashPName = '/splash';
-var homePName = isAutoLoginSuccess ? '/' : '/home';
-var loginPName = isAutoLoginSuccess ? '/login' : '/';
+const splashPName = '/';
+var homePName = '/home';
+var loginPName ='/login';
 const webViewPName = '/webView';
 const MinePName = '/mine';
 const photoViewPName = '/photoViewP';

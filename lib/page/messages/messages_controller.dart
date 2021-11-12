@@ -50,7 +50,7 @@ class MessagesController extends GetxController {
         NIMSession session = list[i];
         if (session.sessionId == sysSession) {
           ///系统消息
-          newSystemMsg.value = session.lastMessageContent ?? "";
+          newSystemMsg.value = session.lastMessageContent ?? newSystemMsg.value;
           newSystemMsgTime.value =
               TimeUtils.dateAndTimeToString(session.lastMessageTime);
           unReadSystemMsg.value = session.unreadCount ?? 0;
@@ -163,15 +163,13 @@ class MessagesController extends GetxController {
         List<NIMUser> userList = re.data!;
         for (int i = 0; i < userList.length; i++) {
           NIMUser user = userList[i];
-          logger.i('${user.userId} ${user.nick}---${user.ext}');
+          logger.i('${user.userId} ${user.nick}---${user.ext}--${user.avatar}');
           if (user.userId == sysSession) {
             systemAvatar.value = user.avatar ?? systemAvatar.value;
             continue;
           }
-          if (user.ext != null) {
-            _updateInfo(user);
-            _updateSession(list, user);
-          }
+          _updateInfo(user);
+          _updateSession(list, user);
         }
       }
     }
@@ -180,9 +178,11 @@ class MessagesController extends GetxController {
   void _updateInfo(NIMUser user) {
     for (int i = 0; i < _listBean.length; i++) {
       if (user.userId == _listBean[i].sessionId) {
-        _listBean[i].region = json.decode(user.ext!)['region'];
-        _listBean[i].age = json.decode(user.ext!)['age'];
-        _listBean[i].height = json.decode(user.ext!)['height'];
+        if (user.ext != null) {
+          _listBean[i].region = json.decode(user.ext!)['region'];
+          _listBean[i].age = json.decode(user.ext!)['age'];
+          _listBean[i].height = json.decode(user.ext!)['height'];
+        }
         _listBean[i].heardUrl = user.avatar ?? "";
         _listBean[i].nickName = user.nick ?? "";
         break;
@@ -194,14 +194,16 @@ class MessagesController extends GetxController {
     for (int i = 0; i < list.length; i++) {
       NIMSession session = list[i];
       if (session.sessionId == user.userId) {
-        session.extension = {
-          'avatar': user.avatar ?? "",
-          'name': user.nick ?? "",
-          'age': json.decode(user.ext!)['age'],
-          'height': json.decode(user.ext!)['height'],
-          'region': json.decode(user.ext!)['region'],
-        };
-        NimNetworkManager.instance.updateSession(session);
+        if (user.ext != null) {
+          session.extension = {
+            'avatar': user.avatar ?? "",
+            'name': user.nick ?? "",
+            'age': json.decode(user.ext!)['age'],
+            'height': json.decode(user.ext!)['height'],
+            'region': json.decode(user.ext!)['region'],
+          };
+          NimNetworkManager.instance.updateSession(session);
+        }
         break;
       }
     }
@@ -246,9 +248,18 @@ class MessagesController extends GetxController {
             /// 数据同步开始
           } else if (event.status == NIMAuthStatus.dataSyncFinish) {
             /// 数据同步完成
+            dataRefresh();
           }
         }
       }
     });
+  }
+
+  void  dataRefresh() async{
+   await querySessionList();
+   await getNewInfo();
+    if (_nimSessionUpdate != null) {
+      _nimSessionUpdate!(_listBean);
+    }
   }
 }

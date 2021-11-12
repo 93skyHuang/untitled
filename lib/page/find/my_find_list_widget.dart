@@ -37,7 +37,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   List<DiscoverInfo> _list = [];
   int pageNo = 1;
   double itemWidth = ScreenUtil().setWidth(182);
-  double itemHeight = ScreenUtil().setWidth(237);
+  double itemHeight = ScreenUtil().setWidth(238);
   bool isCanRefreshPage = false;
 
   final RefreshController _refreshController =
@@ -179,16 +179,6 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
       child: Container(
           width: itemWidth,
           height: itemHeight,
-          //边框设置
-          // decoration: const BoxDecoration(
-          //   //背景
-          //   color: Colors.white,
-          //   //设置四周圆角 角度
-          //   borderRadius: BorderRadius.all(Radius.circular(4.0)),
-          //   //设置四周边框
-          //   border:  Border(),
-          // ),
-          //设置 child 居中
           alignment: const Alignment(0, 0),
           child: Card(
             shape: RoundedRectangleBorder(
@@ -271,6 +261,7 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
         padding: EdgeInsets.only(
           left: ScreenUtil().setWidth(4),
           right: ScreenUtil().setWidth(4),
+          top: ScreenUtil().setHeight(4),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(

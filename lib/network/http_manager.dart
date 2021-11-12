@@ -61,11 +61,10 @@ Future<BasePageData<LoginResp?>> autoLogin() async {
   BasePageData<LoginResp?> basePageData;
   try {
     int uid = GetStorageUtils.getUID();
-    Position? p = GetStorageUtils.getLocation();
     Response response = await getDio().post('/index/Login/defaultLogin', data: {
       'uid': uid,
-      'longitude': p?.longitude ?? 0.0,
-      'latitude': p?.latitude ?? 0.0,
+      'longitude': GetStorageUtils.getLongitude() ?? 0.0,
+      'latitude': GetStorageUtils.getLatitude() ?? 0.0,
       'registionID': 'registionID',
       'packageName': Platform.isIOS ? "com.moshen.teck.liu" : "com.ace.freedom",
     });
@@ -1154,7 +1153,6 @@ Future<BasePageData> addTrends(
     logger.e(error);
     basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
   }
-  MyToast.show(basePageData.msg);
   return basePageData;
 }
 

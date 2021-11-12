@@ -62,6 +62,7 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                 ),
               ),
             ),
+            SizedBox(height: 10,),
             CustomText(
               textAlign: Alignment.center,
               text: '你的头像',
@@ -303,28 +304,28 @@ class _AvatarVerifiedPageState extends State<AvatarVerifiedPage> {
                                   TextStyle(color: Colors.black, fontSize: 17)),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () async {
-                          Navigator.pop(context);
-                          XFile? f = await getImageFromGallery();
-                          headerImgUrlLocal = f?.path;
-                          setState(() {});
-                        },
-                        child: Container(
-                          width: 214,
-                          height: 40,
-                          margin: EdgeInsets.only( bottom: 16),
-                          decoration: new BoxDecoration(
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(40.0)),
-                            color: Color(0xffF3CD8E),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text('从相册选择',
-                              style:
-                              TextStyle(color: Colors.black, fontSize: 17)),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () async {
+                      //     Navigator.pop(context);
+                      //     XFile? f = await getImageFromGallery();
+                      //     headerImgUrlLocal = f?.path;
+                      //     setState(() {});
+                      //   },
+                      //   child: Container(
+                      //     width: 214,
+                      //     height: 40,
+                      //     margin: EdgeInsets.only( bottom: 16),
+                      //     decoration: new BoxDecoration(
+                      //       borderRadius:
+                      //       BorderRadius.all(Radius.circular(40.0)),
+                      //       color: Color(0xffF3CD8E),
+                      //     ),
+                      //     alignment: Alignment.center,
+                      //     child: Text('从相册选择',
+                      //         style:
+                      //         TextStyle(color: Colors.black, fontSize: 17)),
+                      //   ),
+                      // ),
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);

@@ -10,6 +10,7 @@ import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
 import 'package:untitled/nim/nim_sdk_options.dart';
+import 'package:untitled/page/login/add_basic_info.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
 import '../route_config.dart';
@@ -37,30 +38,36 @@ class _SplashPageState extends State<SplashPage> {
         orientation: Orientation.portrait);
   }
 
-  void pageJump() {
+  Future<void> _autoLogin() async {
     int uid = GetStorageUtils.getUID();
     if (uid != -1) {
-      autoLogin().then((value) => {
-            if (value.isOk())
-              {Get.offNamed(homePName)}
-            else
-              {Get.offNamed(loginPName)}
-          });
+      final v = await autoLogin();
+      if (v.isOk()) {
+        {
+          if(v.data!.sex==0){
+            Get.offNamed(addBasicInfoPName);
+          }else{
+            Get.offNamed(homePName);
+          }
+         }
+      } else {
+        {Get.offNamed(loginPName);}
+      }
     } else {
       Get.offNamed(loginPName);
     }
+    nimSdkInit();
   }
 
   @override
   void initState() {
     //云信sdk初始化
-    nimSdkInit();
+    GetStorage.init();
     logger.i('initState');
     super.initState();
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       logger.i('addPostFrameCallback');
-      GetStorage.init();
-      pageJump();
+      _autoLogin();
     });
   }
 
@@ -79,7 +86,7 @@ class _SplashPageState extends State<SplashPage> {
             constraints: const BoxConstraints.expand(),
             child: Image.asset(
               "assets/images/launch_image.png",
-              fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+              fit: BoxFit.fill,
             ),
           ),
         ],

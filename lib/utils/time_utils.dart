@@ -22,8 +22,10 @@ class TimeUtils {
     }
     String targetString = "";
     int timeDiff = DateTime.now().millisecondsSinceEpoch - timestamp;
-    if (timeDiff < OneMinuteMILL * 3) {
+    if (timeDiff < OneMinuteMILL * 10) {
       return "刚刚";
+    } else if (timeDiff < OneHourMILL) {
+      return "${(timeDiff / OneMinuteMILL).truncate()}分钟前";
     } else if (timeDiff < OneDayMILL) {
       return "${(timeDiff / OneHourMILL).truncate()}小时前";
     } else if (timeDiff < OneWeekMILL) {

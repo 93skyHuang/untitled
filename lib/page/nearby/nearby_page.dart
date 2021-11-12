@@ -105,7 +105,9 @@ class _NearbyPageState extends State<NearbyPage>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 _list.addAll(value.data ?? []),
                 updatePage(),
               }

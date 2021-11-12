@@ -160,8 +160,23 @@ void showMyDataPicker(
           ),
       title: title, clickCallBack: (Picker picker, List<int> selecteds) {
     var time = (picker.adapter as DateTimePickerAdapter).value;
-    String timeStr =
-        '${time?.year.toString()}-${time?.month.toString()}-${time?.day.toString()}';
-    clickCallBack(timeStr, time ?? DateTime.now());
+    if(time!=null){
+      int month=time.month;
+      int day=time.day;
+      String m,d;
+      if(month<10){
+        m="0$month";
+      }else{
+        m="$month";
+      }   if(day<10){
+        d="0$day";
+      }else{
+        d="$day";
+      }
+      String timeStr =
+          '${time.year.toString()}-$m-$d';
+      clickCallBack(timeStr, time ?? DateTime.now());
+    }
+
   });
 }

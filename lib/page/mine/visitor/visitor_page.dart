@@ -97,7 +97,9 @@ class _VisitorPageState extends State<VisitorPage>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 visitors.addAll(value.data ?? []),
                 updatePage(),
               }

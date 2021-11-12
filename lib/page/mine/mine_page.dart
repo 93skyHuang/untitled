@@ -76,8 +76,13 @@ class _MinePageState extends State<MinePage> {
                               children: [
                                 CustomText(
                                   text:
-                                      '${_mineController.userBasic.value.cname}',
-                                  margin: EdgeInsets.only(left: 10, right: 10),
+                                      '${_mineController.userBasic.value.cname}'
+                                  ,textStyle:  TextStyle(
+                                     fontWeight:FontWeight.bold,
+                                    fontSize: ScreenUtil().setSp(15),
+                                    color: Colors.black
+                                ),
+                                  margin: EdgeInsets.only(left: 10, right: 8),
                                 ),
                                 Obx(() => Container(
                                       decoration: BoxDecoration(
@@ -92,13 +97,13 @@ class _MinePageState extends State<MinePage> {
                                         border: Border(),
                                       ),
                                       width: ScreenUtil().setWidth(28),
-                                      height: ScreenUtil().setHeight(14),
+                                      height: ScreenUtil().setHeight(12),
                                       child:
                                         Align(alignment: Alignment.center,child:Text(
                                           'SVIP',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              fontSize: 10, color: Colors.white) ,),
+                                              fontSize: ScreenUtil().setSp(10), color: Colors.white) ,),
                                       ),
                                     )),
                               ],
@@ -156,17 +161,17 @@ class _MinePageState extends State<MinePage> {
                     CustomText(
                       text:
                           '${_mineController.userBasic.value.trendsList?.length}',
-                      textStyle: TextStyle(fontSize: 15, color: Colors.black),
+                      textStyle: TextStyle(fontSize: 15, color: Colors.black,   fontWeight:FontWeight.bold,),
                     ),
                     CustomText(
                       text: '访客 ',
                       textStyle:
-                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                          TextStyle(fontSize: 12, color: Color(0xff8C8C8C),),
                       margin: EdgeInsets.only(left: 30),
                     ),
                     CustomText(
                       text: '${_mineController.userBasic.value.pasDaySum} ',
-                      textStyle: TextStyle(fontSize: 15, color: Colors.black),
+                      textStyle: TextStyle(fontSize: 15, color: Colors.black, fontWeight:FontWeight.bold),
                     ),
                     CustomText(
                       text: '喜欢 ',
@@ -176,7 +181,7 @@ class _MinePageState extends State<MinePage> {
                     ),
                     CustomText(
                       text: '${_mineController.userBasic.value.followSum}',
-                      textStyle: TextStyle(fontSize: 15, color: Colors.black),
+                      textStyle: TextStyle(fontSize: 15, color: Colors.black,   fontWeight:FontWeight.bold,),
                     ),
                   ],
                 ),

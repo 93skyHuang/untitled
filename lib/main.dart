@@ -42,10 +42,7 @@ void main() async {
 Future<void> _init() async {
   Get.put(GlobalController());
   await GetStorage.init('firstInitStorage');
-  await _autoLogin();
-  nimSdkInit();
-  await GetStorage.init();
-  await SystemChrome.setPreferredOrientations(
+  SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitUp,   // 竖屏 Portrait 模式
       DeviceOrientation.portraitDown,
@@ -53,19 +50,4 @@ Future<void> _init() async {
       // DeviceOrientation.landscapeRight,
     ],
   );
-  isIOSAutoPayListener=true;
-}
-
-Future<void> _autoLogin() async {
-  int uid = GetStorageUtils.getUID();
-  if (uid != -1) {
-    final v = await autoLogin();
-    if (v.isOk()) {
-      isAutoLoginSuccess = true;
-    } else {
-      isAutoLoginSuccess = false;
-    }
-  } else {
-    isAutoLoginSuccess = false;
-  }
 }

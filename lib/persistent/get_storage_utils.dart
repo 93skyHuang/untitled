@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/page/global_controller.dart';
+import 'package:untitled/page/mine/vip/failed_order_bean.dart';
 
 class GetStorageUtils {
   ///开启app马上需要初始化的数据
@@ -99,12 +100,38 @@ class GetStorageUtils {
     _firstInitStorage.write('isVideo', isVideo);
   }
 
-  static Position? getLocation() {
-    _firstInitStorage.read('position');
+  static double? getLatitude() {
+   final po=_firstInitStorage.read('latitude');
+   logger.i(po);
+   return po;
   }
 
-  static void saveLocation(Position position) {
-    _firstInitStorage.write('position', position);
+  static void saveLatitude(double latitude) {
+    _firstInitStorage.write('latitude', latitude);
+  }
+
+  static double? getLongitude() {
+    final po=_firstInitStorage.read('longitude');
+    logger.i(po);
+    return po;
+  }
+
+  static void saveLongitude(double longitude) {
+    _firstInitStorage.write('longitude', longitude);
+  }
+
+
+  static FailedOrderBean? getVerFailedOrder(){
+    return _commonStorage.read('failedOrder');
+  }
+
+  static void saveFailedOrder(FailedOrderBean failedOrderBean){
+    logger.i(failedOrderBean);
+    _commonStorage.write('failedOrder', failedOrderBean);
+  }
+
+  static void clearFailedOrder(){
+    _commonStorage.write('failedOrder', null);
   }
 
   ///保存某个人的基本信息数据

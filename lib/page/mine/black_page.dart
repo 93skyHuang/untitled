@@ -170,7 +170,9 @@ class _BlackPageState extends State<BlackPage>
           if (value.isOk())
             if (isLoad)
               {
-                _refreshController.loadComplete(),
+                value.data == null
+                    ? _refreshController.loadNoData()
+                    : _refreshController.loadComplete(),
                 blacks.addAll(value.data ?? []),
                 updatePage(),
               }
