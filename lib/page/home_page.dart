@@ -101,12 +101,14 @@ class _HomeState extends State<HomePage> {
             });
           }
         },
+        backgroundColor: MyColor.pageBgColor,
         currentIndex: _currentIndex,
         items: _barItem,
         iconSize: ScreenUtil().setWidth(20),
-        fixedColor: MyColor.redFd4343,
-        selectedFontSize: ScreenUtil().setSp(10),
-        unselectedFontSize: ScreenUtil().setSp(10),
+        fixedColor: Color(0xff6385FF),
+        selectedFontSize: ScreenUtil().setSp(11),
+        unselectedFontSize: ScreenUtil().setSp(11),
+        unselectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
       ),
     );

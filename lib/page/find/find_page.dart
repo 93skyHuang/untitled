@@ -77,13 +77,14 @@ class _FindPageState extends State<FindPage>
                 Expanded(
                   child: TabBar(
                       controller: _tabController,
-                      labelColor: MyColor.blackColor,
+                      labelColor: Color(0xff6385FF),
                       labelStyle: TextStyle(fontSize: ScreenUtil().setSp(20)),
-                      unselectedLabelColor: MyColor.grey8C8C8C,
+                      unselectedLabelColor: Color(0xff57688A),
+
                       unselectedLabelStyle:
                           TextStyle(fontSize: ScreenUtil().setSp(15)),
                       indicatorWeight: 4,
-                      indicatorColor: MyColor.redFd4343,
+                      indicatorColor: Color(0xff6385FF),
                       isScrollable: true,
                       physics: _globalController.isSvip.value
                           ? ScrollPhysics()

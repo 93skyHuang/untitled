@@ -166,12 +166,12 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
     List<Widget> list = [];
     int length = _list.length;
     for (int i = 0; i < length; i++) {
-      list.add(_item(_list[i]));
+      list.add(_item(_list[i], i));
     }
     return list;
   }
 
-  Widget _item(DiscoverInfo discoverInfo) {
+  Widget _item(DiscoverInfo discoverInfo, int index) {
     return GestureDetector(
       onTap: () {
         logger.i(discoverInfo);
@@ -185,10 +185,13 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
                 borderRadius: BorderRadiusDirectional.circular(4)),
             clipBehavior: Clip.antiAlias,
             color: Colors.white,
-            child: Column(
+            child: Stack(
               children: [
                 _imageWrapper(discoverInfo),
-                _itemInfo(discoverInfo),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: _itemInfo(discoverInfo),
+                ),
               ],
             ),
           )),
@@ -249,13 +252,14 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
   }
 
   Widget _itemInfo(DiscoverInfo discoverInfo) {
-    String constellation='';
-    String education='';
-    if(discoverInfo.constellation!=null&&discoverInfo.constellation!=''){
-      constellation='·'+discoverInfo.constellation.toString();
+    String constellation = '';
+    String education = '';
+    if (discoverInfo.constellation != null &&
+        discoverInfo.constellation != '') {
+      constellation = '·' + discoverInfo.constellation.toString();
     }
-    if(discoverInfo.education!=null&&discoverInfo.education!=''){
-      education='·'+discoverInfo.education.toString();
+    if (discoverInfo.education != null && discoverInfo.education != '') {
+      education = '.' + discoverInfo.education.toString();
     }
     return Padding(
         padding: EdgeInsets.only(
@@ -267,15 +271,15 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
           Text(
             '${discoverInfo.cname}',
             style: TextStyle(
-                color: MyColor.blackColor, fontSize: ScreenUtil().setSp(12)),
+                color: Colors.white, fontSize: ScreenUtil().setSp(16)),
           ),
           Row(
             children: [
               Text(
-                '${discoverInfo.age??''}$constellation$education',
+                '${discoverInfo.age ?? ''}$constellation$education',
                 style: TextStyle(
-                    color: MyColor.grey8C8C8C,
-                    fontSize: ScreenUtil().setSp(10)),
+                    color: Color(0xffF5F5F5),
+                    fontSize: ScreenUtil().setSp(12)),
               ),
 
               ///占位
@@ -290,8 +294,8 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
               Text(
                 discoverInfo.region ?? '中国',
                 style: TextStyle(
-                    color: MyColor.grey8C8C8C,
-                    fontSize: ScreenUtil().setSp(10)),
+                    color: Color(0xffF5F5F5),
+                    fontSize: ScreenUtil().setSp(12)),
               ),
             ],
           )
