@@ -51,7 +51,8 @@ class _SplashPageState extends State<SplashPage> {
           }
          }
       } else {
-        {Get.offNamed(loginPName);}
+        Get.offNamed(homePName);
+        // {Get.offNamed(loginPName);}
       }
     } else {
       Get.offNamed(loginPName);

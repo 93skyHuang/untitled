@@ -174,8 +174,6 @@ class VipController extends GetxController {
         'transactionId: ${i.transactionId}, '
         'transactionDate: ${i.transactionDate?.toIso8601String()}, '
         'purchaseToken: ${i.purchaseToken}, '
-        'orderId: ${i.orderId},'
-
         /// ios specific
         'originalTransactionDateIOS: ${i.originalTransactionDateIOS?.toIso8601String()}, '
         'originalTransactionIdentifierIOS: ${i.originalTransactionIdentifierIOS}, '

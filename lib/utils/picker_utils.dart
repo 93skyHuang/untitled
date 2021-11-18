@@ -175,7 +175,7 @@ void showMyDataPicker(
       }
       String timeStr =
           '${time.year.toString()}-$m-$d';
-      clickCallBack(timeStr, time ?? DateTime.now());
+      clickCallBack(timeStr, time);
     }
 
   });

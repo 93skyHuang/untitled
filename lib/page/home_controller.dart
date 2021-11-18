@@ -164,7 +164,6 @@ class HomeController extends GetxController {
         'transactionId: ${i.transactionId}, '
         'transactionDate: ${i.transactionDate?.toIso8601String()}, '
         'purchaseToken: ${i.purchaseToken}, '
-        'orderId: ${i.orderId},'
         'originalTransactionDateIOS: ${i.originalTransactionDateIOS?.toIso8601String()}, '
         'originalTransactionIdentifierIOS: ${i.originalTransactionIdentifierIOS}, '
         'transactionStateIOS: ${i.transactionStateIOS}';

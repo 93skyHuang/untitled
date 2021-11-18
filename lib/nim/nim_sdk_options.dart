@@ -5,6 +5,8 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 
+import 'config.dart';
+
 Future<void> nimSdkInit() async {
   NIMLoginInfo? auto;
   int uid = GetStorageUtils.getUID();
@@ -21,12 +23,12 @@ Future<void> nimSdkInit() async {
 
   final options = Platform.isAndroid
       ? NIMAndroidSDKOptions(
-          appKey: 'a43f20db62b5b8d8debdb207e01cdb47',
+          appKey: Config.APP_KEY,
           shouldSyncUnreadCount: true,
           /// 其他 通用/Android 配置
           autoLoginInfo: auto)
       : NIMIOSSDKOptions(
-          appKey: 'a43f20db62b5b8d8debdb207e01cdb47', autoLoginInfo: auto,
+          appKey: Config.APP_KEY, autoLoginInfo: auto,
           apnsCername: 'freedom push', //推送证书名
           shouldSyncUnreadCount: true,
           /// 其他通用配置/iOS 配置
