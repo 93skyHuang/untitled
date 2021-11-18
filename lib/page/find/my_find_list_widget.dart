@@ -36,8 +36,8 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
     with AutomaticKeepAliveClientMixin {
   List<DiscoverInfo> _list = [];
   int pageNo = 1;
-  double itemWidth = ScreenUtil().setWidth(182);
-  double itemHeight = ScreenUtil().setWidth(238);
+  double itemWidth = ScreenUtil().setWidth(183);
+  double itemHeight = ScreenUtil().setWidth(297);
   bool isCanRefreshPage = false;
 
   final RefreshController _refreshController =
@@ -188,10 +188,6 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
             child: Stack(
               children: [
                 _imageWrapper(discoverInfo),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: _itemInfo(discoverInfo),
-                ),
               ],
             ),
           )),
@@ -207,40 +203,18 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
           children: [
             SizedBox(
                 width: itemWidth,
-                height: itemWidth,
+                height: itemHeight,
                 child: CachedNetworkImage(
-                  fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                  fit: BoxFit.cover,
                   imageUrl: discoverInfo.headImgUrl ?? '',
                   errorWidget: (context, url, error) => Image.asset(
                     'assets/images/image_load_failed.png',
-                    fit: Platform.isIOS ? BoxFit.cover : BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                 )),
-            Container(
-              width: itemWidth,
-              height: itemWidth,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusDirectional.circular(9)),
-                  clipBehavior: Clip.antiAlias,
-                  color: Colors.black38,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      ScreenUtil().setWidth(8),
-                      ScreenUtil().setWidth(2),
-                      ScreenUtil().setWidth(8),
-                      ScreenUtil().setWidth(2),
-                    ),
-                    child: Text(
-                      discoverInfo.loginTime,
-                      style: TextStyle(
-                          color: Colors.white, fontSize: ScreenUtil().setSp(9)),
-                    ),
-                  ),
-                ),
-              ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: _itemInfo(discoverInfo),
             ),
           ],
         ));
@@ -267,38 +241,52 @@ class _MyFindListWidgetState extends State<MyFindListWidget>
           right: ScreenUtil().setWidth(4),
           top: ScreenUtil().setHeight(4),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            '${discoverInfo.cname}',
-            style: TextStyle(
-                color: Colors.white, fontSize: ScreenUtil().setSp(16)),
-          ),
-          Row(
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${discoverInfo.cname}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: ScreenUtil().setSp(18)),
+                    ),
+                  ),
+                  Text(
+                    discoverInfo.loginTime,
+                    style: TextStyle(
+                        color: Colors.white, fontSize: ScreenUtil().setSp(14)),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ///占位
+                  Padding(
+                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(3)),
+                    child: Image.asset(
+                      'assets/images/ic_location.png',
+                      color: Color(0xffFFC636),
+                    ),
+                  ),
+                  Text(
+                    discoverInfo.region ?? '中国',
+                    style: TextStyle(
+                        color: Color(0xffFFC636),
+                        fontSize: ScreenUtil().setSp(12)),
+                  ),
+                ],
+              ),
               Text(
                 '${discoverInfo.age ?? ''}$constellation$education',
                 style: TextStyle(
-                    color: Color(0xffF5F5F5),
-                    fontSize: ScreenUtil().setSp(12)),
+                    color: Color(0xffF5F5F5), fontSize: ScreenUtil().setSp(12)),
               ),
-
-              ///占位
-              const Flexible(
-                  child: Align(alignment: Alignment.center, child: Text(''))),
-              Padding(
-                padding: EdgeInsets.only(right: ScreenUtil().setWidth(3)),
-                child: Image.asset(
-                  'assets/images/ic_location.png',
-                ),
-              ),
-              Text(
-                discoverInfo.region ?? '中国',
-                style: TextStyle(
-                    color: Color(0xffF5F5F5),
-                    fontSize: ScreenUtil().setSp(12)),
-              ),
-            ],
-          )
-        ]));
+              SizedBox(height: 10,)
+            ]));
   }
 }

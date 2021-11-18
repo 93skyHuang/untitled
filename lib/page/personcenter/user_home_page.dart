@@ -9,6 +9,7 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/page/chat/chat_page.dart';
+import 'package:untitled/page/mine/myhome/album_list_page.dart';
 import 'package:untitled/page/personcenter/trend_detail_page.dart';
 import 'package:untitled/page/personcenter/user_home_controller.dart';
 import 'package:untitled/page/report/report_page.dart';
@@ -27,7 +28,7 @@ class UserHomePage extends StatefulWidget {
   int uid;
   int initialIndex;
 
-  UserHomePage({required this.uid, Key? key, this.initialIndex = 2})
+  UserHomePage({required this.uid, Key? key, this.initialIndex = 0})
       : super(key: key);
 
   @override
@@ -46,8 +47,8 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Obx(() => buildNestedScrollView()),
+      backgroundColor: Color(0xff242932),
+      body: buildNestedScrollView(),
     );
   }
 
@@ -64,13 +65,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            title: CustomText(
-              text: '${_userHomeController.userBasic.value.cname}',
-              textAlign: Alignment.topLeft,
-              textStyle: TextStyle(fontSize: 17, color: Colors.white),
-              margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-            ),
-            backgroundColor: Colors.white,
+            backgroundColor: Color(0xff242932),
             elevation: 0,
             actions: [
               IconButton(
@@ -84,7 +79,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
             floating: true,
 
             ///SliverAppBar展开的高度
-            expandedHeight: 375,
+            expandedHeight: ScreenUtil().setHeight(378),
             flexibleSpace: buildFlexibleSpaceBar(),
             bottom: buildTabBar(),
           ),
@@ -103,49 +98,54 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
     super.initState();
     _userHomeController.getInfo(uid);
     tabController =
-        new TabController(length: 3, vsync: this, initialIndex: initialIndex);
+        new TabController(length: 4, vsync: this, initialIndex: initialIndex);
   }
 
   TabBarView buildTabBarView() {
     return TabBarView(
       controller: tabController,
       children: <Widget>[
-        Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return ItemTrend(
-                trends: _userHomeController.trends.value[index],
-                onPressed: () {
-                  Get.to(TrendDetailPage(
-                      _userHomeController.trends.value[index].id));
-                },
-                clickLike: () {
-                  clickLike(_userHomeController.trends.value[index]);
-                },
-                deleteTrend: null,
-              );
-            },
-            itemCount: _userHomeController.trends.value.length,
-          ),
-        ),
-        Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              Trends trends = _userHomeController.videoTrends.value[index];
-              return ItemVideo(
-                trends: trends,
-                onPressed: () {
-                  Get.to(TrendVideoPlayPage(), arguments: {
-                    'videoUrl': trends.video,
-                    'trendsId': trends.id
-                  });
-                },
-              );
-            },
-            itemCount: _userHomeController.videoTrends.value.length,
-          ),
-        ),
         InfoPage(uid),
+        Obx(
+          () => Container(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return ItemTrend(
+                  trends: _userHomeController.trends.value[index],
+                  onPressed: () {
+                    Get.to(TrendDetailPage(
+                        _userHomeController.trends.value[index].id));
+                  },
+                  clickLike: () {
+                    clickLike(_userHomeController.trends.value[index]);
+                  },
+                  deleteTrend: null,
+                );
+              },
+              itemCount: _userHomeController.trends.value.length,
+            ),
+          ),
+        ),
+        Obx(
+          () => Container(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                Trends trends = _userHomeController.videoTrends.value[index];
+                return ItemVideo(
+                  trends: trends,
+                  onPressed: () {
+                    Get.to(TrendVideoPlayPage(), arguments: {
+                      'videoUrl': trends.video,
+                      'trendsId': trends.id
+                    });
+                  },
+                );
+              },
+              itemCount: _userHomeController.videoTrends.value.length,
+            ),
+          ),
+        ),
+        AlbumListPage(uid),
       ],
     );
   }
@@ -153,19 +153,24 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
   PreferredSize buildTabBar() {
     return PreferredSize(
         preferredSize: Size.fromHeight(50),
-        child: Material(
-            color: Colors.white,
+        child: Container(
+            color: Color(0xff242932),
             child: TabBar(
-              labelColor: Color(0xffFD4343),
-              labelStyle: TextStyle(fontSize: 14),
-              unselectedLabelColor: MyColor.grey8C8C8C,
-              unselectedLabelStyle: TextStyle(fontSize: 14),
+              labelColor: Color(0xff6385FF),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(17)),
+              labelPadding: EdgeInsets.zero,
+              unselectedLabelColor: Color(0xff7581A8),
+              unselectedLabelStyle: TextStyle(fontSize: ScreenUtil().setSp(13)),
               indicatorWeight: 3,
+              // indicatorPadding: EdgeInsets.only(left: 14, right: 14),
               indicatorSize: TabBarIndicatorSize.label,
-              indicatorColor: MyColor.redFd4343,
+              indicatorColor: Color(0xff6385FF),
               controller: tabController,
-              padding: EdgeInsets.only(right: ScreenUtil().setWidth(100)),
+              // padding: EdgeInsets.only(right: ScreenUtil().setWidth(100)),
               tabs: <Widget>[
+                new Tab(
+                  text: "个人资料",
+                ),
                 new Tab(
                   text: "动态",
                 ),
@@ -173,7 +178,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                   text: "视频",
                 ),
                 new Tab(
-                  text: "个人资料",
+                  text: "相册",
                 ),
               ],
             )));
@@ -200,35 +205,76 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
   FlexibleSpaceBar buildFlexibleSpaceBar() {
     return FlexibleSpaceBar(
         background: Container(
-      height: 415,
-      child: Column(
+      height: ScreenUtil().setHeight(378),
+      child: Stack(
+        alignment: Alignment.topCenter,
         children: [
+          GestureDetector(
+              onTap: () {
+                Get.toNamed(photoViewPName, arguments: {
+                  'index': 1,
+                  'photoList': [_userHomeController.imgUrl.value]
+                });
+              },
+              child: Obx(() => cardNetworkImage(
+                  _userHomeController.imgUrl.value,
+                  double.infinity,
+                  ScreenUtil().setHeight(378),
+                  radius: 0,
+                  margin: EdgeInsets.all(0),
+                  fit: BoxFit.cover))),
           Container(
-              height: 365,
-              alignment: Alignment.bottomRight,
-              width: double.infinity,
-              child: Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.toNamed(photoViewPName, arguments: {
-                        'index': 1,
-                        'photoList': [
-                          _userHomeController.userBasic.value.headImgUrl ?? ''
-                        ]
-                      });
-                    },
-                    child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      width:  double.infinity,
-                      imageUrl: '${_userHomeController.userBasic.value.headImgUrl}',
-                      errorWidget: (context, url, error) => Image.asset(
-                        'assets/images/image_default.png',
+            color: Color(0x40707070),
+            height: ScreenUtil().setHeight(378),
+            width: double.infinity,
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: ScreenUtil().statusBarHeight + 55),
+                Obx(() => ClipOval(
+                    child: GestureDetector(
+                        onTap: () {
+                          Get.toNamed(photoViewPName, arguments: {
+                            'index': 1,
+                            'photoList': [_userHomeController.imgUrl.value]
+                          });
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          child: cardNetworkImage(
+                              _userHomeController.imgUrl.value,
+                              double.infinity,
+                              ScreenUtil().setHeight(317),
+                              radius: 0,
+                              margin: EdgeInsets.all(0),
+                              fit: BoxFit.cover),
+                        )))),
+                Obx(() => Padding(
+                    padding: EdgeInsets.fromLTRB(50, 10, 50, 0),
+                    child: Text(
+                      '${_userHomeController.cname.value}',
+                      style: TextStyle(color: Color(0xffFFF9F9), fontSize: 20),
+                    ))),
+                Obx(() => Padding(
+                      padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                      child: Text(
+                        '${_userHomeController.autograph.value}',
+                        style:
+                            TextStyle(color: Color(0xffF5F5F5), fontSize: 14),
                       ),
-                    )
-                  ),
-                  Row(
+                    )),
+              ],
+            ),
+          ),
+          Obx(() => Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 70),
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
@@ -247,10 +293,11 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                                 if (_userHomeController
                                         .userBasic.value.isFollow ==
                                     0)
-                                  Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 18,
+                                  Image(
+                                    width: 18,
+                                    height: 18,
+                                    image:
+                                        AssetImage("assets/images/ic_like.png"),
                                   ),
                                 CustomText(
                                   text: _userHomeController
@@ -261,12 +308,11 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                                   textAlign: Alignment.center,
                                   margin: EdgeInsets.only(left: 3),
                                   textStyle: TextStyle(
-                                      fontSize: 15, color: Colors.white),
+                                      fontSize: 14, color: Colors.white),
                                 ),
                               ],
                             ),
                           ),
-                          margin: EdgeInsets.only(bottom: 20),
                           height: 35,
                           padding: EdgeInsets.only(
                             left: 15,
@@ -275,7 +321,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                           decoration: new BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(23.0)),
-                            color: Color(0xff9943FD),
+                            color: Color(0xffFF8B00),
                           )),
                       Container(
                           child: GestureDetector(
@@ -286,23 +332,23 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                             },
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.chat_outlined,
-                                  color: Colors.black,
-                                  size: 18,
+                                Image(
+                                  width: 18,
+                                  height: 18,
+                                  image:
+                                      AssetImage("assets/images/ic_chat.png"),
                                 ),
                                 CustomText(
                                   text: '私聊',
                                   textAlign: Alignment.center,
                                   margin: EdgeInsets.only(left: 3),
                                   textStyle: TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                      fontSize: 14, color: Colors.white),
                                 ),
                               ],
                             ),
                           ),
-                          margin:
-                              EdgeInsets.only(bottom: 20, left: 16, right: 16),
+                          margin: EdgeInsets.only(left: 50, right: 16),
                           height: 35,
                           padding: EdgeInsets.only(
                             left: 15,
@@ -311,12 +357,12 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
                           decoration: new BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(23.0)),
-                            color: Color(0xffF3CD8E),
+                            color: Color(0xff9943FD),
                           )),
                     ],
                   ),
-                ],
-              )),
+                ),
+              ))
         ],
       ),
     ));

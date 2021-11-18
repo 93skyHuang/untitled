@@ -11,7 +11,9 @@ import 'package:untitled/basic/include.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/http_manager.dart';
 import 'package:untitled/network/logger.dart';
+import 'package:untitled/page/mine/myhome/album_list_page.dart';
 import 'package:untitled/page/video_play_page.dart';
+import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widget/custom_text.dart';
 import 'package:untitled/widget/item_trend.dart';
 import 'package:untitled/widget/item_video.dart';
@@ -45,8 +47,8 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Obx(() => buildNestedScrollView()),
+      backgroundColor: Color(0xff242932),
+      body: buildNestedScrollView(),
     );
   }
 
@@ -63,20 +65,14 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            title: CustomText(
-              text: '${_myHomeController.userBasic.value.cname}',
-              textAlign: Alignment.topLeft,
-              textStyle: TextStyle(fontSize: 17, color: Colors.white),
-              margin: EdgeInsets.only(top: 10, bottom: 10, right: 10),
-            ),
-            backgroundColor: Colors.white,
+            backgroundColor: Color(0xff242932),
             elevation: 0,
 
             ///是否随着滑动隐藏标题
             floating: true,
 
             ///SliverAppBar展开的高度
-            expandedHeight: 375,
+            expandedHeight: ScreenUtil().setHeight(317),
             flexibleSpace: buildFlexibleSpaceBar(),
             bottom: buildTabBar(),
           ),
@@ -94,7 +90,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     tabController =
-        new TabController(length: 3, vsync: this, initialIndex: initIndex);
+        new TabController(length: 4, vsync: this, initialIndex: initIndex);
   }
 
   TabBarView buildTabBarView() {
@@ -102,64 +98,47 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
       controller: tabController,
       children: <Widget>[
         InfoPage(_myHomeController),
-        Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              Trends trends = _myHomeController.trends[index];
-              return ItemTrend(
-                trends: trends,
-                onPressed: () {
-                  Get.to(MyTrendDetailPage(trends.id));
+        Obx(() => Container(
+              color: Color(0xff242932),
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  Trends trends = _myHomeController.trends[index];
+                  return ItemTrend(
+                    trends: trends,
+                    onPressed: () {
+                      Get.to(MyTrendDetailPage(trends.id));
+                    },
+                    clickLike: () {},
+                    deleteTrend: () {
+                      showOpenDelDialog(context, trends);
+                    },
+                  );
                 },
-                clickLike: () {},
-                deleteTrend: () {
-                  showOpenDelDialog(context, trends);
+                itemCount: _myHomeController.trends.length,
+              ),
+            )),
+        Obx(() => Container(
+              color: Color(0xff242932),
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  Trends trends = _myHomeController.videoTrends[index];
+                  return ItemVideo(
+                    trends: trends,
+                    onPressed: () {
+                      Get.to(TrendVideoPlayPage(), arguments: {
+                        "videoUrl": trends.video,
+                        "trendsId": trends.id,
+                      });
+                    },
+                    deleteTrend: () {
+                      showOpenDelDialog(context, trends);
+                    },
+                  );
                 },
-              );
-            },
-            itemCount: _myHomeController.trends.length,
-          ),
-        ),
-        Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              Trends trends = _myHomeController.videoTrends[index];
-              return ItemVideo(
-                trends: trends,
-                onPressed: () {
-                  Get.to(TrendVideoPlayPage(), arguments: {
-                    "videoUrl": trends.video,
-                    "trendsId": trends.id,
-                  });
-                },
-                deleteTrend: () {
-                  showOpenDelDialog(context, trends);
-                },
-              );
-            },
-            itemCount: _myHomeController.videoTrends.value.length,
-          ),
-        ),
-        Container(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              Trends trends = _myHomeController.videoTrends[index];
-              return ItemVideo(
-                trends: trends,
-                onPressed: () {
-                  Get.to(TrendVideoPlayPage(), arguments: {
-                    "videoUrl": trends.video,
-                    "trendsId": trends.id,
-                  });
-                },
-                deleteTrend: () {
-                  showOpenDelDialog(context, trends);
-                },
-              );
-            },
-            itemCount: _myHomeController.videoTrends.value.length,
-          ),
-        ),
+                itemCount: _myHomeController.videoTrends.value.length,
+              ),
+            )),
+        AlbumListPage(GetStorageUtils.getUID()),
       ],
     );
   }
@@ -167,14 +146,16 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
   PreferredSize buildTabBar() {
     return PreferredSize(
         preferredSize: Size.fromHeight(50),
-        child: Material(
-            color: Colors.white,
+        child: Container(
+            color: Color(0xff242932),
             child: TabBar(
               labelColor: Color(0xff6385FF),
-              labelStyle: TextStyle(fontSize: 20),
+              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(17)),
+              labelPadding: EdgeInsets.zero,
               unselectedLabelColor: Color(0xff7581A8),
-              unselectedLabelStyle: TextStyle(fontSize: 16),
+              unselectedLabelStyle: TextStyle(fontSize: ScreenUtil().setSp(13)),
               indicatorWeight: 3,
+              // indicatorPadding: EdgeInsets.only(left: 14, right: 14),
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: Color(0xff6385FF),
               controller: tabController,
@@ -201,51 +182,57 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
         background: Container(
       height: ScreenUtil().setHeight(317),
       child: Stack(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.topCenter,
         children: [
-          cardNetworkImage('${_myHomeController.userBasic.value.headImgUrl}',
+          Obx(() => cardNetworkImage(_myHomeController.imgUrl.value,
               double.infinity, ScreenUtil().setHeight(317),
-              radius: 0, margin: EdgeInsets.all(0), fit: BoxFit.cover),
+              radius: 0, margin: EdgeInsets.all(0), fit: BoxFit.cover)),
           Container(
-            color: Colors.black12,
+            color: Color(0x40707070),
             height: ScreenUtil().setHeight(317),
             width: double.infinity,
           ),
-          Column(
-            children: [
-              ClipOval(
-                  child: GestureDetector(
-                      onTap: () {
-                        Get.toNamed(photoViewPName, arguments: {
-                          'index': 1,
-                          'photoList': [
-                            _myHomeController.userBasic.value.headImgUrl ?? ''
-                          ]
-                        });
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        child: cardNetworkImage(
-                            '${_myHomeController.userBasic.value.headImgUrl}',
-                            double.infinity,
-                            ScreenUtil().setHeight(317),
-                            radius: 0,
-                            margin: EdgeInsets.all(0),
-                            fit: BoxFit.cover),
-                      ))),
-              Text(
-                '${_myHomeController.userBasic.value.cname}',
-                style: TextStyle(color: Color(0xffFFF9F9), fontSize: 20),
-              ),
-              Text(
-                '${_myHomeController.userBasic.value.autograph}',
-                style: TextStyle(color: Color(0xffF5F5F5), fontSize: 14),
-              ),
-              SizedBox(
-                height: 34,
-              )
-            ],
+          Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: ScreenUtil().statusBarHeight + 55),
+                Obx(() => ClipOval(
+                    child: GestureDetector(
+                        onTap: () {
+                          Get.toNamed(photoViewPName, arguments: {
+                            'index': 1,
+                            'photoList': [_myHomeController.imgUrl.value]
+                          });
+                        },
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          child: cardNetworkImage(
+                              _myHomeController.imgUrl.value,
+                              double.infinity,
+                              ScreenUtil().setHeight(317),
+                              radius: 0,
+                              margin: EdgeInsets.all(0),
+                              fit: BoxFit.cover),
+                        )))),
+                Obx(() => Padding(
+                    padding: EdgeInsets.fromLTRB(50, 10, 50, 0),
+                    child: Text(
+                      _myHomeController.cname.value,
+                      style: TextStyle(color: Color(0xffFFF9F9), fontSize: 20),
+                    ))),
+                Obx(() => Padding(
+                      padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                      child: Text(
+                        _myHomeController.autograph.value,
+                        style:
+                            TextStyle(color: Color(0xffF5F5F5), fontSize: 14),
+                      ),
+                    )),
+              ],
+            ),
           ),
         ],
       ),

@@ -6,12 +6,14 @@ class CustomTextRadius extends StatelessWidget {
   TextStyle textStyle;
   EdgeInsetsGeometry margin; //控件的margin属性 外边距
   Alignment textAlign;
+  Color bgColor;
 
   CustomTextRadius(
       {required this.text,
-      this.textStyle = const TextStyle(fontSize: 12.0, color: Colors.black),
+      this.textStyle = const TextStyle(fontSize: 14.0, color: Color(0xfff5f5f5)),
       this.textAlign = Alignment.topLeft,
-      this.margin = const EdgeInsets.only(right: 16,top: 10)});
+      this.bgColor =const Color(0xFFE2E2E2),
+      this.margin = const EdgeInsets.only(right: 6,top: 10)});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +21,13 @@ class CustomTextRadius extends StatelessWidget {
       if(text!='')
       Container(
         decoration: new BoxDecoration(
-          color: Color(0xFFE2E2E2),
+          color: bgColor,
           //设置四周圆角 角度
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
         ),
         alignment: textAlign,
         margin: margin,
-        padding: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 5),
+        padding: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
         child: Text(text, style: textStyle),
       )
     ]);

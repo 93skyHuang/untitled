@@ -10,17 +10,18 @@ import 'expandable_text.dart';
 class ItemVideo extends StatelessWidget {
   Trends trends;
   VoidCallback onPressed;
+  VoidCallback? clickLike;
   VoidCallback? deleteTrend;
 
   double contextWidth =
       ScreenUtil().screenWidth - ScreenUtil().setWidth(70 + 32);
-  ItemVideo(
-      {
-        required this.trends,
-        required this.onPressed,
-        this.deleteTrend,
-      }
-      );
+
+  ItemVideo({
+    required this.trends,
+    required this.onPressed,
+    this.deleteTrend,
+    this.clickLike,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +30,13 @@ class ItemVideo extends StatelessWidget {
           onPressed();
         },
         child: Container(
-          padding: EdgeInsets.only(top: 20, bottom: 16, left: 16,right: 16 ),
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 16, right: 16),
           decoration: BoxDecoration(
+              color: Color(0xff242932),
               border: Border(
                   bottom: BorderSide(
-                      color: Color(0xffE6E6E6),
-                      width: 0.5,
+                      color: Color(0xff2A2F37),
+                      width: 1,
                       style: BorderStyle.solid))),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -44,7 +46,7 @@ class ItemVideo extends StatelessWidget {
                 width: 70,
                 child: CustomText(
                   text: '${trends.time}',
-                  textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                  textStyle: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
               Expanded(
@@ -52,33 +54,44 @@ class ItemVideo extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TQExpandableText(
-                    '${trends.content??''}',
+                  Padding(
+                    padding: EdgeInsets.only(left: 4),
+                    child: TQExpandableText(
+                      '${trends.content ?? ''}',
+                    ),
                   ),
                   if (trends.imgArr!.isNotEmpty)
                     TrendImg(
                       imgs: trends.imgArr ?? [],
                       showAll: true,
                       contextWidth: contextWidth,
-                      onClick: (int index) {onPressed.call();},
+                      onClick: (int index) {
+                        onPressed.call();
+                      },
                     ),
                   Row(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GestureDetector(
-                          onTap: () {},
+                          //点赞
+                          onTap: () {
+                            clickLike?.call();
+                          },
                           child: Image(
+                            width: 17,
+                            height: 17,
+                            color: trends.isTrendsFabulous == 1
+                                ? Color(0xff6385FF)
+                                : Colors.white,
                             image:
-                                AssetImage("assets/images/icon_heart_grey.png"),
+                                AssetImage("assets/images/like_unchecked.png"),
                           )),
                       CustomText(
                         text: '${trends.fabulousSum}',
                         textStyle:
-                            TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                        margin: EdgeInsets.only(
-                            right: 20, top: 16, bottom: 2, left: 5),
+                            TextStyle(fontSize: 12, color: Color(0xfff5f5f5)),
+                        margin: EdgeInsets.only(right: 20, left: 5),
                       ),
                       GestureDetector(
                           onTap: () {},
@@ -88,26 +101,25 @@ class ItemVideo extends StatelessWidget {
                       CustomText(
                         text: '${trends.commentSum}',
                         textStyle:
-                            TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                        margin: EdgeInsets.only(
-                            right: 20, top: 16, bottom: 2, left: 5),
+                            TextStyle(fontSize: 12, color: Color(0xfff5f5f5)),
+                        margin: EdgeInsets.only(right: 20, left: 5),
                       ),
                       deleteTrend == null
                           ? Container()
                           : Expanded(
-                        child: GestureDetector(
-                            onTap: () {
-                              deleteTrend?.call();
-                            },
-                            child: CustomText(
-                              textAlign: Alignment.centerRight,
-                              text: '删除',
-                              textStyle: TextStyle(
-                                  fontSize: 12, color: Colors.black),
-                              margin: EdgeInsets.only(
-                                  right: 5, top: 13, bottom: 2),
-                            )),
-                      )
+                              child: GestureDetector(
+                                  onTap: () {
+                                    deleteTrend?.call();
+                                  },
+                                  child: CustomText(
+                                    textAlign: Alignment.centerRight,
+                                    text: '删除',
+                                    textStyle: TextStyle(
+                                        fontSize: 14, color: Colors.white),
+                                    margin:
+                                        EdgeInsets.only(right: 5, bottom: 0),
+                                  )),
+                            )
                     ],
                   ),
                 ],

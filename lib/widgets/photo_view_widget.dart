@@ -56,20 +56,20 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
-          backgroundColor: Color(0xccd0d7),
-          title: Text(
-            '$title / $length',
-            style: TextStyle(color: Colors.black),
-          ),
+          backgroundColor: MyColor.pageBgColor,
+          // title: Text(
+          //   '$title / $length',
+          //   style: TextStyle(color: Colors.black),
+          // ),
           centerTitle: true,
           leading: IconButton(
-              icon: Icon(Icons.chevron_left, size: 38, color: Colors.black),
+              icon: Icon(Icons.chevron_left, size: 38, color: Colors.white),
               onPressed: () {
                 Get.back();
               })),
       body: Container(
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: MyColor.pageBgColor,
           ),
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
@@ -90,7 +90,7 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
                 itemCount: photoList.length,
                 // loadingChild: widget.loadingChild,
                 backgroundDecoration: const BoxDecoration(
-                  color: Colors.black,
+                  color: MyColor.pageBgColor,
                 ),
                 pageController: PageController(initialPage: initialIndex),
                 //点进去哪页默认就显示哪一页

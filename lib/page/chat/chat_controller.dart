@@ -160,9 +160,9 @@ class ChatController extends GetxController {
     logger.i("${r.isSuccess} ----${r.code}");
     if(r.isSuccess) {
       _curNimSession=r.data;
-      if(hisBasic!=null) {
-        updateSession(hisBasic!);
-      }
+      // if(hisBasic!=null) {
+      //   updateSession(hisBasic!);
+      // }
     }
   }
 

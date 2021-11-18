@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:untitled/basic/common_config.dart';
 import 'package:untitled/network/bean/chat_user_info.dart';
 import 'package:untitled/network/bean/user_basic.dart';
 import 'package:untitled/network/bean/user_info.dart';
@@ -24,14 +25,11 @@ class InfoPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _InfoPageState(_myHomeController);
+    return _InfoPageState();
   }
 }
 
-class _InfoPageState extends State with SingleTickerProviderStateMixin {
-  _InfoPageState(this._myHomeController);
-
-  MyHomeController _myHomeController;
+class _InfoPageState extends State with AutomaticKeepAliveClientMixin {
 
   int uid = 0;
   int? height = 0;
@@ -65,181 +63,141 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Container(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+        color: MyColor.pageBgColor,
+        child: SingleChildScrollView(
+            child: Container(
+          child: Column(
             children: [
-              CustomText(
-                text: 'ID： ${uid}\n${region}｜${sex == 1 ? '男' : '女'}｜${age}岁',
-                textStyle: TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
-                margin: EdgeInsets.only(left: 18, top: 20, bottom: 10),
+              SizedBox(
+                height: 24,
               ),
-              Container(
-                  margin: EdgeInsets.only(right: 18, top: 20),
-                  child: GestureDetector(
-                    onTap: () {
-                      Get.to(() => EditUser())!.then((value) {
-                        getInfo();
-                        _myHomeController.getInfo();
-                      });
-                    },
-                    child: Row(
+              Row(
+                children: [
+                  CustomText(
+                    text: '认证',
+                    textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                    margin: EdgeInsets.only(left: 16, right: 12),
+                  ),
+                  isCard == 1
+                      ? card("assets/images/ic_ver_card.png", "实名",
+                          Color(0xff6385FF))
+                      : Container(),
+                  isHead == 1
+                      ? card("assets/images/ic_ver_avatar.png", "头像",
+                          Color(0xffFF8B00))
+                      : Container(),
+                  isVideo == 1
+                      ? card("assets/images/ic_video_ver.png", "真人",
+                          Color(0xff7581A8))
+                      : Container(),
+                  card("assets/images/ic_phone_ver.png", "手机",
+                      Color(0xffEE6F00)),
+                ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: '资料',
+                    textStyle: TextStyle(fontSize: 14, color: Colors.white),
+                    margin: EdgeInsets.only(left: 16, right: 16),
+                  ),
+                  Container(
+                    width: ScreenUtil().screenWidth * 0.3,
+                    child: Column(
                       children: [
-                        Image(
-                          image: AssetImage("assets/images/icon_edit.png"),
-                        ),
                         CustomText(
-                          text: '编辑资料',
-                          margin: EdgeInsets.only(left: 3),
+                          text: 'ID: ${uid}\n'
+                              '性别: ${sex == 2 ? "女" : "男"}\n'
+                              '身高: ${height}cm\n'
+                              '年龄: ${age}\n'
+                              '学历: ${education}\n',
                           textStyle:
-                              TextStyle(fontSize: 12, color: Color(0xff8C8C8C)),
+                              TextStyle(fontSize: 14, color: Color(0xfff5f5f5)),
                         ),
                       ],
                     ),
                   ),
-                  padding: EdgeInsets.only(left: 6, right: 6, bottom: 2),
-                  decoration: new BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    border: new Border.all(width: 1, color: Color(0xff8C8C8C)),
-                  ))
-            ],
-          ),
-          Divider(
-            color: Color(0xffE6E6E6),
-          ),
-          CustomText(
-            text: '我的介绍',
-            textStyle: TextStyle(fontSize: 14, color: Colors.black),
-            margin: EdgeInsets.only(left: 16, top: 5),
-          ),
-          Container(
-              margin: EdgeInsets.all(16),
-              child: CustomText(
-                text: '${autograph}',
-                textStyle: TextStyle(fontSize: 12, color: Colors.black),
-              ),
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 9, top: 9),
-              decoration: new BoxDecoration(
-                color: Color(0xffE6E6E6),
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              )),
-            Divider(
-              color: Color(0xffE6E6E6),
-            ),
-            CustomText(
-              text: '个人认证',
-              textStyle: TextStyle(fontSize: 14, color: Colors.black),
-              margin: EdgeInsets.only(left: 16, top: 5),
-            ),
-          Container(
-              height: 84,
-              width: double.infinity,
-              alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(
-                  left: 16, right: 16, top: 10,),
-              decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ItemMenu(
-                    margin: EdgeInsets.only(left: 16,right: 16),
-                    text: '实名认证',
-                    img: isCard == 1
-                        ? "assets/images/ic_card_ver.png"
-                        : "assets/images/ic_un_card_ver.png",
-                    onPressed: () {},
-                  ),
-                  ItemMenu(
-                    // margin: EdgeInsets.only(left: 20),
-                    text: '头像认证',
-                    img: isHead == 1
-                        ? "assets/images/icon_verified_avatar.png"
-                        : "assets/images/icon_un_verified_avatar.png",
-                    onPressed: () {},
-                  ),
-                  ItemMenu(
-                    margin: EdgeInsets.only(left: 16),
-                    text: '真人认证',
-                    img: isVideo == 1
-                        ? "assets/images/ic_verified_person1.png"
-                        : "assets/images/ic_unverified_person.png",
-                    onPressed: () {},
-                  ),
-                  ItemMenu(
-                    margin: EdgeInsets.only(left: 16,right: 16),
-                    text: '手机认证',
-                    img: "assets/images/icon_verified_phone.png",
-                    onPressed: () {},
+                  Container(
+                    width: ScreenUtil().screenWidth * 0.4,
+                    child: Column(
+                      children: [
+                        CustomText(
+                          text: '城市: ${region}\n'
+                              '生日: ${birthday}\n'
+                              '月收入: ${monthlyIncome}\n',
+                          textStyle:
+                              TextStyle(fontSize: 14, color: Color(0xfff5f5f5)),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              )),
-          Divider(
-            color: Color(0xffE6E6E6),
-          ),
-          CustomText(
-            text: '基本资料',
-            textStyle: TextStyle(fontSize: 14, color: Colors.black),
-            margin: EdgeInsets.only(left: 16, top: 5),
-          ),
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 16),
-            child: Wrap(
-              alignment: WrapAlignment.start,
-              children: details,
-            ),
-          ),
-          Container(
-            height: 0.5,
-            margin: EdgeInsets.only(top: 18),
-            color: Color(0xffE6E6E6),
-          ),
-            CustomText(
-              text: '择偶要求',
-              textStyle: TextStyle(fontSize: 14, color: Colors.black),
-              margin: EdgeInsets.only(left: 16, top: 5),
-            ),
-          if (expects.isNotEmpty)
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 16),
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                children: expects,
               ),
-            ),
-          Container(
-            height: 0.5,
-            margin: EdgeInsets.only(top: 18),
-            color: Color(0xffE6E6E6),
+              SizedBox(
+                height: 30,
+              ),
+              if (hobbies.isNotEmpty)
+                Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.only(left: 16, top: 10),
+                  child: Wrap(children: _hobbiesWidget()),
+                )
+            ],
           ),
-            CustomText(
-              text: '兴趣爱好',
-              textStyle: TextStyle(fontSize: 14, color: Colors.black),
-              margin: EdgeInsets.only(left: 16, top: 5),
-            ),
-          if (hobbies.isNotEmpty)
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 16,top: 10),
-              child: Wrap(
-                  children: List.generate(hobbies.length, (index) {
-                return CustomTextRadius(
-                  margin: EdgeInsets.only(right: 16, bottom: 16),
-                  text: '${hobbies[index]}',
-                );
-              })),
-            )
-        ],
-      ),
+        )));
+  }
+
+  List<Widget> _hobbiesWidget() {
+    List<Widget> h = [];
+    h.add(Text(
+      '兴趣',
+      style: TextStyle(fontSize: 14, color: Colors.white),
     ));
+    h.add(SizedBox(
+      width: 16,
+    ));
+    for (int i = 0; i < hobbies.length; i++) {
+      h.add(CustomTextRadius(
+        bgColor: Color(0xff7581A8),
+        margin: EdgeInsets.only(right: 6, bottom: 10,top: 4),
+        text: '${hobbies[i]}',
+      ));
+    }
+    return h;
+  }
+
+  Widget card(String img, String text, Color color) {
+    return Container(
+      margin: EdgeInsets.only(right: 10),
+      decoration: new BoxDecoration(
+        //设置四周圆角 角度
+        border: Border.all(color: color),
+        borderRadius: BorderRadius.all(Radius.circular(24.0)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+          width: ScreenUtil().setWidth(60),
+          height: ScreenUtil().setHeight(25),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Image.asset(
+              img,
+              width: 15,
+              height: 15,
+            ),
+            SizedBox(
+              width: 2,
+            ),
+            Text(
+              text,
+              style: TextStyle(color: Color(0xffF5F5F5), fontSize: 14),
+            )
+          ])),
+    );
   }
 
   void getInfo() {
@@ -269,13 +227,13 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
       text: '年龄：${age}',
     ));
     height = userInfo.height;
-    if (height != null&&height != 0) {
+    if (height != null && height != 0) {
       details.add(CustomTextRadius(
         text: '身高：${height}cm',
       ));
     }
     constellation = userInfo.constellation;
-    if (constellation != null&&constellation != '') {
+    if (constellation != null && constellation != '') {
       details.add(CustomTextRadius(
         text: '星座：${constellation}',
       ));
@@ -288,19 +246,19 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     }
     autograph = userInfo.autograph;
     birthday = userInfo.birthday;
-    if (birthday != null&&birthday != '') {
+    if (birthday != null && birthday != '') {
       details.add(CustomTextRadius(
         text: '生日：${birthday}',
       ));
     }
     monthlyIncome = userInfo.monthlyIncome;
-    if (monthlyIncome != null&&monthlyIncome != '') {
+    if (monthlyIncome != null && monthlyIncome != '') {
       details.add(CustomTextRadius(
         text: '月收入：${monthlyIncome}',
       ));
     }
     education = userInfo.education;
-    if (education != null&&education != '') {
+    if (education != null && education != '') {
       details.add(CustomTextRadius(
         text: '学历：${education}',
       ));
@@ -310,35 +268,38 @@ class _InfoPageState extends State with SingleTickerProviderStateMixin {
     isHead = userInfo.isHead;
     isCard = userInfo.isCard;
     expectAge = userInfo.expectAge;
-    if (expectAge != null&&expectAge != '') {
+    if (expectAge != null && expectAge != '') {
       expects.add(CustomTextRadius(
         text: '年龄：${expectAge}',
       ));
     }
     expectHeight = userInfo.expectHeight;
-    if (expectHeight != null&&expectHeight != '') {
+    if (expectHeight != null && expectHeight != '') {
       expects.add(CustomTextRadius(
         text: '身高：${expectHeight}',
       ));
     }
     expectConstellation = userInfo.expectConstellation;
-    if (expectConstellation != null&&expectConstellation != '') {
+    if (expectConstellation != null && expectConstellation != '') {
       expects.add(CustomTextRadius(
         text: '星座：${expectConstellation}',
       ));
     }
     expectType = userInfo.expectType;
-    if (expectType != null&&expectType != '') {
+    if (expectType != null && expectType != '') {
       expects.add(CustomTextRadius(
         text: '目标：${expectType}',
       ));
     }
     expectRegion = userInfo.expectRegion;
-    if (expectRegion != null&&expectRegion != '') {
+    if (expectRegion != null && expectRegion != '') {
       expects.add(CustomTextRadius(
         text: '城市：${expectRegion}',
       ));
     }
     setState(() {});
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

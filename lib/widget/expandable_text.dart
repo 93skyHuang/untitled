@@ -44,7 +44,7 @@ class ExpandableTextState extends State<TQExpandableText> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle effectiveTextStyle = TextStyle(fontSize: 14,color: Color(0xff8C8C8C));
+    TextStyle effectiveTextStyle = TextStyle(fontSize: 14,color: Color(0xfff5f5f5));
 
     final textAlign = TextAlign.start;
 

@@ -12,7 +12,10 @@ class UserHomeController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
   RxList trends = [].obs;
   RxList videoTrends = [].obs;
-
+  RxList photos = [].obs;
+  RxString imgUrl = ''.obs;
+  RxString cname = ''.obs;
+  RxString autograph = ''.obs;
   @override
   void onInit() {
     super.onInit();
@@ -27,6 +30,9 @@ class UserHomeController extends GetxController {
               trends.clear(),
               videoTrends.clear(),
               userBasic.value = value.data!,
+              imgUrl.value = userBasic.value.headImgUrl ?? "",
+              cname.value = userBasic.value.cname ?? "",
+              autograph.value = userBasic.value.autograph ?? "",
               for (int i = 0; i < userBasic.value.trendsList!.length; i++)
                 {
                   if (userBasic.value.trendsList![i]!.type == 2)

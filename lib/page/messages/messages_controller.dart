@@ -169,7 +169,7 @@ class MessagesController extends GetxController {
             continue;
           }
           _updateInfo(user);
-          _updateSession(list, user);
+          // _updateSession(list, user);
         }
       }
     }

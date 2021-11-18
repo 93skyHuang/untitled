@@ -10,6 +10,10 @@ class MyHomeController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
   RxList trends = [].obs;
   RxList videoTrends = [].obs;
+  RxList photos = [].obs;
+  RxString imgUrl = ''.obs;
+  RxString cname = ''.obs;
+  RxString autograph = ''.obs;
 
   @override
   void onInit() {
@@ -19,19 +23,23 @@ class MyHomeController extends GetxController {
 
   void getInfo() {
     getUserBasic().then((value) => {
-      if(value.isOk()){
-        trends.clear(),
-        videoTrends.clear(),
-        userBasic.value = value.data!,
-        for(int i=0;i<userBasic.value.trendsList!.length;i++){
-          if(userBasic.value.trendsList![i]!.type==2){
-            videoTrends.add(userBasic.value.trendsList![i])
-          }else{
-            trends.add(userBasic.value.trendsList![i])
-          }
-        }
-      }
-    });
+          if (value.isOk())
+            {
+              trends.clear(),
+              videoTrends.clear(),
+              userBasic.value = value.data!,
+              imgUrl.value = userBasic.value.headImgUrl ?? "",
+              cname.value = userBasic.value.cname ?? "",
+              autograph.value = userBasic.value.autograph ?? "",
+              for (int i = 0; i < userBasic.value.trendsList!.length; i++)
+                {
+                  if (userBasic.value.trendsList![i]!.type == 2)
+                    {videoTrends.add(userBasic.value.trendsList![i])}
+                  else
+                    {trends.add(userBasic.value.trendsList![i])}
+                }
+            }
+        });
   }
 
   @override

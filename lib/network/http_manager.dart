@@ -20,6 +20,7 @@ import 'package:untitled/nim/nim_network_manager.dart';
 import 'package:untitled/persistent/get_storage_utils.dart';
 import 'package:untitled/widgets/toast.dart';
 import 'bean/add_comment_resp.dart';
+import 'bean/album_bean.dart';
 import 'bean/app_version_info.dart';
 import 'bean/black_info.dart';
 import 'bean/comment_info.dart';
@@ -1440,6 +1441,112 @@ Future<BasePageData> deleteCommentFabulous(
         await getDio().post('/index/Trends/deleteCommentFabulous', data: {
       'uid': uid,
       'commentId': commentId,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+///添加相册
+Future<BasePageData> addAlbum(
+  List<String> imgPath,
+) async {
+  BasePageData basePageData;
+  try {
+    List<String> urlOSS = [];
+    int uid = GetStorageUtils.getUID();
+    int length = imgPath.length;
+    for (int i = 0; i < length; i++) {
+      BasePageData<String?> data = await fileUpload(imgPath[i]);
+      if (data.isOk()) {
+        if (data.data != null) {
+          urlOSS.add(data.data ?? "");
+        }
+      }
+    }
+    Response response = await getDio().post('/index/Trends/addAlbum', data: {
+      'uid': uid,
+      'imgArr': urlOSS,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+//
+// * 相册列表
+// * index/Trends/albumList
+// * 请求参数
+// * uid [用户uid]
+// * 返回信息
+Future<BasePageData<List<AlbumBean>?>> getAlbumBeanList(int uid) async {
+  BasePageData<List<AlbumBean>?> basePageData;
+  try {
+    Response response = await getDio().post('/index/Trends/albumList', data: {
+      'uid': uid,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      List<AlbumBean>? data = (baseResp.data as List<dynamic>?)
+          ?.map((e) => AlbumBean.fromJson(e as Map<String, dynamic>))
+          .toList();
+      basePageData = BasePageData(baseResp.code, baseResp.msg, data);
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+/**
+ * 获取单个相册
+ */
+Future<BasePageData<AlbumBean?>> getAlbumBean(int albumId,int uid) async {
+  BasePageData<AlbumBean?> basePageData;
+  try {
+    Response response = await getDio().post('/index/Trends/queryAlbum', data: {
+      'uid': uid,
+      'id': albumId,
+    });
+    BaseResp baseResp = BaseResp.fromJson(response.data);
+    if (baseResp.code == respCodeSuccess) {
+      AlbumBean data = AlbumBean.fromJson(baseResp.data);
+      basePageData = BasePageData(baseResp.code, baseResp.msg, data);
+    } else {
+      basePageData = BasePageData(baseResp.code, baseResp.msg, null);
+    }
+  } catch (error) {
+    logger.e(error);
+    basePageData = BasePageData(errorCodeNetworkError, '网络异常', null);
+  }
+  return basePageData;
+}
+
+/**
+ * 编辑相册
+ */
+Future<BasePageData> editAlbum(
+  List<String> urlOSS,
+  int id,
+) async {
+  BasePageData basePageData;
+  try {
+    int uid = GetStorageUtils.getUID();
+    Response response = await getDio().post('/index/Trends/editAlbum', data: {
+      'uid': uid,
+      'id': id,
+      'imgArr': urlOSS,
     });
     BaseResp baseResp = BaseResp.fromJson(response.data);
     basePageData = BasePageData(baseResp.code, baseResp.msg, null);
