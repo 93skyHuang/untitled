@@ -101,6 +101,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
         Obx(() => Container(
               color: Color(0xff242932),
               child: ListView.builder(
+                padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   Trends trends = _myHomeController.trends[index];
                   return ItemTrend(
@@ -120,6 +121,7 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
         Obx(() => Container(
               color: Color(0xff242932),
               child: ListView.builder(
+                padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   Trends trends = _myHomeController.videoTrends[index];
                   return ItemVideo(
@@ -211,8 +213,8 @@ class _MyHomePageState extends State with SingleTickerProviderStateMixin {
                           height: 100,
                           child: cardNetworkImage(
                               _myHomeController.imgUrl.value,
-                              double.infinity,
-                              ScreenUtil().setHeight(317),
+                              100,
+                              100,
                               radius: 0,
                               margin: EdgeInsets.all(0),
                               fit: BoxFit.cover),

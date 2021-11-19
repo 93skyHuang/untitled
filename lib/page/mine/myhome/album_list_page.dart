@@ -40,6 +40,7 @@ class _AlbumListPageState extends State with AutomaticKeepAliveClientMixin {
 
   Widget _photo() {
     return ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: _list.length,
         //SliverGridDelegateWithFixedCrossAxisCount 构建一个横轴固定数量Widget
         itemBuilder: (BuildContext context, int index) {

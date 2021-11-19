@@ -9,6 +9,7 @@ import 'package:untitled/persistent/get_storage_utils.dart';
 class MineController extends GetxController {
   Rx<UserBasic> userBasic = UserBasic().obs;
   RxString svipEndTime = "".obs;
+  RxString headerImgUrl = "".obs;
   RxBool isSvip = false.obs;
 
   @override
@@ -24,7 +25,8 @@ class MineController extends GetxController {
           userBasic.value = value.data!,
           GetStorageUtils.saveUserBasic(userBasic.value),
           isSvip.value = userBasic.value.svip == 1,
-          GetStorageUtils.saveSvip(isSvip.value ),
+          headerImgUrl.value = userBasic.value.headImgUrl ?? "",
+          GetStorageUtils.saveSvip(isSvip.value),
           GetStorageUtils.saveIsHead(userBasic.value.isHead == 1),
           GetStorageUtils.saveIsVideo(userBasic.value.isVideo == 1)
         });

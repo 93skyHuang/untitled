@@ -109,6 +109,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
         Obx(
           () => Container(
             child: ListView.builder(
+              padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
                 return ItemTrend(
                   trends: _userHomeController.trends.value[index],
@@ -129,6 +130,7 @@ class _UserHomePageState extends State with SingleTickerProviderStateMixin {
         Obx(
           () => Container(
             child: ListView.builder(
+              padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
                 Trends trends = _userHomeController.videoTrends.value[index];
                 return ItemVideo(

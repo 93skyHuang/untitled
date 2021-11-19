@@ -7,6 +7,7 @@ import 'package:untitled/widgets/card_image.dart';
 class TrendImg extends StatelessWidget {
   List<String?> imgs;
   bool showAll;
+  bool isVideo;
   MyCallBack onClick; //这里类型用我们自定义的,more的时候显示代表查看全部图片
   double contextWidth;
 
@@ -15,6 +16,7 @@ class TrendImg extends StatelessWidget {
     required this.onClick,
     required this.contextWidth,
     this.showAll = false,
+    this.isVideo = false,
   });
 
   @override
@@ -53,10 +55,18 @@ class TrendImg extends StatelessWidget {
                 onTap: () {
                   onClick(index);
                 },
-                child: customNetworkImage(
-                  imgs[index] ?? '',
-                  contextWidth / 2 - 10,
-                  contextWidth / 2 - 10,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    customNetworkImage(
+                      imgs[index] ?? '',
+                      contextWidth / 2 - 10,
+                      contextWidth / 2 - 10,
+                    ),
+                    isVideo
+                        ? Image.asset('assets/images/bofang.png')
+                        : Container(),
+                  ],
                 ),
               ),
             ],
@@ -67,15 +77,21 @@ class TrendImg extends StatelessWidget {
   }
 
   Widget singlePic() {
-    return Container(
-        width: contextWidth,
-        margin: EdgeInsets.only(top: 5),
-        child: GestureDetector(
-          onTap: () {
-            onClick(0);
-          },
-          child: normalNetWorkImage(imgs[0] ?? ''),
-        ));
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+            width: contextWidth,
+            margin: EdgeInsets.only(top: 5),
+            child: GestureDetector(
+              onTap: () {
+                onClick(0);
+              },
+              child: normalNetWorkImage(imgs[0] ?? ''),
+            )),
+        isVideo ? Image.asset('assets/images/bofang.png') : Container(),
+      ],
+    );
   }
 
   Widget doublePic() {
@@ -86,23 +102,37 @@ class TrendImg extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-              onTap: () {
-                onClick(0);
-              },
-              child: customNetworkImage(
-                  imgs[0] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
-                  radius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      topLeft: Radius.circular(8)))),
+            onTap: () {
+              onClick(0);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                customNetworkImage(
+                    imgs[0] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
+                    radius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        topLeft: Radius.circular(8))),
+                isVideo ? Image.asset('assets/images/bofang.png') : Container(),
+              ],
+            ),
+          ),
           GestureDetector(
-              onTap: () {
-                onClick(1);
-              },
-              child: customNetworkImage(
-                  imgs[1] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
-                  radius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8)))),
+            onTap: () {
+              onClick(1);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                customNetworkImage(
+                    imgs[1] ?? '', contextWidth / 2 - 10, contextWidth / 2 - 10,
+                    radius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        topLeft: Radius.circular(8))),
+                isVideo ? Image.asset('assets/images/bofang.png') : Container(),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -116,34 +146,59 @@ class TrendImg extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-              onTap: () {
-                onClick(0);
-              },
-              child: customNetworkImage(imgs[0] ?? '',
-                  2 * contextWidth / 3 - 12, contextWidth * 2 / 3 - 12,
-                  radius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      topLeft: Radius.circular(8)))),
+            onTap: () {
+              onClick(0);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                customNetworkImage(imgs[0] ?? '', 2 * contextWidth / 3 - 12,
+                    contextWidth * 2 / 3 - 12,
+                    radius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        topLeft: Radius.circular(8))),
+                isVideo ? Image.asset('assets/images/bofang.png') : Container(),
+              ],
+            ),
+          ),
           Column(
             children: [
               GestureDetector(
-                  onTap: () {
-                    onClick(1);
-                  },
-                  child: customNetworkImage(imgs[1] ?? '',
-                      contextWidth / 3 - 10, contextWidth / 3 - 10,
-                      radius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8)))),
+                onTap: () {
+                  onClick(1);
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    customNetworkImage(imgs[1] ?? '', 2 * contextWidth / 3 - 10,
+                        contextWidth * 2 / 3 - 10,
+                        radius: BorderRadius.only(
+                            bottomLeft: Radius.circular(8),
+                            topLeft: Radius.circular(8))),
+                    isVideo
+                        ? Image.asset('assets/images/bofang.png')
+                        : Container(),
+                  ],
+                ),
+              ),
               GestureDetector(
-                  onTap: () {
-                    onClick(2);
-                  },
-                  child: customNetworkImage(imgs[2] ?? '',
-                      contextWidth / 3 - 10, contextWidth / 3 - 10,
-                      radius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8)))),
+                onTap: () {
+                  onClick(2);
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    customNetworkImage(imgs[2] ?? '', 2 * contextWidth / 3 - 10,
+                        contextWidth * 2 / 3 - 10,
+                        radius: BorderRadius.only(
+                            bottomLeft: Radius.circular(8),
+                            topLeft: Radius.circular(8))),
+                    isVideo
+                        ? Image.asset('assets/images/bofang.png')
+                        : Container(),
+                  ],
+                ),
+              ),
             ],
           )
         ],
@@ -159,25 +214,41 @@ class TrendImg extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-              onTap: () {
-                onClick(0);
-              },
-              child: customNetworkImage(imgs[0] ?? '',
-                  2 * contextWidth / 3 - 18, contextWidth * 2 / 3 - 18,
-                  radius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      topLeft: Radius.circular(8)))),
+            onTap: () {
+              onClick(0);
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                customNetworkImage(imgs[0] ?? '', 2 * contextWidth / 3 - 18,
+                    contextWidth * 2 / 3 - 18,
+                    radius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        topLeft: Radius.circular(8))),
+                isVideo ? Image.asset('assets/images/bofang.png') : Container(),
+              ],
+            ),
+          ),
           Column(
             children: [
               GestureDetector(
-                  onTap: () {
-                    onClick(1);
-                  },
-                  child: customNetworkImage(imgs[1] ?? '',
-                      contextWidth / 3 - 10, contextWidth / 3 - 10,
-                      radius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8)))),
+                onTap: () {
+                  onClick(1);
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    customNetworkImage(imgs[1] ?? '', contextWidth / 3 - 10,
+                        contextWidth / 3 - 10,
+                        radius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            bottomRight: Radius.circular(8))),
+                    isVideo
+                        ? Image.asset('assets/images/bofang.png')
+                        : Container(),
+                  ],
+                ),
+              ),
               GestureDetector(
                   onTap: () {
                     onClick(0);

@@ -64,11 +64,15 @@ class ItemVideo extends StatelessWidget {
                     TrendImg(
                       imgs: trends.imgArr ?? [],
                       showAll: true,
+                      isVideo: true,
                       contextWidth: contextWidth,
                       onClick: (int index) {
                         onPressed.call();
                       },
                     ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
